@@ -1,6 +1,6 @@
 function out_halo = halo_vel_conv(data,opts_vel_conv)
 if opts_vel_conv.visual
-    stfig(opts_vel_conv.title)
+    stfig(opts_vel_conv.title);
     clf
     xlabel('\(v_x\)')
     ylabel('\(v_y\)')
@@ -46,7 +46,7 @@ for this_idx = 1:num_shots % Loop over all shots
     out_halo.counts_vel_unmasked{this_idx} = v_zxy;
     out_halo.rad(this_idx) = v_radius;
     %mask out the BEC's
-    if opts_vel_conv.visual
+    if opts_vel_conv.visual && rand(1)>opts_vel_conv.plot_percentage
         scatter3(v_masked(:,2),v_masked(:,3),v_masked(:,1),'k.')
     end
 end
