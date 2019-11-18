@@ -53,7 +53,7 @@ if (exist(anal_out.dir, 'dir') == 0), mkdir(anal_out.dir); end
 % % import raw data
 [data, ~] = import_mcp_tdc_data(opts.import);
 %% remove any ringing
-[data.counts_txy,data.num_counts] = ring_removal(data,opts.ring_lim);
+data_masked = ring_removal(data,opts.ring_lim);
 %% add labview import
 if opts.tag
 logs = readtable(opts.logfile);
@@ -61,24 +61,24 @@ tags = logs{:,5};
 %% select a specific shot type if you wish
 shot_type = 'double_halo';
 tag_mask = cellfun(@(x) strcmp(x, shot_type), tags');
-tag_mask = [tag_mask,zeros(1,length(data.num_counts)-length(tags))];
+tag_mask = [tag_mask,zeros(1,length(data_masked.num_counts)-length(tags))];
 else
-    tag_mask = ones(1,length(data.num_counts));
+    tag_mask = ones(1,length(data_masked.num_counts));
 end
 %% set up relevant constants
 hebec_constants
 %% find centers
 opts.cent.visual = 0;
-opts.cent.bin_size = 0.3e-6 * [1, 1, 1];
+opts.cent.bin_size = 0.3e-5 * [1, 1, 1];
 opts.cent.threshold = 2.0;
 opts.cent.t_bounds = {[3.8598,3.871],[3.871,3.8844],[3.8844,3.8972],[3.8,3.95]}; %time bounds for the different momentum states k=+1,0,-1 respectively
-bec = halo_cent(data,opts.cent);
+bec = halo_cent(data_masked,opts.cent);
 %% run some checks
 % atoms number
 % laser maybe?
-num_check = data.num_counts>opts.num_lim;
+num_check = data_masked.num_counts>opts.num_lim;
 is_shot_good = num_check & bec.centre_OK_top' & bec.centre_OK_mid' & bec.centre_OK_btm' & tag_mask;
-data_masked = struct_mask(data,is_shot_good);
+data_masked = struct_mask(data_masked,is_shot_good);
 bec_masked = struct_mask(bec,is_shot_good);
 %% Find the velocity widths
 opts.bec_width.g0 = const.g0;
