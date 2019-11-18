@@ -20,7 +20,9 @@ tmp_ylim=[-35e-3, 35e-3];
 tlim=[0,4];
 opts.import.txylim=[tlim;tmp_xlim;tmp_ylim];
 
-opts.num_lim = 1.5e3;
+opts.num_lim = 1.5e3; %minimum atom number
+opts.ring_lim = 0.5e-6; %how close can points be in time
+opts.halo_N_lim = 10; %minimum allowed number in halo
 
 % % Background stuff
 cli_header('Setting up for %s', data_folder);
@@ -50,6 +52,8 @@ if (exist(anal_out.dir, 'dir') == 0), mkdir(anal_out.dir); end
 
 % % import raw data
 [data, ~] = import_mcp_tdc_data(opts.import);
+%% remove any ringing
+[data.counts_txy,data.num_counts] = ring_removal(data,opts.ring_lim);
 %% add labview import
 if opts.tag
 logs = readtable(opts.logfile);
@@ -65,8 +69,8 @@ end
 hebec_constants
 %% find centers
 opts.cent.visual = 0;
-opts.cent.bin_size = 0.3e-5 * [1, 1, 1];
-opts.cent.threshold = 2.5;
+opts.cent.bin_size = 0.3e-6 * [1, 1, 1];
+opts.cent.threshold = 2.0;
 opts.cent.t_bounds = {[3.8598,3.871],[3.871,3.8844],[3.8844,3.8972],[3.8,3.95]}; %time bounds for the different momentum states k=+1,0,-1 respectively
 bec = halo_cent(data,opts.cent);
 %% run some checks
@@ -98,16 +102,20 @@ opts.vel_conv.bec_width.north = bec_masked.width_top;
 opts.vel_conv.bec_width.south = bec_masked.width_mid;
 %%
 top_halo = halo_vel_conv(data_masked,opts.vel_conv);
+%%
+halo_N_check = top_halo.num_counts>opts.halo_N_lim;
+top_halo = struct_mask(top_halo,halo_N_check);
+bec_masked = struct_mask(bec_masked,halo_N_check);
 top_halo.bec_vel_width = (mean(bec_masked.vel_width_top,2)+mean(bec_masked.vel_width_mid,2))./2;% add the average bec width
 %% find the mode number
 opts.mode_num.qe = 0.08;
 top_halo.m = halo_mode_occupancy(top_halo,opts.mode_num);
 %% calculated expected correlation amplitude
-top_halo.g2 = 1 + 1./top_halo.m;
+top_halo.g2 = 2 + 1./top_halo.m;
 %% bottom halo
 
 %% plot some histogram checks
-v_top_zxy = cell2mat(top_halo.counts_vel');
+v_top_zxy = cell2mat(top_halo.counts_vel);
 r_dist_top = sqrt(v_top_zxy(:,1).^2+v_top_zxy(:,2).^2+v_top_zxy(:,3).^2);
 N_top = top_halo.num_counts;
 
@@ -122,14 +130,17 @@ stfig('radial distribution');
 clf
 % hist(r_dist_btm,1000)
 hold on
-hist(r_dist_top,100)
+r_hist=smooth_hist(r_dist_top,'sigma',0.0001);
+% histogram(r_dist_top,100);
+plot(r_hist.bin.centers,r_hist.counts.smooth)
 xlabel('r')
 ylabel('Freq')
 stfig('Counts in halo distribution');
 clf
 % hist(r_dist_btm,1000)
 hold on
-hist(N_top,100)
+N_hist=smooth_hist(N_top,'lims',[0,100],'sigma',1);%'bin_factor',100
+plot(N_hist.bin.centers,N_hist.counts.smooth)
 xlabel('N')
 ylabel('Freq')
 % stfig('top halo masked')
@@ -145,180 +156,177 @@ ylabel('Freq')
 % ylabel('\(v_y\)')
 % zlabel('\(v_z\)')
 
-            stfig('Halo Num History');
-            plot(data_masked.shot_num,...
-                top_halo.num_counts,...
-                'kx-','LineWidth',1.5)
-            grid on
-            h=gca;
-            grid on    % turn on major grid lines
-            grid minor % turn on minor grid lines
-            % Set limits and grid spacing separately for the two directions:
-            % Must set major grid line properties for both directions simultaneously:
-            h.GridLineStyle='-'; % the default is some dotted pattern, I prefer solid
-            h.GridAlpha=1;  % the default is partially transparent
-            h.GridColor=[0,0,0]; % here's the color for the major grid lines
-            % Idem for minor grid line properties:
-            h.MinorGridLineStyle='-';
-            h.MinorGridAlpha=0.1;
-            h.MinorGridColor=[0,0,0]; % here's the color for the minor grid lines
-            xlabel('Shot Number')
-            ylabel('N in Halo')
-       
-            trans_frac = [bec_masked.trans_top';bec_masked.trans_mid';bec_masked.trans_btm';bec_masked.trans_oth'];
-            stfig('Transfer Fraction History');
-            plot(data_masked.shot_num,...
-                trans_frac',...
-                'LineWidth',1.5)
-            grid on
-            h=gca;
-            grid on    % turn on major grid lines
-            grid minor % turn on minor grid lines
-            % Set limits and grid spacing separately for the two directions:
-            % Must set major grid line properties for both directions simultaneously:
-            h.GridLineStyle='-'; % the default is some dotted pattern, I prefer solid
-            h.GridAlpha=1;  % the default is partially transparent
-            h.GridColor=[0,0,0]; % here's the color for the major grid lines
-            % Idem for minor grid line properties:
-            h.MinorGridLineStyle='-';
-            h.MinorGridAlpha=0.1;
-            h.MinorGridColor=[0,0,0]; % here's the color for the minor grid lines
-            xlabel('Shot Number')
-            ylabel('Transfer Fraction')
-            legend('top','mid','btm','oth')
-            
-            stfig('Vel Width History');
-            subplot(3,1,1)
-            title('Top')
-            plot(data_masked.shot_num,...
-                bec_masked.vel_width_top','.',...
-                'LineWidth',1.5)
-            grid on
-            h=gca;
-            grid on    % turn on major grid lines
-            grid minor % turn on minor grid lines
-            % Set limits and grid spacing separately for the two directions:
-            % Must set major grid line properties for both directions simultaneously:
-            h.GridLineStyle='-'; % the default is some dotted pattern, I prefer solid
-            h.GridAlpha=1;  % the default is partially transparent
-            h.GridColor=[0,0,0]; % here's the color for the major grid lines
-            % Idem for minor grid line properties:
-            h.MinorGridLineStyle='-';
-            h.MinorGridAlpha=0.1;
-            h.MinorGridColor=[0,0,0]; % here's the color for the minor grid lines
-            xlabel('Shot Number')
-            ylabel('Velocity width (m/s)')
-            legend('wz','wx','wy')
-            subplot(3,1,2)
-            title('Midle')
-            plot(data_masked.shot_num,...
-                bec_masked.vel_width_mid','.',...
-                'LineWidth',1.5)
-            grid on
-            h=gca;
-            grid on    % turn on major grid lines
-            grid minor % turn on minor grid lines
-            % Set limits and grid spacing separately for the two directions:
-            % Must set major grid line properties for both directions simultaneously:
-            h.GridLineStyle='-'; % the default is some dotted pattern, I prefer solid
-            h.GridAlpha=1;  % the default is partially transparent
-            h.GridColor=[0,0,0]; % here's the color for the major grid lines
-            % Idem for minor grid line properties:
-            h.MinorGridLineStyle='-';
-            h.MinorGridAlpha=0.1;
-            h.MinorGridColor=[0,0,0]; % here's the color for the minor grid lines
-            xlabel('Shot Number')
-            ylabel('Velocity width (m/s)')
-            legend('wz','wx','wy')
-            subplot(3,1,3)
-            title('Bottom')
-            plot(data_masked.shot_num,...
-                bec_masked.vel_width_btm','.',...
-                'LineWidth',1.5)
-            grid on
-            h=gca;
-            grid on    % turn on major grid lines
-            grid minor % turn on minor grid lines
-            % Set limits and grid spacing separately for the two directions:
-            % Must set major grid line properties for both directions simultaneously:
-            h.GridLineStyle='-'; % the default is some dotted pattern, I prefer solid
-            h.GridAlpha=1;  % the default is partially transparent
-            h.GridColor=[0,0,0]; % here's the color for the major grid lines
-            % Idem for minor grid line properties:
-            h.MinorGridLineStyle='-';
-            h.MinorGridAlpha=0.1;
-            h.MinorGridColor=[0,0,0]; % here's the color for the minor grid lines
-            xlabel('Shot Number')
-            ylabel('Velocity width (m/s)')
-            legend('wz','wx','wy')
-            
-            stfig('Mode Occupancy and Correlation Amplitude')
-            subplot(2,1,1)
-            plot(data_masked.shot_num,...
-                top_halo.m,'kx-',...
-                'LineWidth',1.5)
-            grid on
-            h=gca;
-            grid on    % turn on major grid lines
-            grid minor % turn on minor grid lines
-            % Set limits and grid spacing separately for the two directions:
-            % Must set major grid line properties for both directions simultaneously:
-            h.GridLineStyle='-'; % the default is some dotted pattern, I prefer solid
-            h.GridAlpha=1;  % the default is partially transparent
-            h.GridColor=[0,0,0]; % here's the color for the major grid lines
-            % Idem for minor grid line properties:
-            h.MinorGridLineStyle='-';
-            h.MinorGridAlpha=0.1;
-            h.MinorGridColor=[0,0,0]; % here's the color for the minor grid lines
-            xlabel('Shot Number')
-            ylabel('Mode Occupancy')
-            subplot(2,1,2)
-            plot(data_masked.shot_num,...
-                top_halo.g2,'kx-',...
-                'LineWidth',1.5)
-            grid on
-            h=gca;
-            grid on    % turn on major grid lines
-            grid minor % turn on minor grid lines
-            % Set limits and grid spacing separately for the two directions:
-            % Must set major grid line properties for both directions simultaneously:
-            h.GridLineStyle='-'; % the default is some dotted pattern, I prefer solid
-            h.GridAlpha=1;  % the default is partially transparent
-            h.GridColor=[0,0,0]; % here's the color for the major grid lines
-            % Idem for minor grid line properties:
-            h.MinorGridLineStyle='-';
-            h.MinorGridAlpha=0.1;
-            h.MinorGridColor=[0,0,0]; % here's the color for the minor grid lines
-            xlabel('Shot Number')
-            ylabel('$g^2$')
+stfig('Halo Num History');
+plot(top_halo.shot_num,...
+    top_halo.num_counts,...
+    'kx-','LineWidth',1.5)
+grid on
+h=gca;
+grid on    % turn on major grid lines
+grid minor % turn on minor grid lines
+% Set limits and grid spacing separately for the two directions:
+% Must set major grid line properties for both directions simultaneously:
+h.GridLineStyle='-'; % the default is some dotted pattern, I prefer solid
+h.GridAlpha=1;  % the default is partially transparent
+h.GridColor=[0,0,0]; % here's the color for the major grid lines
+% Idem for minor grid line properties:
+h.MinorGridLineStyle='-';
+h.MinorGridAlpha=0.1;
+h.MinorGridColor=[0,0,0]; % here's the color for the minor grid lines
+xlabel('Shot Number')
+ylabel('N in Halo')
+
+trans_frac = [bec_masked.trans_top';bec_masked.trans_mid';bec_masked.trans_btm';bec_masked.trans_oth'];
+stfig('Transfer Fraction History');
+plot(top_halo.shot_num,...
+    trans_frac',...
+    'LineWidth',1.5)
+grid on
+h=gca;
+grid on    % turn on major grid lines
+grid minor % turn on minor grid lines
+% Set limits and grid spacing separately for the two directions:
+% Must set major grid line properties for both directions simultaneously:
+h.GridLineStyle='-'; % the default is some dotted pattern, I prefer solid
+h.GridAlpha=1;  % the default is partially transparent
+h.GridColor=[0,0,0]; % here's the color for the major grid lines
+% Idem for minor grid line properties:
+h.MinorGridLineStyle='-';
+h.MinorGridAlpha=0.1;
+h.MinorGridColor=[0,0,0]; % here's the color for the minor grid lines
+xlabel('Shot Number')
+ylabel('Transfer Fraction')
+legend('top','mid','btm','oth')
+
+stfig('Vel Width History');
+subplot(3,1,1)
+title('Top')
+plot(top_halo.shot_num,...
+    bec_masked.vel_width_top','.',...
+    'LineWidth',1.5)
+grid on
+h=gca;
+grid on    % turn on major grid lines
+grid minor % turn on minor grid lines
+% Set limits and grid spacing separately for the two directions:
+% Must set major grid line properties for both directions simultaneously:
+h.GridLineStyle='-'; % the default is some dotted pattern, I prefer solid
+h.GridAlpha=1;  % the default is partially transparent
+h.GridColor=[0,0,0]; % here's the color for the major grid lines
+% Idem for minor grid line properties:
+h.MinorGridLineStyle='-';
+h.MinorGridAlpha=0.1;
+h.MinorGridColor=[0,0,0]; % here's the color for the minor grid lines
+xlabel('Shot Number')
+ylabel('Velocity width (m/s)')
+legend('wz','wx','wy')
+subplot(3,1,2)
+title('Midle')
+plot(top_halo.shot_num,...
+    bec_masked.vel_width_mid','.',...
+    'LineWidth',1.5)
+grid on
+h=gca;
+grid on    % turn on major grid lines
+grid minor % turn on minor grid lines
+% Set limits and grid spacing separately for the two directions:
+% Must set major grid line properties for both directions simultaneously:
+h.GridLineStyle='-'; % the default is some dotted pattern, I prefer solid
+h.GridAlpha=1;  % the default is partially transparent
+h.GridColor=[0,0,0]; % here's the color for the major grid lines
+% Idem for minor grid line properties:
+h.MinorGridLineStyle='-';
+h.MinorGridAlpha=0.1;
+h.MinorGridColor=[0,0,0]; % here's the color for the minor grid lines
+xlabel('Shot Number')
+ylabel('Velocity width (m/s)')
+legend('wz','wx','wy')
+subplot(3,1,3)
+title('Bottom')
+plot(top_halo.shot_num,...
+    bec_masked.vel_width_btm','.',...
+    'LineWidth',1.5)
+grid on
+h=gca;
+grid on    % turn on major grid lines
+grid minor % turn on minor grid lines
+% Set limits and grid spacing separately for the two directions:
+% Must set major grid line properties for both directions simultaneously:
+h.GridLineStyle='-'; % the default is some dotted pattern, I prefer solid
+h.GridAlpha=1;  % the default is partially transparent
+h.GridColor=[0,0,0]; % here's the color for the major grid lines
+% Idem for minor grid line properties:
+h.MinorGridLineStyle='-';
+h.MinorGridAlpha=0.1;
+h.MinorGridColor=[0,0,0]; % here's the color for the minor grid lines
+xlabel('Shot Number')
+ylabel('Velocity width (m/s)')
+legend('wz','wx','wy')
+
+stfig('Mode Occupancy and Correlation Amplitude')
+subplot(2,1,1)
+plot(top_halo.shot_num,...
+    top_halo.m,'kx-',...
+    'LineWidth',1.5)
+grid on
+h=gca;
+grid on    % turn on major grid lines
+grid minor % turn on minor grid lines
+% Set limits and grid spacing separately for the two directions:
+% Must set major grid line properties for both directions simultaneously:
+h.GridLineStyle='-'; % the default is some dotted pattern, I prefer solid
+h.GridAlpha=1;  % the default is partially transparent
+h.GridColor=[0,0,0]; % here's the color for the major grid lines
+% Idem for minor grid line properties:
+h.MinorGridLineStyle='-';
+h.MinorGridAlpha=0.1;
+h.MinorGridColor=[0,0,0]; % here's the color for the minor grid lines
+xlabel('Shot Number')
+ylabel('Mode Occupancy')
+subplot(2,1,2)
+plot(top_halo.shot_num,...
+    top_halo.g2,'kx-',...
+    'LineWidth',1.5)
+grid on
+h=gca;
+grid on    % turn on major grid lines
+grid minor % turn on minor grid lines
+% Set limits and grid spacing separately for the two directions:
+% Must set major grid line properties for both directions simultaneously:
+h.GridLineStyle='-'; % the default is some dotted pattern, I prefer solid
+h.GridAlpha=1;  % the default is partially transparent
+h.GridColor=[0,0,0]; % here's the color for the major grid lines
+% Idem for minor grid line properties:
+h.MinorGridLineStyle='-';
+h.MinorGridAlpha=0.1;
+h.MinorGridColor=[0,0,0]; % here's the color for the minor grid lines
+xlabel('Shot Number')
+ylabel('$g^2$')
 
 %% calculate correlation functions
 
-% back to back (intra halo)
-
-% bb (inter halo)
-
-% cl (intra)
-corr_opts.type='radial_cl';%'1d_cart_cl';%'3d_cart_cl';%%
+%% back to back (intra halo)
+corr_opts.fig='top halo bb corr';
+corr_opts.type='3d_cart_bb';%'radial_bb';%'radial_cl';%'1d_cart_cl';%%
 corr_opts.one_d_dimension=1;
-corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*1e-3;
+corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*2e-3;
 one_d_range=0.06;
-corr_opts.one_d_edges=linspace(-one_d_range,one_d_range,150)';
-corr_opts.redges=sqrt(linspace(1e-6^2,0.06^2,1500));
-corr_opts.rad_smoothing=0.00001;
+corr_opts.one_d_edges=linspace(-one_d_range,one_d_range,300)';
+corr_opts.redges=(linspace(0,0.003,1500));
+corr_opts.rad_smoothing=0.003;
 
-corr_opts.low_mem=nan;
+corr_opts.low_mem=true;
 corr_opts.plots=true;
-corr_opts.norm_samp_factor=20;
+corr_opts.norm_samp_factor=500;
 corr_opts.attenuate_counts=1;
 corr_opts.do_pre_mask=false;
-corr_opts.sorted_dir=0;
-corr_opts.sort_norm=0;
+corr_opts.sorted_dir=1;
+corr_opts.sort_norm=1;
 % corr_opts.cl_or_bb = 1;
 
 
 % corr_opts.one_d_smoothing=nan;
-corr_opts.one_d_smoothing=0.0001;
+corr_opts.one_d_smoothing=0.0008;
 %improved code  
 %28.4 s with premask & sort chunks 
 %30.12  with premask & no sort chunks 
@@ -327,7 +335,42 @@ corr_opts.one_d_smoothing=0.0001;
 
 % old code 27.137 s
 tic
-out=calc_any_g2_type(corr_opts,top_halo.counts_vel);
+out=calc_any_g2_type(corr_opts,top_halo.counts_vel');
+toc
+
+% bb (inter halo)
+
+%% co-linear (intra)
+corr_opts.fig='top halo cl corr';
+corr_opts.type='3d_cart_cl';%'radial_bb';%'radial_cl';%'1d_cart_cl';%%
+corr_opts.one_d_dimension=1;
+corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*10e-4;
+one_d_range=0.03;
+corr_opts.one_d_edges=linspace(-one_d_range,one_d_range,250)';
+corr_opts.redges=(linspace(0,0.003,1500));
+corr_opts.rad_smoothing=0.003;
+
+corr_opts.low_mem=true;
+corr_opts.plots=true;
+corr_opts.norm_samp_factor=500;
+corr_opts.attenuate_counts=1;
+corr_opts.do_pre_mask=false;
+corr_opts.sorted_dir=1;
+corr_opts.sort_norm=1;
+% corr_opts.cl_or_bb = 1;
+
+
+% corr_opts.one_d_smoothing=nan;
+corr_opts.one_d_smoothing=0.002;
+%improved code  
+%28.4 s with premask & sort chunks 
+%30.12  with premask & no sort chunks 
+%28.57 new with no premask
+%28.61 s old with no premask
+
+% old code 27.137 s
+tic
+out=calc_any_g2_type(corr_opts,top_halo.counts_vel');
 toc
 
 % cl (inter)

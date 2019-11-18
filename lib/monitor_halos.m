@@ -153,7 +153,7 @@ top_halo.bec_vel_width = (mean(bec.vel_width_top,2)+mean(bec.vel_width_mid,2))./
 opts.mode_num.qe = 0.08;
 top_halo.m = halo_mode_occupancy(top_halo,opts.mode_num);
 %% calculated expected correlation amplitude
-top_halo.g2 = 1 + 1./top_halo.m;
+top_halo.g2 = 2 + 1./top_halo.m;
 
             halo_history.shot_num=[halo_history.shot_num,anal_opts.tdc_import.shot_num];
             halo_history.halo_N=[halo_history.halo_N,top_halo.num_counts];

@@ -1,4 +1,6 @@
 function out_halo = halo_vel_conv(data,opts_vel_conv)
+d = -opts_vel_conv.const.fall_distance;
+g0 = -opts_vel_conv.const.g0;
 if opts_vel_conv.visual
     stfig(opts_vel_conv.title);
     clf
@@ -12,6 +14,13 @@ num_shots = length(data.shot_num);
 for this_idx = 1:num_shots % Loop over all shots
     this_txy = data.counts_txy{this_idx};
     this_centre = (opts_vel_conv.bec_center.north(this_idx, :)+opts_vel_conv.bec_center.south(this_idx, :))./2;
+    dt = (-opts_vel_conv.bec_center.north(this_idx, 1)+opts_vel_conv.bec_center.south(this_idx, 1));
+    new_t = dt/2+1/2.*sqrt(dt^2+8*d/g0);
+    this_centre(1) = opts_vel_conv.bec_center.south(this_idx, 1)-new_t;
+    dxy = -opts_vel_conv.bec_center.north(this_idx, 2:3)+opts_vel_conv.bec_center.south(this_idx, 2:3);
+    new_xy = new_t/dt.*dxy;
+    this_centre(2:3) = opts_vel_conv.bec_center.south(this_idx, 2:3)-new_xy;
+    
     centred_counts = this_txy - this_centre;
     txy_top = opts_vel_conv.bec_center.north(this_idx, :)- this_centre;
     txy_mid = opts_vel_conv.bec_center.south(this_idx, :)- this_centre;
@@ -19,7 +28,7 @@ for this_idx = 1:num_shots % Loop over all shots
     txy_bec_mid = [txy_mid-opts_vel_conv.bec_width.south(this_idx, :);txy_mid+opts_vel_conv.bec_width.south(this_idx, :)];
 
     % Convert to kspace
-    this_outtime = - 0.418707;%this_centre(1)
+    this_outtime = 0;%- 0.418707;%this_centre(1)
     v_top = txy_to_vel(txy_top, this_outtime, opts_vel_conv.const.g0, opts_vel_conv.const.fall_distance);
     v_mid = txy_to_vel(txy_mid, this_outtime, opts_vel_conv.const.g0, opts_vel_conv.const.fall_distance);
     v_bec_top = txy_to_vel(txy_bec_top, this_outtime, opts_vel_conv.const.g0, opts_vel_conv.const.fall_distance);
@@ -49,4 +58,6 @@ for this_idx = 1:num_shots % Loop over all shots
     if opts_vel_conv.visual && rand(1)>opts_vel_conv.plot_percentage
         scatter3(v_masked(:,2),v_masked(:,3),v_masked(:,1),'k.')
     end
+end
+out_halo.shot_num = data.shot_num;
 end
