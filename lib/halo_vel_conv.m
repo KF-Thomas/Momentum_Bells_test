@@ -20,7 +20,7 @@ for this_idx = 1:num_shots % Loop over all shots
     this_centre(1) = opts_vel_conv.bec_center.south(this_idx, 1)-new_t;
     dxy = -opts_vel_conv.bec_center.north(this_idx, 2:3)+opts_vel_conv.bec_center.south(this_idx, 2:3);
     new_xy = -(new_t-dt)/(2.*new_t-dt).*dxy;
-    this_centre(2:3) = opts_vel_conv.bec_center.south(this_idx, 2:3)-new_xy;
+    this_centre(2:3) = opts_vel_conv.bec_center.north(this_idx, 2:3)-new_xy;
     
     centred_counts = this_txy - this_centre;
     txy_top = opts_vel_conv.bec_center.north(this_idx, :)- this_centre;
@@ -36,15 +36,15 @@ for this_idx = 1:num_shots % Loop over all shots
     v_bec_mid = txy_to_vel(txy_bec_mid, this_outtime, opts_vel_conv.const.g0, opts_vel_conv.const.fall_distance);
     v_radius = norm(v_top-v_mid)./2;
     v_rxy = sqrt(v_top(2).^2+v_top(3).^2);%radius in the vx vy dims
-    theta = cos(v_top(3)./v_rxy)*180/pi;
+    theta = acos(v_top(3)./v_rxy)*180/pi;
     phi = asin(v_rxy/v_radius)*180/pi;
-    v_top = v_top*rotx(theta)'*roty(phi)';
-    v_mid = v_mid*rotx(theta)'*roty(phi)';
+    v_top_rot = v_top*rotx(theta)'*roty(-phi)';
+    v_mid_rot = v_mid*rotx(theta)'*roty(-phi)';
     if v_radius>opts_vel_conv.v_thresh
         continue
     end
     v_zxy = txy_to_vel(centred_counts, this_outtime, opts_vel_conv.const.g0, opts_vel_conv.const.fall_distance);
-    v_zxy = v_zxy*rotx(theta)'*roty(phi)';%rotate the BEC to the north and south poles
+    v_zxy = v_zxy*rotx(theta)'*roty(-phi)';%rotate the BEC to the north and south poles
     % mask radial
     radius_mask = (v_zxy(:,1).^2+v_zxy(:,2).^2+v_zxy(:,3).^2)<(v_radius.*opts_vel_conv.v_mask(2)).^2 ...
     & (v_zxy(:,1).^2+v_zxy(:,2).^2+v_zxy(:,3).^2)>(v_radius.*opts_vel_conv.v_mask(1)).^2;

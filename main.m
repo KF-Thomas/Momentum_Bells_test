@@ -12,7 +12,7 @@ data_folder = '20191115_halos_attempt_3';
 opts.import.dir = fullfile(opts.data_root, data_folder);
 
 
-opts.import.force_reimport = true;
+opts.import.force_reimport = false;
 opts.import.force_cache_load = ~opts.import.force_reimport;
 
 tmp_xlim=[-35e-3, 35e-3];     %tight XY lims to eliminate hot spot from destroying pulse widths
@@ -21,7 +21,6 @@ tlim=[0,4];
 opts.import.txylim=[tlim;tmp_xlim;tmp_ylim];
 
 opts.num_lim = 1.5e3; %minimum atom number
-opts.ring_lim = 0.5e-6; %how close can points be in time
 opts.halo_N_lim = 10; %minimum allowed number in halo
 
 % % Background stuff
@@ -53,6 +52,7 @@ if (exist(anal_out.dir, 'dir') == 0), mkdir(anal_out.dir); end
 % % import raw data
 [data, ~] = import_mcp_tdc_data(opts.import);
 %% remove any ringing
+opts.ring_lim = 0.5e-6; %how close can points be in time
 data_masked = ring_removal(data,opts.ring_lim);
 %% add labview import
 if opts.tag
