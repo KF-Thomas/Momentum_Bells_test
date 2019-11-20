@@ -23,6 +23,8 @@ opts.import.txylim=[tlim;tmp_xlim;tmp_ylim];
 opts.num_lim = 1.5e3; %minimum atom number
 opts.halo_N_lim = 10; %minimum allowed number in halo
 
+opts.plot_dist = true; %do you want to see all the detailed stuff about the halo distributions
+
 % % Background stuff
 cli_header('Setting up for %s', data_folder);
 opts.fig_dir = fullfile(this_folder, 'figs', data_folder);
@@ -56,12 +58,12 @@ opts.ring_lim = 0.5e-6; %how close can points be in time
 data_masked = ring_removal(data,opts.ring_lim);
 %% add labview import
 if opts.tag
-logs = readtable(opts.logfile);
-tags = logs{:,5};
-%% select a specific shot type if you wish
-shot_type = 'double_halo';
-tag_mask = cellfun(@(x) strcmp(x, shot_type), tags');
-tag_mask = [tag_mask,zeros(1,length(data_masked.num_counts)-length(tags))];
+    logs = readtable(opts.logfile);
+    tags = logs{:,5};
+    %% select a specific shot type if you wish
+    shot_type = 'double_halo';
+    tag_mask = cellfun(@(x) strcmp(x, shot_type), tags');
+    tag_mask = [tag_mask,zeros(1,length(data_masked.num_counts)-length(tags))];
 else
     tag_mask = ones(1,length(data_masked.num_counts));
 end
@@ -85,236 +87,75 @@ opts.bec_width.g0 = const.g0;
 opts.bec_width.fall_time = 0.417;
 bec_masked = bec_width_txy_to_vel(bec_masked,opts.bec_width);
 %% convert data to velocity
-opts.vel_conv.visual = 1;
-opts.vel_conv.plot_percentage = 0.2;
-opts.vel_conv.title = 'top halo';
-% top halo
-trap_switch_off= 0;
-opts.vel_conv.const.g0 = const.g0;
-opts.vel_conv.const.fall_distance = const.fall_distance;
-opts.vel_conv.v_thresh = 0.15; %maximum velocity radius
-opts.vel_conv.v_mask=[0.9,1.09]; %bounds on radisu as multiple of radius value
-opts.vel_conv.z_mask = [-0.04,0.04];
+%% generate top halo
+opts.vel_conv.top.visual = 1;
+opts.vel_conv.top.plot_percentage = 0.2;
+opts.vel_conv.top.title = 'top halo';
+opts.vel_conv.top.const.g0 = const.g0;
+opts.vel_conv.top.const.fall_distance = const.fall_distance;
+opts.vel_conv.top.v_thresh = 0.15; %maximum velocity radius
+opts.vel_conv.top.v_mask=[0.9,1.09]; %bounds on radisu as multiple of radius value
+opts.vel_conv.top.z_mask = [-0.04,0.04];
 
-opts.vel_conv.bec_center.north = bec_masked.centre_top;
-opts.vel_conv.bec_center.south = bec_masked.centre_mid;
-opts.vel_conv.bec_width.north = bec_masked.width_top;
-opts.vel_conv.bec_width.south = bec_masked.width_mid;
+opts.vel_conv.top.bec_center.north = bec_masked.centre_top;
+opts.vel_conv.top.bec_center.south = bec_masked.centre_mid;
+opts.vel_conv.top.bec_width.north = bec_masked.width_top;
+opts.vel_conv.top.bec_width.south = bec_masked.width_mid;
 %%
-top_halo = halo_vel_conv(data_masked,opts.vel_conv);
+top_halo = halo_vel_conv(data_masked,opts.vel_conv.top);
+%% generate bottom halo
+opts.vel_conv.btm.visual = 1;
+opts.vel_conv.btm.plot_percentage = 0.2;
+opts.vel_conv.btm.title = 'bottom halo';
+opts.vel_conv.btm.const.g0 = const.g0;
+opts.vel_conv.btm.const.fall_distance = const.fall_distance;
+opts.vel_conv.btm.v_thresh = 0.15; %maximum velocity radius
+opts.vel_conv.btm.v_mask=[0.9,1.09]; %bounds on radisu as multiple of radius value
+opts.vel_conv.btm.z_mask = [-0.04,0.04];
+
+opts.vel_conv.btm.bec_center.north = bec_masked.centre_mid;
+opts.vel_conv.btm.bec_center.south = bec_masked.centre_btm;
+opts.vel_conv.btm.bec_width.north = bec_masked.width_mid;
+opts.vel_conv.btm.bec_width.south = bec_masked.width_btm;
 %%
-halo_N_check = top_halo.num_counts>opts.halo_N_lim;
+bottom_halo = halo_vel_conv(data_masked,opts.vel_conv.btm);
+%% mask out halos with nums to low
+halo_N_check_top = top_halo.num_counts>opts.halo_N_lim;
+halo_N_check_btm = bottom_halo.num_counts>opts.halo_N_lim;
+halo_N_check = halo_N_check_top & halo_N_check_btm;
 top_halo = struct_mask(top_halo,halo_N_check);
+bottom_halo = struct_mask(bottom_halo,halo_N_check);
 bec_masked = struct_mask(bec_masked,halo_N_check);
+%% find the widths of the halos in velocity space
 top_halo.bec_vel_width = (mean(bec_masked.vel_width_top,2)+mean(bec_masked.vel_width_mid,2))./2;% add the average bec width
+bottom_halo.bec_vel_width = (mean(bec_masked.vel_width_btm,2)+mean(bec_masked.vel_width_mid,2))./2;
 %% find the mode number
 opts.mode_num.qe = 0.08;
 top_halo.m = halo_mode_occupancy(top_halo,opts.mode_num);
+bottom_halo.m = halo_mode_occupancy(bottom_halo,opts.mode_num);
 %% calculated expected correlation amplitude
 top_halo.g2 = 2 + 1./top_halo.m;
-%% bottom halo
-
+bottom_halo.g2 = 2 + 1./bottom_halo.m;
 %% plot some histogram checks
-v_top_zxy = cell2mat(top_halo.counts_vel);
-r_dist_top = sqrt(v_top_zxy(:,1).^2+v_top_zxy(:,2).^2+v_top_zxy(:,3).^2);
-N_top = top_halo.num_counts;
-
-% v_btm_zxy = cell2mat(btm_halo.vel');
-% v_btm = cell2mat(btm_halo.vel_radial');
-% M_th = v_btm(:,2) >= theta_range(1) & v_btm(:,2) <= theta_range(2);
-% M_ph = (v_btm(:,1) >= min(phi_range) & v_btm(:,1) <= max(phi_range));
-% v_btm_masked = v_btm_zxy(M_ph&M_th,:);
-% r_dist_btm = v_btm(M_ph&M_th,3);
-
-stfig('radial distribution');
-clf
-% hist(r_dist_btm,1000)
-hold on
-r_hist=smooth_hist(r_dist_top,'sigma',0.0001);
-% histogram(r_dist_top,100);
-plot(r_hist.bin.centers,r_hist.counts.smooth)
-xlabel('r')
-ylabel('Freq')
-stfig('Counts in halo distribution');
-clf
-% hist(r_dist_btm,1000)
-hold on
-N_hist=smooth_hist(N_top,'lims',[0,100],'sigma',1);%'bin_factor',100
-plot(N_hist.bin.centers,N_hist.counts.smooth)
-xlabel('N')
-ylabel('Freq')
-% stfig('top halo masked')
-% clf
-% scatter3(v_top_masked(:,2),v_top_masked(:,3),v_top_masked(:,1),'k.')
-% xlabel('\(v_x\)')
-% ylabel('\(v_y\)')
-% zlabel('\(v_z\)')
-% stfig('bottom halo masked')
-% clf
-% scatter3(v_btm_masked(:,2),v_btm_masked(:,3),v_btm_masked(:,1),'k.')
-% xlabel('\(v_x\)')
-% ylabel('\(v_y\)')
-% zlabel('\(v_z\)')
-
-stfig('Halo Num History');
-plot(top_halo.shot_num,...
-    top_halo.num_counts,...
-    'kx-','LineWidth',1.5)
-grid on
-h=gca;
-grid on    % turn on major grid lines
-grid minor % turn on minor grid lines
-% Set limits and grid spacing separately for the two directions:
-% Must set major grid line properties for both directions simultaneously:
-h.GridLineStyle='-'; % the default is some dotted pattern, I prefer solid
-h.GridAlpha=1;  % the default is partially transparent
-h.GridColor=[0,0,0]; % here's the color for the major grid lines
-% Idem for minor grid line properties:
-h.MinorGridLineStyle='-';
-h.MinorGridAlpha=0.1;
-h.MinorGridColor=[0,0,0]; % here's the color for the minor grid lines
-xlabel('Shot Number')
-ylabel('N in Halo')
-
-trans_frac = [bec_masked.trans_top';bec_masked.trans_mid';bec_masked.trans_btm';bec_masked.trans_oth'];
-stfig('Transfer Fraction History');
-plot(top_halo.shot_num,...
-    trans_frac',...
-    'LineWidth',1.5)
-grid on
-h=gca;
-grid on    % turn on major grid lines
-grid minor % turn on minor grid lines
-% Set limits and grid spacing separately for the two directions:
-% Must set major grid line properties for both directions simultaneously:
-h.GridLineStyle='-'; % the default is some dotted pattern, I prefer solid
-h.GridAlpha=1;  % the default is partially transparent
-h.GridColor=[0,0,0]; % here's the color for the major grid lines
-% Idem for minor grid line properties:
-h.MinorGridLineStyle='-';
-h.MinorGridAlpha=0.1;
-h.MinorGridColor=[0,0,0]; % here's the color for the minor grid lines
-xlabel('Shot Number')
-ylabel('Transfer Fraction')
-legend('top','mid','btm','oth')
-
-stfig('Vel Width History');
-subplot(3,1,1)
-title('Top')
-plot(top_halo.shot_num,...
-    bec_masked.vel_width_top','.',...
-    'LineWidth',1.5)
-grid on
-h=gca;
-grid on    % turn on major grid lines
-grid minor % turn on minor grid lines
-% Set limits and grid spacing separately for the two directions:
-% Must set major grid line properties for both directions simultaneously:
-h.GridLineStyle='-'; % the default is some dotted pattern, I prefer solid
-h.GridAlpha=1;  % the default is partially transparent
-h.GridColor=[0,0,0]; % here's the color for the major grid lines
-% Idem for minor grid line properties:
-h.MinorGridLineStyle='-';
-h.MinorGridAlpha=0.1;
-h.MinorGridColor=[0,0,0]; % here's the color for the minor grid lines
-xlabel('Shot Number')
-ylabel('Velocity width (m/s)')
-legend('wz','wx','wy')
-subplot(3,1,2)
-title('Midle')
-plot(top_halo.shot_num,...
-    bec_masked.vel_width_mid','.',...
-    'LineWidth',1.5)
-grid on
-h=gca;
-grid on    % turn on major grid lines
-grid minor % turn on minor grid lines
-% Set limits and grid spacing separately for the two directions:
-% Must set major grid line properties for both directions simultaneously:
-h.GridLineStyle='-'; % the default is some dotted pattern, I prefer solid
-h.GridAlpha=1;  % the default is partially transparent
-h.GridColor=[0,0,0]; % here's the color for the major grid lines
-% Idem for minor grid line properties:
-h.MinorGridLineStyle='-';
-h.MinorGridAlpha=0.1;
-h.MinorGridColor=[0,0,0]; % here's the color for the minor grid lines
-xlabel('Shot Number')
-ylabel('Velocity width (m/s)')
-legend('wz','wx','wy')
-subplot(3,1,3)
-title('Bottom')
-plot(top_halo.shot_num,...
-    bec_masked.vel_width_btm','.',...
-    'LineWidth',1.5)
-grid on
-h=gca;
-grid on    % turn on major grid lines
-grid minor % turn on minor grid lines
-% Set limits and grid spacing separately for the two directions:
-% Must set major grid line properties for both directions simultaneously:
-h.GridLineStyle='-'; % the default is some dotted pattern, I prefer solid
-h.GridAlpha=1;  % the default is partially transparent
-h.GridColor=[0,0,0]; % here's the color for the major grid lines
-% Idem for minor grid line properties:
-h.MinorGridLineStyle='-';
-h.MinorGridAlpha=0.1;
-h.MinorGridColor=[0,0,0]; % here's the color for the minor grid lines
-xlabel('Shot Number')
-ylabel('Velocity width (m/s)')
-legend('wz','wx','wy')
-
-stfig('Mode Occupancy and Correlation Amplitude')
-subplot(2,1,1)
-plot(top_halo.shot_num,...
-    top_halo.m,'kx-',...
-    'LineWidth',1.5)
-grid on
-h=gca;
-grid on    % turn on major grid lines
-grid minor % turn on minor grid lines
-% Set limits and grid spacing separately for the two directions:
-% Must set major grid line properties for both directions simultaneously:
-h.GridLineStyle='-'; % the default is some dotted pattern, I prefer solid
-h.GridAlpha=1;  % the default is partially transparent
-h.GridColor=[0,0,0]; % here's the color for the major grid lines
-% Idem for minor grid line properties:
-h.MinorGridLineStyle='-';
-h.MinorGridAlpha=0.1;
-h.MinorGridColor=[0,0,0]; % here's the color for the minor grid lines
-xlabel('Shot Number')
-ylabel('Mode Occupancy')
-subplot(2,1,2)
-plot(top_halo.shot_num,...
-    top_halo.g2,'kx-',...
-    'LineWidth',1.5)
-grid on
-h=gca;
-grid on    % turn on major grid lines
-grid minor % turn on minor grid lines
-% Set limits and grid spacing separately for the two directions:
-% Must set major grid line properties for both directions simultaneously:
-h.GridLineStyle='-'; % the default is some dotted pattern, I prefer solid
-h.GridAlpha=1;  % the default is partially transparent
-h.GridColor=[0,0,0]; % here's the color for the major grid lines
-% Idem for minor grid line properties:
-h.MinorGridLineStyle='-';
-h.MinorGridAlpha=0.1;
-h.MinorGridColor=[0,0,0]; % here's the color for the minor grid lines
-xlabel('Shot Number')
-ylabel('$g^2$')
-
+halos.top_halo = top_halo;
+halos.bottom_halo = bottom_halo;
+halos.bec = bec_masked;
+opts.plot_opts = [];
+if opts.plot_dist
+    plot_checks(halos,opts.plot_opts);
+end
 %% calculate correlation functions
 
 %% back to back (intra halo)
 corr_opts.fig='top halo bb corr';
-corr_opts.type='3d_cart_bb';%'radial_bb';%'radial_cl';%'1d_cart_cl';%%
+corr_opts.type='1d_cart_bb';%'radial_bb';%'radial_cl';%'1d_cart_cl';%%
 corr_opts.one_d_dimension=1;
 corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*2e-3;
 one_d_range=0.06;
-corr_opts.one_d_edges=linspace(-one_d_range,one_d_range,300)';
+corr_opts.one_d_edges=linspace(-one_d_range,one_d_range,30)';
 corr_opts.redges=(linspace(0,0.003,1500));
 corr_opts.rad_smoothing=0.003;
-
+corr_opts.direction_labels = {'z','x','y'};
 corr_opts.low_mem=true;
 corr_opts.plots=true;
 corr_opts.norm_samp_factor=500;
@@ -322,55 +163,52 @@ corr_opts.attenuate_counts=1;
 corr_opts.do_pre_mask=false;
 corr_opts.sorted_dir=1;
 corr_opts.sort_norm=1;
-% corr_opts.cl_or_bb = 1;
+corr_opts.calc_err=true;
 
 
 % corr_opts.one_d_smoothing=nan;
 corr_opts.one_d_smoothing=0.0008;
-%improved code  
-%28.4 s with premask & sort chunks 
-%30.12  with premask & no sort chunks 
-%28.57 new with no premask
-%28.61 s old with no premask
 
-% old code 27.137 s
 tic
-out=calc_any_g2_type(corr_opts,top_halo.counts_vel');
+top_halo.corr_bb=calc_any_g2_type(corr_opts,top_halo.counts_vel');
+toc
+%%
+tic
+corr_opts.fig='bottom halo bb corr';
+bottom_halo.corr_bb=calc_any_g2_type(corr_opts,bottom_halo.counts_vel');
 toc
 
 % bb (inter halo)
 
 %% co-linear (intra)
 corr_opts.fig='top halo cl corr';
-corr_opts.type='3d_cart_cl';%'radial_bb';%'radial_cl';%'1d_cart_cl';%%
+corr_opts.type='1d_cart_cl';%'radial_bb';%'radial_cl';%'1d_cart_cl';%%
 corr_opts.one_d_dimension=1;
 corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*10e-4;
 one_d_range=0.03;
-corr_opts.one_d_edges=linspace(-one_d_range,one_d_range,250)';
+corr_opts.one_d_edges=linspace(-one_d_range,one_d_range,50)';
 corr_opts.redges=(linspace(0,0.003,1500));
 corr_opts.rad_smoothing=0.003;
-
-corr_opts.low_mem=true;
+corr_opts.direction_labels = {'z','x','y'};
+corr_opts.low_mem=nan;
 corr_opts.plots=true;
 corr_opts.norm_samp_factor=500;
 corr_opts.attenuate_counts=1;
 corr_opts.do_pre_mask=false;
 corr_opts.sorted_dir=1;
 corr_opts.sort_norm=1;
-% corr_opts.cl_or_bb = 1;
+corr_opts.calc_err=true;
 
 
-% corr_opts.one_d_smoothing=nan;
-corr_opts.one_d_smoothing=0.002;
-%improved code  
-%28.4 s with premask & sort chunks 
-%30.12  with premask & no sort chunks 
-%28.57 new with no premask
-%28.61 s old with no premask
-
-% old code 27.137 s
+corr_opts.one_d_smoothing=nan;
+% corr_opts.one_d_smoothing=0.002;
 tic
-out=calc_any_g2_type(corr_opts,top_halo.counts_vel');
+top_halo.corr_cl=calc_any_g2_type(corr_opts,top_halo.counts_vel');
+toc
+%%
+tic
+corr_opts.fig='bottom halo cl corr';
+bottom_halo.corr_bb=calc_any_g2_type(corr_opts,bottom_halo.counts_vel');
 toc
 
 % cl (inter)
