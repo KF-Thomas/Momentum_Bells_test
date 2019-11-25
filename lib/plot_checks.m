@@ -3,13 +3,23 @@ function plot_checks(halos,plot_opts)
     bottom_halo = halos.bottom_halo;
     bec_masked = halos.bec;
     
-    v_top_zxy = cell2mat(top_halo.counts_vel);
+    v_top_zxy = cell2mat(top_halo.counts_vel_norm);
     r_dist_top = sqrt(v_top_zxy(:,1).^2+v_top_zxy(:,2).^2+v_top_zxy(:,3).^2);
     N_top = top_halo.num_counts;
     
-    v_btm_zxy = cell2mat(bottom_halo.counts_vel);
+    v_btm_zxy = cell2mat(bottom_halo.counts_vel_norm);
     r_dist_btm = sqrt(v_btm_zxy(:,1).^2+v_btm_zxy(:,2).^2+v_btm_zxy(:,3).^2);
     N_btm = bottom_halo.num_counts;
+    
+    stfig('halo comparison')
+    clf
+    plot_mask_top = rand(size(v_top_zxy,1),1)<0.05;
+    plot_mask_btm = rand(size(v_btm_zxy,1),1)<0.05;
+    scatter3(v_top_zxy(plot_mask_top,2),v_top_zxy(plot_mask_top,3),v_top_zxy(plot_mask_top,1),'r.')
+    hold on
+    scatter3(v_btm_zxy(plot_mask_btm,2),v_btm_zxy(plot_mask_btm,3),v_btm_zxy(plot_mask_btm,1),'b.')
+    axis equal
+    
     
     stfig('radial distribution');
     clf
@@ -183,6 +193,7 @@ function plot_checks(halos,plot_opts)
     ylabel('$g^2$')
  
     %getter better look at the density distribution
+%     v_top_zxy = cell2mat(top_halo.counts_vel_unmasked);
     stfig('density of top halo');
     subplot(1,3,1)
     ndhist(v_top_zxy(:,2:3));

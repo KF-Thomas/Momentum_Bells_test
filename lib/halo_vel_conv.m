@@ -53,7 +53,7 @@ for this_idx = 1:num_shots % Loop over all shots
     v_masked = mask_square(v_zxy,v_bec_top',1);
     v_masked = mask_square(v_masked,v_bec_mid',1);
     %z mask
-    z_lim = [opts_vel_conv.z_mask;-inf,inf;-inf,inf];
+    z_lim = [opts_vel_conv.z_mask;-inf,inf;-inf,inf].*v_radius;
     v_masked = mask_square(v_masked,z_lim,0);
     %add the data to the structure
     out_halo.counts_txy{this_idx} = this_txy;
@@ -61,8 +61,9 @@ for this_idx = 1:num_shots % Loop over all shots
     out_halo.counts_vel{this_idx} = v_masked;
     out_halo.counts_vel_unmasked{this_idx} = v_zxy;
     out_halo.rad(this_idx) = v_radius;
+    out_halo.counts_vel_norm{this_idx} = v_masked./v_radius;
     %mask out the BEC's
-    if opts_vel_conv.visual && rand(1)>opts_vel_conv.plot_percentage
+    if opts_vel_conv.visual && rand(1)<opts_vel_conv.plot_percentage
         scatter3(v_masked(:,2),v_masked(:,3),v_masked(:,1),'k.')
     end
 end

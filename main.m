@@ -7,8 +7,8 @@ addpath(genpath(core_folder));
 set(groot, 'DefaultTextInterpreter', 'latex')
 
 opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
-data_folder = '20191115_halos_attempt_3';
-% data_folder = '20191104_halos_attempt_1';
+% data_folder = '20191115_halos_attempt_3';
+data_folder = '20191114_halos_attempt_2';
 opts.import.dir = fullfile(opts.data_root, data_folder);
 
 
@@ -80,55 +80,55 @@ bec = halo_cent(data_masked,opts.cent);
 % laser maybe?
 num_check = data_masked.num_counts>opts.num_lim;
 is_shot_good = num_check & bec.centre_OK_top' & bec.centre_OK_mid' & bec.centre_OK_btm' & tag_mask;
-data_masked = struct_mask(data_masked,is_shot_good);
-bec_masked = struct_mask(bec,is_shot_good);
+data_masked_halo = struct_mask(data_masked,is_shot_good);
+bec_masked_halo = struct_mask(bec,is_shot_good);
 %% Find the velocity widths
 opts.bec_width.g0 = const.g0;
 opts.bec_width.fall_time = 0.417;
-bec_masked = bec_width_txy_to_vel(bec_masked,opts.bec_width);
+bec_masked_halo = bec_width_txy_to_vel(bec_masked_halo,opts.bec_width);
 %% convert data to velocity
 %% generate top halo
 opts.vel_conv.top.visual = 1;
-opts.vel_conv.top.plot_percentage = 0.2;
+opts.vel_conv.top.plot_percentage = 0.05;
 opts.vel_conv.top.title = 'top halo';
 opts.vel_conv.top.const.g0 = const.g0;
 opts.vel_conv.top.const.fall_distance = const.fall_distance;
 opts.vel_conv.top.v_thresh = 0.15; %maximum velocity radius
-opts.vel_conv.top.v_mask=[0.9,1.09]; %bounds on radisu as multiple of radius value
-opts.vel_conv.top.z_mask = [-0.04,0.04];
+opts.vel_conv.top.v_mask=[0.89,1.11]; %bounds on radisu as multiple of radius value
+opts.vel_conv.top.z_mask = [-0.75,0.75]; %in units of radius
 
-opts.vel_conv.top.bec_center.north = bec_masked.centre_top;
-opts.vel_conv.top.bec_center.south = bec_masked.centre_mid;
-opts.vel_conv.top.bec_width.north = bec_masked.width_top;
-opts.vel_conv.top.bec_width.south = bec_masked.width_mid;
+opts.vel_conv.top.bec_center.north = bec_masked_halo.centre_top;
+opts.vel_conv.top.bec_center.south = bec_masked_halo.centre_mid;
+opts.vel_conv.top.bec_width.north = bec_masked_halo.width_top;
+opts.vel_conv.top.bec_width.south = bec_masked_halo.width_mid;
 %%
-top_halo = halo_vel_conv(data_masked,opts.vel_conv.top);
+top_halo = halo_vel_conv(data_masked_halo,opts.vel_conv.top);
 %% generate bottom halo
 opts.vel_conv.btm.visual = 1;
-opts.vel_conv.btm.plot_percentage = 0.2;
+opts.vel_conv.btm.plot_percentage = 0.05;
 opts.vel_conv.btm.title = 'bottom halo';
 opts.vel_conv.btm.const.g0 = const.g0;
 opts.vel_conv.btm.const.fall_distance = const.fall_distance;
 opts.vel_conv.btm.v_thresh = 0.15; %maximum velocity radius
-opts.vel_conv.btm.v_mask=[0.9,1.09]; %bounds on radisu as multiple of radius value
-opts.vel_conv.btm.z_mask = [-0.04,0.04];
+opts.vel_conv.btm.v_mask=[0.89,1.11]; %bounds on radisu as multiple of radius value
+opts.vel_conv.btm.z_mask = [-0.75,0.75]; %in units of radius
 
-opts.vel_conv.btm.bec_center.north = bec_masked.centre_mid;
-opts.vel_conv.btm.bec_center.south = bec_masked.centre_btm;
-opts.vel_conv.btm.bec_width.north = bec_masked.width_mid;
-opts.vel_conv.btm.bec_width.south = bec_masked.width_btm;
+opts.vel_conv.btm.bec_center.north = bec_masked_halo.centre_mid;
+opts.vel_conv.btm.bec_center.south = bec_masked_halo.centre_btm;
+opts.vel_conv.btm.bec_width.north = bec_masked_halo.width_mid;
+opts.vel_conv.btm.bec_width.south = bec_masked_halo.width_btm;
 %%
-bottom_halo = halo_vel_conv(data_masked,opts.vel_conv.btm);
+bottom_halo = halo_vel_conv(data_masked_halo,opts.vel_conv.btm);
 %% mask out halos with nums to low
 halo_N_check_top = top_halo.num_counts>opts.halo_N_lim;
 halo_N_check_btm = bottom_halo.num_counts>opts.halo_N_lim;
 halo_N_check = halo_N_check_top & halo_N_check_btm;
 top_halo = struct_mask(top_halo,halo_N_check);
 bottom_halo = struct_mask(bottom_halo,halo_N_check);
-bec_masked = struct_mask(bec_masked,halo_N_check);
+bec_halo = struct_mask(bec_masked_halo,halo_N_check);
 %% find the widths of the halos in velocity space
-top_halo.bec_vel_width = (mean(bec_masked.vel_width_top,2)+mean(bec_masked.vel_width_mid,2))./2;% add the average bec width
-bottom_halo.bec_vel_width = (mean(bec_masked.vel_width_btm,2)+mean(bec_masked.vel_width_mid,2))./2;
+top_halo.bec_vel_width = (mean(bec_halo.vel_width_top,2)+mean(bec_halo.vel_width_mid,2))./2;% add the average bec width
+bottom_halo.bec_vel_width = (mean(bec_halo.vel_width_btm,2)+mean(bec_halo.vel_width_mid,2))./2;
 %% find the mode number
 opts.mode_num.qe = 0.08;
 top_halo.m = halo_mode_occupancy(top_halo,opts.mode_num);
@@ -139,7 +139,7 @@ bottom_halo.g2 = 2 + 1./bottom_halo.m;
 %% plot some histogram checks
 halos.top_halo = top_halo;
 halos.bottom_halo = bottom_halo;
-halos.bec = bec_masked;
+halos.bec = bec_halo;
 opts.plot_opts = [];
 if opts.plot_dist
     plot_checks(halos,opts.plot_opts);
@@ -148,13 +148,16 @@ end
 
 %% back to back (intra halo)
 corr_opts.fig='top halo bb corr';
-corr_opts.type='1d_cart_bb';%'radial_bb';%'radial_cl';%'1d_cart_cl';%%
+% corr_opts.fig='top halo norm bb corr';%'top halo bb corr';
+corr_opts.type='3d_cart_bb';%'radial_bb';%
 corr_opts.one_d_dimension=1;
 corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*2e-3;
-one_d_range=0.06;
-corr_opts.one_d_edges=linspace(-one_d_range,one_d_range,30)';
-corr_opts.redges=(linspace(0,0.003,1500));
-corr_opts.rad_smoothing=0.003;
+one_d_range=0.02;
+% corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*2e-2;
+% one_d_range=0.5;
+corr_opts.one_d_edges=linspace(-one_d_range,one_d_range,60)';
+corr_opts.redges=sqrt(linspace(0^2,one_d_range^2,100));
+corr_opts.rad_smoothing=nan;
 corr_opts.direction_labels = {'z','x','y'};
 corr_opts.low_mem=true;
 corr_opts.plots=true;
@@ -164,51 +167,111 @@ corr_opts.do_pre_mask=false;
 corr_opts.sorted_dir=1;
 corr_opts.sort_norm=1;
 corr_opts.calc_err=true;
+corr_opts.timer=false;
+corr_opts.print_update = false;
+
+corr_opts.samp_frac_lims=[0.25,0.5];
+corr_opts.num_samp_frac=2;
+corr_opts.num_samp_rep=5;
 
 
-% corr_opts.one_d_smoothing=nan;
-corr_opts.one_d_smoothing=0.0008;
+corr_opts.one_d_smoothing=nan;
+% corr_opts.one_d_smoothing=0.0008;
 
-tic
-top_halo.corr_bb=calc_any_g2_type(corr_opts,top_halo.counts_vel');
-toc
+corrs.top_halo.corr_bb=calc_any_g2_type(corr_opts,top_halo.counts_vel');
+% corrs.top_halo.corr_bb=calc_any_g2_type(corr_opts,top_halo.counts_vel_norm');
+
 %%
-tic
-corr_opts.fig='bottom halo bb corr';
-bottom_halo.corr_bb=calc_any_g2_type(corr_opts,bottom_halo.counts_vel');
-toc
 
-% bb (inter halo)
+corr_opts.fig='bottom halo bb corr';
+corrs.bottom_halo.corr_bb=calc_any_g2_type(corr_opts,bottom_halo.counts_vel');
+
 
 %% co-linear (intra)
 corr_opts.fig='top halo cl corr';
-corr_opts.type='1d_cart_cl';%'radial_bb';%'radial_cl';%'1d_cart_cl';%%
+corr_opts.type='radial_cl';%'1d_cart_cl';%%'3d_cart_cl';%%
 corr_opts.one_d_dimension=1;
 corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*10e-4;
-one_d_range=0.03;
+one_d_range=0.01;
 corr_opts.one_d_edges=linspace(-one_d_range,one_d_range,50)';
-corr_opts.redges=(linspace(0,0.003,1500));
-corr_opts.rad_smoothing=0.003;
+corr_opts.redges=sqrt(linspace(1e-5.^2,one_d_range^2,100));
+corr_opts.rad_smoothing=nan;
 corr_opts.direction_labels = {'z','x','y'};
 corr_opts.low_mem=nan;
 corr_opts.plots=true;
-corr_opts.norm_samp_factor=500;
+corr_opts.norm_samp_factor=50;
 corr_opts.attenuate_counts=1;
 corr_opts.do_pre_mask=false;
 corr_opts.sorted_dir=1;
 corr_opts.sort_norm=1;
-corr_opts.calc_err=true;
-
+corr_opts.calc_err=false;
+corr_opts.timer=false;
+corr_opts.print_update = false;
 
 corr_opts.one_d_smoothing=nan;
 % corr_opts.one_d_smoothing=0.002;
-tic
-top_halo.corr_cl=calc_any_g2_type(corr_opts,top_halo.counts_vel');
-toc
-%%
-tic
-corr_opts.fig='bottom halo cl corr';
-bottom_halo.corr_bb=calc_any_g2_type(corr_opts,bottom_halo.counts_vel');
-toc
 
-% cl (inter)
+corrs.top_halo.corr_cl=calc_any_g2_type(corr_opts,top_halo.counts_vel');
+
+%%
+corr_opts.fig='bottom halo cl corr';
+corrs.bottom_halo.corr_bb=calc_any_g2_type(corr_opts,bottom_halo.counts_vel');
+
+%% cl (inter)
+corr_opts.fig='between halo cl corr';
+corr_opts.type='1d_cart_cl';%'radial_cl';%
+corr_opts.one_d_dimension=2;
+corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*0.01;
+one_d_range=0.08;
+% corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*5e-2;
+% one_d_range=0.06;
+corr_opts.one_d_edges=linspace(-one_d_range,one_d_range,30)';
+corr_opts.redges=sqrt(linspace(1e-6^2,one_d_range^2,100));
+corr_opts.rad_smoothing=nan;
+corr_opts.direction_labels = {'z','x','y'};
+corr_opts.low_mem=true;
+corr_opts.plots=true;
+corr_opts.norm_samp_factor=1;
+corr_opts.attenuate_counts=1;
+corr_opts.do_pre_mask=false;
+corr_opts.sorted_dir=1;
+corr_opts.sort_norm=1;
+corr_opts.calc_err=false;
+corr_opts.progress_updates=5;
+corr_opts.timer=false;
+
+both_halo_counts = [top_halo.counts_vel_norm';bottom_halo.counts_vel_norm'];
+
+corr_opts.one_d_smoothing=nan;
+corr_opts.one_d_smoothing=0.01;
+
+corrs.between_halos.corr_bb=calc_any_g2_type(corr_opts,both_halo_counts);
+
+%% bb (inter halo)
+corr_opts.fig='between halo bb corr';
+corr_opts.type='3d_cart_bb';%'1d_cart_bb';%'radial_bb';
+corr_opts.one_d_dimension=3;
+corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*0.05;
+one_d_range=1.3;
+corr_opts.one_d_edges=linspace(-one_d_range,one_d_range,100)';
+corr_opts.redges=(linspace(0,0.003,1500));
+corr_opts.rad_smoothing=0.003;
+corr_opts.direction_labels = {'z','x','y'};
+corr_opts.low_mem=true;
+corr_opts.plots=true;
+corr_opts.norm_samp_factor=1;
+corr_opts.attenuate_counts=1;
+corr_opts.do_pre_mask=false;
+corr_opts.sorted_dir=1;
+corr_opts.sort_norm=1;
+corr_opts.calc_err=false;
+corr_opts.progress_updates=5;
+corr_opts.timer=true;
+
+both_halo_counts = [top_halo.counts_vel_norm';bottom_halo.counts_vel_norm'];
+
+corr_opts.one_d_smoothing=nan;
+% corr_opts.one_d_smoothing=0.0008;
+
+
+corrs.between_halos.corr_bb=calc_any_g2_type(corr_opts,both_halo_counts);
