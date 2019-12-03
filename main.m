@@ -71,9 +71,11 @@ end
 hebec_constants
 %% find centers
 opts.cent.visual = 0;
-opts.cent.bin_size = 0.3e-5 * [1, 1, 1];
-opts.cent.threshold = 2.0;
-opts.cent.t_bounds = {[3.8598,3.871],[3.871,3.8844],[3.8844,3.8972],[3.8,3.95]}; %time bounds for the different momentum states k=+1,0,-1 respectively
+opts.cent.savefigs = 0;
+opts.cent.bin_size = 3e-5 * [1, 10, 10];
+opts.cent.threshold = [6.5,13,13];
+% opts.cent.t_bounds = {[3.8598,3.871],[3.871,3.8844],[3.8844,3.8972],[3.8,3.95]}; %time bounds for the different momentum states k=+1,0,-1 respectively
+opts.cent.t_bounds = {[3.861,3.867],[3.874,3.881],[3.887,3.895],[3.8,3.95]}; %time bounds for the different momentum states k=+1,0,-1 respectively
 bec = halo_cent(data_masked,opts.cent);
 %% run some checks
 % atoms number
@@ -95,7 +97,8 @@ opts.vel_conv.top.const.g0 = const.g0;
 opts.vel_conv.top.const.fall_distance = const.fall_distance;
 opts.vel_conv.top.v_thresh = 0.15; %maximum velocity radius
 opts.vel_conv.top.v_mask=[0.89,1.11]; %bounds on radisu as multiple of radius value
-opts.vel_conv.top.z_mask = [-0.75,0.75]; %in units of radius
+opts.vel_conv.top.z_mask = [-0.5,0.5]; %in units of radius
+opts.vel_conv.top.center = bec_masked_halo.centre_mid; %use the mid BEC as the zero momentum point
 
 opts.vel_conv.top.bec_center.north = bec_masked_halo.centre_top;
 opts.vel_conv.top.bec_center.south = bec_masked_halo.centre_mid;
@@ -111,7 +114,8 @@ opts.vel_conv.btm.const.g0 = const.g0;
 opts.vel_conv.btm.const.fall_distance = const.fall_distance;
 opts.vel_conv.btm.v_thresh = 0.15; %maximum velocity radius
 opts.vel_conv.btm.v_mask=[0.89,1.11]; %bounds on radisu as multiple of radius value
-opts.vel_conv.btm.z_mask = [-0.75,0.75]; %in units of radius
+opts.vel_conv.btm.z_mask = [-0.5,0.5]; %in units of radius
+opts.vel_conv.btm.center = bec_masked_halo.centre_mid; %use the mid BEC as the zero momentum point
 
 opts.vel_conv.btm.bec_center.north = bec_masked_halo.centre_mid;
 opts.vel_conv.btm.bec_center.south = bec_masked_halo.centre_btm;
@@ -141,6 +145,8 @@ halos.top_halo = top_halo;
 halos.bottom_halo = bottom_halo;
 halos.bec = bec_halo;
 opts.plot_opts = [];
+opts.plot_opts.const.g0 = const.g0;
+opts.plot_opts.const.fall_distance = const.fall_distance;
 if opts.plot_dist
     plot_checks(halos,opts.plot_opts);
 end
@@ -149,7 +155,7 @@ end
 %% back to back (intra halo)
 corr_opts.fig='top halo bb corr';
 % corr_opts.fig='top halo norm bb corr';%'top halo bb corr';
-corr_opts.type='3d_cart_bb';%'radial_bb';%
+corr_opts.type='radial_bb';%'1d_cart_bb';%'3d_cart_bb';%
 corr_opts.one_d_dimension=1;
 corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*2e-3;
 one_d_range=0.02;
@@ -166,9 +172,10 @@ corr_opts.attenuate_counts=1;
 corr_opts.do_pre_mask=false;
 corr_opts.sorted_dir=1;
 corr_opts.sort_norm=1;
-corr_opts.calc_err=true;
+corr_opts.calc_err=false;
 corr_opts.timer=false;
 corr_opts.print_update = false;
+corr_opts.fit = false;
 
 corr_opts.samp_frac_lims=[0.25,0.5];
 corr_opts.num_samp_frac=2;
@@ -191,15 +198,15 @@ corrs.bottom_halo.corr_bb=calc_any_g2_type(corr_opts,bottom_halo.counts_vel');
 corr_opts.fig='top halo cl corr';
 corr_opts.type='radial_cl';%'1d_cart_cl';%%'3d_cart_cl';%%
 corr_opts.one_d_dimension=1;
-corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*10e-4;
+corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*2e-3;
 one_d_range=0.01;
-corr_opts.one_d_edges=linspace(-one_d_range,one_d_range,50)';
+corr_opts.one_d_edges=linspace(-one_d_range,one_d_range,60)';
 corr_opts.redges=sqrt(linspace(1e-5.^2,one_d_range^2,100));
 corr_opts.rad_smoothing=nan;
 corr_opts.direction_labels = {'z','x','y'};
 corr_opts.low_mem=nan;
 corr_opts.plots=true;
-corr_opts.norm_samp_factor=50;
+corr_opts.norm_samp_factor=500;
 corr_opts.attenuate_counts=1;
 corr_opts.do_pre_mask=false;
 corr_opts.sorted_dir=1;
@@ -207,6 +214,7 @@ corr_opts.sort_norm=1;
 corr_opts.calc_err=false;
 corr_opts.timer=false;
 corr_opts.print_update = false;
+corr_opts.fit = false;
 
 corr_opts.one_d_smoothing=nan;
 % corr_opts.one_d_smoothing=0.002;
@@ -219,14 +227,14 @@ corrs.bottom_halo.corr_bb=calc_any_g2_type(corr_opts,bottom_halo.counts_vel');
 
 %% cl (inter)
 corr_opts.fig='between halo cl corr';
-corr_opts.type='1d_cart_cl';%'radial_cl';%
+corr_opts.type='radial_cl';%'3d_cart_cl';%'1d_cart_cl';%
 corr_opts.one_d_dimension=2;
-corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*0.01;
-one_d_range=0.08;
-% corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*5e-2;
-% one_d_range=0.06;
+% corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*0.92;
+% one_d_range=0.16;%0.04;
+corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*5e-2;
+one_d_range=0.02;
 corr_opts.one_d_edges=linspace(-one_d_range,one_d_range,30)';
-corr_opts.redges=sqrt(linspace(1e-6^2,one_d_range^2,100));
+corr_opts.redges=sqrt(linspace(1e-6^2,one_d_range^2,30));
 corr_opts.rad_smoothing=nan;
 corr_opts.direction_labels = {'z','x','y'};
 corr_opts.low_mem=true;
@@ -239,23 +247,29 @@ corr_opts.sort_norm=1;
 corr_opts.calc_err=false;
 corr_opts.progress_updates=5;
 corr_opts.timer=false;
+corr_opts.samp_frac_lims = [0.25,0.75];
+corr_opts.num_samp_frac = 5;
+corr_opts.num_samp_rep = 9e1;
 
-both_halo_counts = [top_halo.counts_vel_norm';bottom_halo.counts_vel_norm'];
+% both_halo_counts = [top_halo.counts_vel_norm';bottom_halo.counts_vel_norm'];
+both_halo_counts = [top_halo.counts_vel';bottom_halo.counts_vel'];
 
 corr_opts.one_d_smoothing=nan;
-corr_opts.one_d_smoothing=0.01;
+% corr_opts.one_d_smoothing=0.01;
 
 corrs.between_halos.corr_bb=calc_any_g2_type(corr_opts,both_halo_counts);
 
 %% bb (inter halo)
 corr_opts.fig='between halo bb corr';
-corr_opts.type='3d_cart_bb';%'1d_cart_bb';%'radial_bb';
+corr_opts.type='radial_bb';%'3d_cart_bb';%'1d_cart_bb';%
 corr_opts.one_d_dimension=3;
-corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*0.05;
-one_d_range=1.3;
+% corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*0.05;
+% one_d_range=0.16;
+corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*5e-2;
+one_d_range=0.02;
 corr_opts.one_d_edges=linspace(-one_d_range,one_d_range,100)';
-corr_opts.redges=(linspace(0,0.003,1500));
-corr_opts.rad_smoothing=0.003;
+corr_opts.redges=sqrt(linspace(1e-6^2,one_d_range^2,40));
+corr_opts.rad_smoothing=nan;
 corr_opts.direction_labels = {'z','x','y'};
 corr_opts.low_mem=true;
 corr_opts.plots=true;
@@ -268,7 +282,8 @@ corr_opts.calc_err=false;
 corr_opts.progress_updates=5;
 corr_opts.timer=true;
 
-both_halo_counts = [top_halo.counts_vel_norm';bottom_halo.counts_vel_norm'];
+% both_halo_counts = [top_halo.counts_vel_norm';bottom_halo.counts_vel_norm'];
+both_halo_counts = [top_halo.counts_vel';bottom_halo.counts_vel'];
 
 corr_opts.one_d_smoothing=nan;
 % corr_opts.one_d_smoothing=0.0008;
