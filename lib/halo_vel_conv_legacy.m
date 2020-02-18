@@ -50,7 +50,7 @@ for this_idx = 1:num_shots % Loop over all shots
         continue
     end
     v_zxy = txy_to_vel(centred_counts, this_outtime, opts_vel_conv.const.g0, opts_vel_conv.const.fall_distance);
-%     v_zxy = v_zxy*rotx(theta)'*roty(-phi)';%rotate the BEC to the north and south poles
+    v_zxy = v_zxy*rotx(theta)'*roty(-phi)';%rotate the BEC to the north and south poles
     v_zxy = v_zxy*roty(-phi)';%rotate the BEC to the north and south poles
     % mask radial
     radius_mask = (v_zxy(:,1).^2+v_zxy(:,2).^2+v_zxy(:,3).^2)<(v_radius.*opts_vel_conv.v_mask(2)).^2 ...

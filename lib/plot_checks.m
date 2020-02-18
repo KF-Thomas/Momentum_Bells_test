@@ -342,25 +342,124 @@ tf = sqrt(2*d/g0);%arrival time of zero velocity particles
     
     stfig('density of bottom halo');
     clf
-    subplot(1,3,1)
+    subplot(2,3,1)
     ndhist(v_btm_zxy(:,2:3));
     hold on
     plot(cos(t),sin(t),'k')
     axis equal
     xlabel('$v_x$')
     ylabel('$v_y$')
-    subplot(1,3,2)
+    subplot(2,3,2)
     ndhist(v_btm_zxy(:,[1,3]));
     hold on
     plot(cos(t),sin(t),'k')
     axis equal
     xlabel('$v_z$')
     ylabel('$v_y$')
-    subplot(1,3,3)
+    subplot(2,3,3)
     ndhist(v_btm_zxy(:,1:2));
     hold on
     plot(cos(t),sin(t),'k')
     axis equal
     xlabel('$v_z$')
     ylabel('$v_x$')
+    
+    subplot(2,3,4)
+    ndhist(v_btm_zxy_unnorm(:,2:3));
+    axis equal
+    xlabel('$v_x$')
+    ylabel('$v_y$')
+    subplot(2,3,5)
+    ndhist(v_btm_zxy_unnorm(:,[1,3]));
+    axis equal
+    xlabel('$v_z$')
+    ylabel('$v_y$')
+    subplot(2,3,6)
+    ndhist(v_btm_zxy_unnorm(:,1:2));
+    axis equal
+    xlabel('$v_z$')
+    ylabel('$v_x$')
+    
+    stfig('average radius vs angle')
+    clf
+    nbins=50;
+    theta_bins = linspace(-pi,pi,nbins);
+    phi_bins = linspace(-pi/2,pi/2,nbins);
+    [theta_top,~] = cart2pol(v_top_zxy(:,2),v_top_zxy(:,3));
+    [theta_btm,~] = cart2pol(v_btm_zxy(:,2),v_btm_zxy(:,3));
+    phi_top = atan(v_top_zxy(:,1)./sqrt(v_top_zxy(:,2).^2+v_top_zxy(:,3).^2));
+    phi_btm = atan(v_btm_zxy(:,1)./sqrt(v_btm_zxy(:,2).^2+v_btm_zxy(:,3).^2));
+    for ii = 1:(nbins-1)
+        r_btm_zxy_masked = r_dist_btm_unnorm(theta_bins(ii)<theta_btm & theta_btm<=theta_bins(ii+1));
+        r_top_zxy_masked = r_dist_top_unnorm(theta_bins(ii)<theta_top & theta_top<=theta_bins(ii+1));
+        v_btm_r(ii,1) = mean(r_btm_zxy_masked);
+        v_top_r(ii,1) = mean(r_top_zxy_masked);
+        
+        r_btm_zxy_masked = r_dist_btm_unnorm(phi_bins(ii)<phi_btm & phi_btm<=phi_bins(ii+1));
+        r_top_zxy_masked = r_dist_top_unnorm(phi_bins(ii)<phi_top & phi_top<=phi_bins(ii+1));
+        v_btm_r(ii,2) = mean(r_btm_zxy_masked);
+        v_top_r(ii,2) = mean(r_top_zxy_masked);
+        
+        theta(ii) = mean(theta_bins(ii:(ii+1)));
+        phi(ii) = mean(phi_bins(ii:(ii+1)));
+    end
+    subplot(2,1,1)
+    plot(theta,v_btm_r(:,1),'linewidth',1.5)
+    hold on
+    plot(theta,v_top_r(:,1),'linewidth',1.5)
+    legend('bottom','top')
+    ylabel('Average radial value')
+    xlabel('\(\theta\)')
+    subplot(2,1,2)
+    plot(phi,v_btm_r(:,2),'linewidth',1.5)
+    hold on
+    plot(phi,v_top_r(:,2),'linewidth',1.5)
+    legend('bottom','top')
+    ylabel('Average radial value')
+    xlabel('\(\phi\)')
+    stfig('spherical density plot')
+    for ii = 1:(nbins-1)
+        for jj = 1:(nbins-1)
+            ang_mask_btm = theta_bins(ii)<theta_btm & theta_btm<=theta_bins(ii+1) ...
+                & phi_bins(jj)<phi_btm & phi_btm<=phi_bins(jj+1);
+            area = abs(theta_bins(ii+1)-theta_bins(ii))*abs(sin(phi_bins(jj+1))-sin(phi_bins(jj)));
+            ang_mask_top = theta_bins(ii)<theta_top & theta_top<=theta_bins(ii+1) ...
+                & phi_bins(jj)<phi_top & phi_top<=phi_bins(jj+1);
+            density_btm(ii,jj) = sum(ang_mask_btm)./area;
+            avg_r_btm(ii,jj)  = nanmean(r_dist_btm_unnorm(ang_mask_btm));
+            density_top(ii,jj) = sum(ang_mask_top)./area;
+            avg_r_top(ii,jj)  = nanmean(r_dist_top_unnorm(ang_mask_top));
+        end
+    end
+    subplot(2,2,1)
+    pcolor(phi,theta,avg_r_btm)
+    shading flat
+    colorbar
+    ylabel('\(\theta\)')
+    xlabel('\(\phi\)')
+    title('average radius bottom')
+    subplot(2,2,2)
+    title('average density bottom')
+    pcolor(phi,theta,density_btm)
+    shading flat
+    colorbar
+    ylabel('\(\theta\)')
+    xlabel('\(\phi\)')
+    title('density')
+    subplot(2,2,3)
+    pcolor(phi,theta,avg_r_top)
+    shading flat
+    colorbar
+    ylabel('\(\theta\)')
+    xlabel('\(\phi\)')
+    title('average radius top')
+    subplot(2,2,4)
+    title('average density top')
+    pcolor(phi,theta,density_top)
+    shading flat
+    colorbar
+    ylabel('\(\theta\)')
+    xlabel('\(\phi\)')
+    title('density')
+    
 end
