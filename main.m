@@ -299,15 +299,15 @@ ylabel('Freq')
 % bb (inter halo)
 
 % cl (intra)
-corr_opts.type='radial_cl';%'1d_cart_cl';%'3d_cart_cl';%%
+corr_opts.type='1d_cart_cl';%'radial_cl';%'3d_cart_cl';%%
 corr_opts.one_d_dimension=1;
-corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*1e-3;
+corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*3e-2;
 one_d_range=0.06;
-corr_opts.one_d_edges=linspace(-one_d_range,one_d_range,150)';
+corr_opts.one_d_edges=linspace(-one_d_range,one_d_range,550)';
 corr_opts.redges=sqrt(linspace(1e-6^2,0.06^2,1500));
 corr_opts.rad_smoothing=0.00001;
 
-corr_opts.low_mem=nan;
+corr_opts.low_mem=true;
 corr_opts.plots=true;
 corr_opts.norm_samp_factor=20;
 corr_opts.attenuate_counts=1;
