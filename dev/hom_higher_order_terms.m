@@ -183,7 +183,7 @@ for ii=3:n_max
        p_out=p_out+factorial(ii-jj)*poisson_dist(ii-jj,mode_occ).*factorial(jj).*poisson_dist(jj,mode_occ);
    end
 end
-
+p_out=p_out+2.*poisson_dist(2,mode_occ).*poisson_dist(0,mode_occ);
 
 end
 
