@@ -5,7 +5,7 @@
 p_good=@(mode_occ) poisson_dist(1,mode_occ).*poisson_dist(1,mode_occ);
 
 
-mode_samp=logspace(-4,0,1e3);
+mode_samp=logspace(-2.5,0,1e2);
 
 p_ratio=@(mode_occ)   p_good(mode_occ)./p_bad(mode_occ);
 
@@ -20,12 +20,27 @@ ylabel('prob good against bad')
 % P_CO = 1- P(|0,N>)- P(|N,0>)
 % with some atom number in port a and b
 
-%
+%%
 figure(2)
-loglog(mode_samp,coincidence_weighted(mode_samp))
+namx=50; % increase to consider larger atom totals
+clf
+set(gcf,'color','w')
+loglog(mode_samp,mode_samp,'g-')
+hold on
+loglog(mode_samp,coincidence_coherent(mode_samp,namx),'k-')
+loglog(mode_samp,coincidence_weighted(mode_samp,namx),'b-')
+hold off
+set(gca,'XScale','log')
+set(gca,'YScale','log')
 xlabel('mode occ')
-ylabel('coincidence')
+ylabel('coincidence probability')
+legend('y=x','coherent','incoherent (wrong)')
 
+%%
+coincidence_coherent([0.1])
+coincidence_coherent([0.4])
+coincidence_coherent([0.1,0.2,0.3,0.4])
+coincidence_weighted([0.1,0.2,0.3,0.4])
 
 
 %% we can also have a look at how quantum supresses coincidences (cf classical non interacting) for higher 
@@ -87,10 +102,11 @@ coincidence_prob(3,3)
 % some prior art but its not exactly what im after
 %https://iopscience.iop.org/article/10.1088/1367-2630/ab1bbf
 
-function prob=coincidence_prob(m,n)
+function [prob,state]=coincidence_prob(m,n)
 % find the probabitly of coincidence betwee port c & d, that is that they both have >0 atoms
 if m==0 && n==0 % the trivial case
     prob=0;
+    state=0;
 else
     % given an inital state (a_dag)^n (b_dag)^m |0,0>_{a,b}
     % where a_dag and b_dag are the creation operators in mode a and b
@@ -129,19 +145,61 @@ else
     % the coincidence probability is then the total amplitude minus  P(|0,N>) and P(|N,0>) 
     % (no atoms in the other port)
     prob=(total_amp-sum(coef_amp(:,1))-sum(coef_amp(1,:)))/total_amp;
+    state=coef_amp_ab;
 end
    
+end
+
+
+
+
+
+%%
+
+% easier to calculate coincidence than g2
+function co_out=coincidence_coherent(mode_occ,n_max)
+if nargin<2
+    n_max=50;
+end
+% lets sum over all ocupations
+% the factorial accounts for the colinear correlation increasing the chance of getting n particles
+% (over random chance) due to thermal bunching
+% i think this approach misses the interference of output states
+out_state=zeros(n_max+1,n_max+1,numel(mode_occ));
+for ii=1:n_max
+   for jj=0:ii
+       num_a=ii-jj;
+       num_b=jj;
+       % the statistical chance of getting this number combination
+       stat_prob_nums=poisson_dist(num_a,mode_occ).*poisson_dist(num_b,mode_occ);
+       % the quantum enhancement of this combination
+       qunat_prob_nums=factorial(num_a).*factorial(num_b).*stat_prob_nums;
+       % the coincidence probability from HOM given this number combination in
+       [~,state]=coincidence_prob(num_a,num_b);
+       for kk=1:numel(mode_occ) %step over the query mode occupancies
+            % padd the beamsplitter output state weight it by qunat_prob_nums and add it to the output state
+            out_state(:,:,kk)=out_state(:,:,kk)+padarray(state*qunat_prob_nums(kk),[1,1]*(n_max+1-(num_a+num_b+1)),0,'post');
+       end
+   end
+end
+out_state_amp=abs(out_state);
+co_out=( sum(out_state_amp,[1,2])- sum(out_state_amp(:,1,:),1)+sum(out_state_amp(1,:,:),2) )./sum(out_state_amp,[1,2]);
+co_out=squeeze(co_out);
 end
 
 
 %%
 
 % easier to calculate coincidence than g2
-function co_out=coincidence_weighted(mode_occ)
+function co_out=coincidence_weighted(mode_occ,n_max)
+if nargin<2
+    n_max=50;
+end
 n_max=50;
 % lets sum over all ocupations
 % the factorial accounts for the colinear correlation increasing the chance of getting n particles
 % (over random chance) due to thermal bunching
+% i think this approach misses the interference of output states
 co_out=0;
 for ii=1:n_max
    for jj=0:ii
