@@ -22,19 +22,21 @@ ylabel('prob good against bad')
 
 %%
 figure(2)
-namx=50; % increase to consider larger atom totals
+nmax=30; % increase to consider larger atom totals
 clf
 set(gcf,'color','w')
 loglog(mode_samp,mode_samp,'g-')
 hold on
-loglog(mode_samp,coincidence_coherent(mode_samp,namx),'k-')
-loglog(mode_samp,coincidence_weighted(mode_samp,namx),'b-')
+coherent_co=coincidence_coherent(mode_samp,nmax);
+incoherent_co=coincidence_incoherent(mode_samp,nmax);
+loglog(mode_samp,coherent_co,'k-')
+loglog(mode_samp,incoherent_co,'b-')
 hold off
 set(gca,'XScale','log')
 set(gca,'YScale','log')
 xlabel('mode occ')
 ylabel('coincidence probability')
-legend('y=x','coherent','incoherent (wrong)')
+legend('y=x','coherent','incoherent','Location','northwest')
 
 %%
 coincidence_coherent([0.1])
@@ -97,17 +99,15 @@ hcb.Label.String = 'input number factional disparity 0=equal, 1=all one port';
 
 
 %%
-coincidence_prob(3,3)
+coincidence_coherent(0.1,1)
 %%
 % some prior art but its not exactly what im after
 %https://iopscience.iop.org/article/10.1088/1367-2630/ab1bbf
 
-function [prob,state]=coincidence_prob(m,n)
-% find the probabitly of coincidence betwee port c & d, that is that they both have >0 atoms
-if m==0 && n==0 % the trivial case
-    prob=0;
-    state=0;
-else
+function state=out_state_beam_splitter(m,n,distinguishible)
+    if nargin<3
+        distinguishible=0;
+    end
     % given an inital state (a_dag)^n (b_dag)^m |0,0>_{a,b}
     % where a_dag and b_dag are the creation operators in mode a and b
     % to find the output state we do the expansion (c_dag+d_dag)^n (c_dag-d_dag)^m |0,0>_{c,d}
@@ -127,7 +127,11 @@ else
             c_pow_b=n-jj;
             d_pow_b=jj;
             %https://math.stackexchange.com/questions/1861168/is-there-a-formula-for-the-binomial-expansion-of-a-bn
-            coef_amp_b=((-1)^(jj))*nchoosek(n,jj);
+            if distinguishible
+                coef_amp_b=nchoosek(n,jj);
+            else
+                coef_amp_b=((-1)^(jj))*nchoosek(n,jj);
+            end
             %fprintf('A side  %.0f c^%u d^%u \n',coef_amp_a,c_pow_a,d_pow_a)
             %fprintf('B side  %.0f c^%u d^%u \n',coef_amp_b,c_pow_b,d_pow_b)
             %fprintf('element %.0f c^%u d^%u \n',coef_amp_b*coef_amp_a,c_pow_b+c_pow_a,d_pow_b+d_pow_a)
@@ -144,13 +148,9 @@ else
     total_amp=sum(coef_amp(:));
     % the coincidence probability is then the total amplitude minus  P(|0,N>) and P(|N,0>) 
     % (no atoms in the other port)
-    prob=(total_amp-sum(coef_amp(:,1))-sum(coef_amp(1,:)))/total_amp;
     state=coef_amp_ab;
-end
    
 end
-
-
 
 
 
@@ -158,6 +158,38 @@ end
 
 % easier to calculate coincidence than g2
 function co_out=coincidence_coherent(mode_occ,n_max)
+if nargin<2
+    n_max=50;
+end
+% lets sum over all ocupations
+% the factorial accounts for the colinear correlation increasing the chance of getting n particles
+% (over random chance) due to thermal bunching
+% i think this approach misses the interference of output states
+state_out_tot=zeros(n_max+1,n_max+1,numel(mode_occ));
+for n_tot=1:n_max
+   for num_b=0:n_tot
+       num_a=n_tot-num_b;
+       % the statistical chance of getting this number combination
+       stat_prob_nums=poisson_dist(num_a,mode_occ).*poisson_dist(num_b,mode_occ);
+       % the quantum enhancement of this combination
+       qunat_prob_nums=factorial(num_a).*factorial(num_b).*stat_prob_nums;
+       % the coincidence probability from HOM given this number combination in
+       fprintf('num a %u, num b %u \n',num_a,num_b);
+       component_state=out_state_beam_splitter(num_a,num_b)
+       for kk=1:numel(mode_occ) %step over the query mode occupancies
+            % padd the beamsplitter output state weight it by qunat_prob_nums and add it to the output state
+            state_out_tot(:,:,kk)=state_out_tot(:,:,kk)+padarray(component_state*qunat_prob_nums(kk),[1,1]*(n_max+1-(num_a+num_b+1)),0,'post');
+       end
+   end
+end
+state_out_tot
+out_state_amp=abs(state_out_tot);
+co_out=( sum(out_state_amp,[1,2])- sum(out_state_amp(:,1,:),1)+sum(out_state_amp(1,:,:),2) )./sum(out_state_amp,[1,2]);
+co_out=squeeze(co_out);
+end
+
+% easier to calculate coincidence than g2
+function co_out=coincidence_incoherent(mode_occ,n_max)
 if nargin<2
     n_max=50;
 end
@@ -175,7 +207,7 @@ for ii=1:n_max
        % the quantum enhancement of this combination
        qunat_prob_nums=factorial(num_a).*factorial(num_b).*stat_prob_nums;
        % the coincidence probability from HOM given this number combination in
-       [~,state]=coincidence_prob(num_a,num_b);
+       [~,state]=coincidence_prob_incoherent(num_a,num_b);
        for kk=1:numel(mode_occ) %step over the query mode occupancies
             % padd the beamsplitter output state weight it by qunat_prob_nums and add it to the output state
             out_state(:,:,kk)=out_state(:,:,kk)+padarray(state*qunat_prob_nums(kk),[1,1]*(n_max+1-(num_a+num_b+1)),0,'post');
@@ -186,7 +218,6 @@ out_state_amp=abs(out_state);
 co_out=( sum(out_state_amp,[1,2])- sum(out_state_amp(:,1,:),1)+sum(out_state_amp(1,:,:),2) )./sum(out_state_amp,[1,2]);
 co_out=squeeze(co_out);
 end
-
 
 %%
 
