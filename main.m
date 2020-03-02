@@ -23,7 +23,7 @@ opts.import.txylim=[tlim;tmp_xlim;tmp_ylim];
 opts.num_lim = 1.5e3; %minimum atom number
 opts.halo_N_lim = 10; %minimum allowed number in halo
 
-opts.plot_dist = true; %do you want to see all the detailed stuff about the halo distributions
+opts.plot_dist = false; %do you want to see all the detailed stuff about the halo distributions
 
 % % Background stuff
 cli_header('Setting up for %s', data_folder);
@@ -70,12 +70,12 @@ end
 %% set up relevant constants
 hebec_constants
 %% find centers
-opts.cent.visual = 2;
+opts.cent.visual = 0;
 opts.cent.savefigs = 0;
 % opts.cent.bin_size = 3e-5 * [1, 1, 1]; %1e-5 * [1, 10, 10];
 opts.cent.threshold = [250,100,125].*1e3; %set in inverse units (Hz for time 1/m for space)
 opts.cent.sigma = [8e-5,25e-5,25e-5];
-opts.cent.method = {'margin','margin','margin'};
+opts.cent.method = {'margin','margin','margin'};%{'gauss_fit','gauss_fit','gauss_fit'};%
 % opts.cent.t_bounds = {[3.8598,3.871],[3.871,3.8844],[3.8844,3.8972],[3.8,3.95]}; %time bounds for the different momentum states k=+1,0,-1 respectively
 opts.cent.t_bounds = {[3.861,3.867],[3.874,3.881],[3.887,3.895],[3.8,3.95]}; %time bounds for the different momentum states k=+1,0,-1 respectively
 bec = halo_cent(data_masked,opts.cent);
@@ -183,28 +183,13 @@ corr_opts.samp_frac_lims=[0.25,0.5];
 corr_opts.num_samp_frac=2;
 corr_opts.num_samp_rep=5;
 
-% cl (intra)
-corr_opts.type='1d_cart_cl';%'radial_cl';%'3d_cart_cl';%%
-corr_opts.one_d_dimension=1;
-corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*3e-2;
-one_d_range=0.06;
-corr_opts.one_d_edges=linspace(-one_d_range,one_d_range,550)';
-corr_opts.redges=sqrt(linspace(1e-6^2,0.06^2,1500));
-corr_opts.rad_smoothing=0.00001;
-
-corr_opts.low_mem=true;
-
-
-corr_opts.one_d_smoothing=nan;
-% corr_opts.one_d_smoothing=0.0008;
-
 corrs.top_halo.corr_bb=calc_any_g2_type(corr_opts,top_halo.counts_vel');
 % corrs.top_halo.corr_bb=calc_any_g2_type(corr_opts,top_halo.counts_vel_norm');
 
 %%
 
-% corr_opts.fig='bottom halo bb corr';
-% corrs.bottom_halo.corr_bb=calc_any_g2_type(corr_opts,bottom_halo.counts_vel');
+corr_opts.fig='bottom halo bb corr';
+corrs.bottom_halo.corr_bb=calc_any_g2_type(corr_opts,bottom_halo.counts_vel');
 
 
 %% co-linear (intra)
@@ -218,7 +203,6 @@ corr_opts.redges=sqrt(linspace(0,one_d_range^2,500));
 corr_opts.rad_smoothing=nan;
 corr_opts.direction_labels = {'z','x','y'};
 corr_opts.low_mem=nan;
->>>>>>> decdc9131ae96c31a97d0d1abff261713e46ebde
 corr_opts.plots=true;
 corr_opts.norm_samp_factor=1500;
 corr_opts.attenuate_counts=1;
@@ -236,8 +220,8 @@ corr_opts.one_d_smoothing=nan;
 corrs.top_halo.corr_cl=calc_any_g2_type(corr_opts,top_halo.counts_vel');
 
 %%
-% corr_opts.fig='bottom halo cl corr';
-% corrs.bottom_halo.corr_bb=calc_any_g2_type(corr_opts,bottom_halo.counts_vel');
+corr_opts.fig='bottom halo cl corr';
+corrs.bottom_halo.corr_bb=calc_any_g2_type(corr_opts,bottom_halo.counts_vel');
 
 %% cl (inter)
 corr_opts.fig='between halo cl corr';
@@ -264,6 +248,7 @@ corr_opts.timer=false;
 corr_opts.samp_frac_lims = [0.25,0.75];
 corr_opts.num_samp_frac = 5;
 corr_opts.num_samp_rep = 9e1;
+corr_opts.fit = false;
 
 % both_halo_counts = [top_halo.counts_vel_norm';bottom_halo.counts_vel_norm'];
 both_halo_counts = [top_halo.counts_vel';bottom_halo.counts_vel'];
@@ -302,5 +287,9 @@ both_halo_counts = [top_halo.counts_vel';bottom_halo.counts_vel'];
 corr_opts.one_d_smoothing=nan;
 % corr_opts.one_d_smoothing=0.0008;
 
-
 corrs.between_halos.corr_bb=calc_any_g2_type(corr_opts,both_halo_counts);
+
+%% Write out results
+%Quantum correlator E
+%Expected amplitude
+%HOM around the Halo

@@ -44,8 +44,12 @@ for this_idx = 1:num_shots % Loop over all shots
     v_zx = sqrt(v_z.^2+(v_north(2)+v_south(2)).^2);
     phix = atan((v_north(2)+v_south(2))/v_z)*180/pi;
     phiy = atan((v_north(3)+v_south(3))/v_zx)*180/pi;
+    try
     v_north_rot = v_north*rotz(-phix)'*roty(-phiy)'- v_radius.*[z_sign,0,0];
     v_south_rot = v_south*rotz(-phix)'*roty(-phiy)'- v_radius.*[z_sign,0,0];
+    catch
+        dum=0;
+    end
     if v_radius>opts_vel_conv.v_thresh
         continue
     end
