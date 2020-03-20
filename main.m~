@@ -157,7 +157,7 @@ end
 %% Separate data into the four ports
 ports = {};
 [ports.top_left, ports.top_right] = separate_ports(top_halo.counts_vel,0);
-[ports.bottom_left, ports.bottom_right] = separate_ports(bottom_halo.counts_vel,0);
+[ports.top_left, ports.top_right] = separate_ports(top_halo.counts_vel,0);
 
 %% calculate correlation functions
 
@@ -298,8 +298,5 @@ corrs.between_halos.corr_bb=calc_any_g2_type(corr_opts,both_halo_counts);
 
 %% Write out results
 %Quantum correlator E
-opts_E.calc_err = false;
-opts_E.plots = false;
-
 %Expected amplitude
 %HOM around the Halo
