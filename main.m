@@ -6,7 +6,9 @@ core_folder = fullfile(fileparts(this_folder), 'Core_BEC_Analysis\');
 addpath(genpath(core_folder));
 set(groot, 'DefaultTextInterpreter', 'latex')
 
-opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
+% opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
+% opts.data_root = 'Z:\EXPERIMENT-DATA\2020_Momentum_Bells\';
+opts.data_root = 'C:\Users\kieran\Documents\LOCAL-DATA\';
 data_folder = '20191115_halos_attempt_3';
 % data_folder = '20191114_halos_attempt_2';
 opts.import.dir = fullfile(opts.data_root, data_folder);
@@ -70,7 +72,7 @@ end
 %% set up relevant constants
 hebec_constants
 %% find centers
-opts.cent.visual = 0;
+opts.cent.visual = 0; %from 0 to 2
 opts.cent.savefigs = 0;
 % opts.cent.bin_size = 3e-5 * [1, 1, 1]; %1e-5 * [1, 10, 10];
 opts.cent.threshold = [250,100,125].*1e3; %set in inverse units (Hz for time 1/m for space)
