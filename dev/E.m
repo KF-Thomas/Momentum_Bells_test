@@ -52,5 +52,8 @@ corrs.g23 = calc_any_g2_type(corr_opts,counts23);
 corrs.g12 = calc_any_g2_type(corr_opts,counts12);
 corrs.g34 = calc_any_g2_type(corr_opts,counts34);
 
+
+b = fit.Coefficients.Estimate;
+corrs.top_halo.corr_bb.fit
 E_val = ;
 end
