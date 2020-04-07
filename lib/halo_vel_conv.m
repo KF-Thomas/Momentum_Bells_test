@@ -65,7 +65,11 @@ for this_idx = 1:num_shots % Loop over all shots
 %     v_masked = mask_square(v_masked,v_bec_mid',1);
     %z mask
     z_lim = [opts_vel_conv.z_mask;-inf,inf;-inf,inf].*v_radius;
+    y_lim = [-inf,inf;-inf,inf;opts_vel_conv.y_mask].*v_radius;
     v_masked = mask_square(v_zxy,z_lim,0);
+    v_masked = mask_square(v_masked,y_lim,0);
+    %do some angular masking
+    
     %add the data to the structure
     out_halo.counts_txy{this_idx} = this_txy;
     out_halo.num_counts(this_idx) = size(v_masked,1);%size(this_txy,1);

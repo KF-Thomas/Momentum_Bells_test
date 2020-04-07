@@ -1,0 +1,129 @@
+function corrs = global_corrs(top_halo,bottom_halo,global_opts) 
+%% general settings
+corr_opts.verbose = false;
+corr_opts.print_update = false;
+corr_opts.timer=false;
+
+corr_opts.plots = global_opts.plots;
+corr_opts.fit = global_opts.fit;
+corr_opts.calc_err = global_opts.calc_err;
+
+% variables for calculating the error
+corr_opts.samp_frac_lims=[0.65,0.9];
+corr_opts.num_samp_frac=5;
+corr_opts.num_samp_rep=5;
+
+corr_opts.attenuate_counts=1;
+
+%% back to back (intra halo)
+corr_opts.fig='top halo bb corr';
+% corr_opts.fig='top halo norm bb corr';%'top halo bb corr';
+corr_opts.type='radial_bb';%'1d_cart_bb';%'3d_cart_bb';%
+% corr_opts.one_d_dimension=1;
+corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*2e-3;
+one_d_range=0.02;
+% corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*2e-2;
+% one_d_range=0.5;
+% corr_opts.one_d_edges=linspace(-one_d_range,one_d_range,60)';
+corr_opts.redges=sqrt(linspace(0^2,one_d_range^2,75));
+corr_opts.rad_smoothing=nan;
+corr_opts.direction_labels = {'z','x','y'};
+corr_opts.low_mem=true;
+corr_opts.norm_samp_factor=1500;
+
+corr_opts.do_pre_mask=false;
+corr_opts.sorted_dir=1;
+corr_opts.sort_norm=1;
+
+corrs.top_halo.corr_bb=calc_any_g2_type(corr_opts,top_halo.counts_vel');
+% corrs.top_halo.corr_bb=calc_any_g2_type(corr_opts,top_halo.counts_vel_norm');
+
+%%
+
+corr_opts.fig='bottom halo bb corr';
+corrs.bottom_halo.corr_bb=calc_any_g2_type(corr_opts,bottom_halo.counts_vel');
+
+
+%% co-linear (intra)
+corr_opts.fig='top halo cl corr';
+corr_opts.type='radial_cl';%'1d_cart_cl';%'3d_cart_cl';%%%
+corr_opts.one_d_dimension=1;
+corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*2e-3;
+one_d_range=0.005;
+% corr_opts.one_d_edges=linspace(-one_d_range,one_d_range,60)';
+corr_opts.redges=sqrt(linspace(0,one_d_range^2,75));
+corr_opts.rad_smoothing=nan;
+corr_opts.direction_labels = {'z','x','y'};
+corr_opts.low_mem=nan;
+corr_opts.norm_samp_factor=1500;
+corr_opts.attenuate_counts=1;
+corr_opts.do_pre_mask=false;
+corr_opts.sorted_dir=1;
+corr_opts.sort_norm=1;
+
+corr_opts.one_d_smoothing=nan;
+% corr_opts.one_d_smoothing=0.002;
+
+corrs.top_halo.corr_cl=calc_any_g2_type(corr_opts,top_halo.counts_vel');
+
+%%
+
+corr_opts.fig='bottom halo cl corr';
+corrs.bottom_halo.corr_cl=calc_any_g2_type(corr_opts,bottom_halo.counts_vel');
+
+%% cl (inter)
+corr_opts.fig='between halo cl corr';
+corr_opts.type='radial_cl';%'3d_cart_cl';%'1d_cart_cl';%
+corr_opts.one_d_dimension=2;
+% corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*0.92;
+% one_d_range=0.16;%0.04;
+corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*5e-2;
+one_d_range=0.02;
+corr_opts.one_d_edges=linspace(-one_d_range,one_d_range,30)';
+corr_opts.redges=sqrt(linspace(1e-6^2,one_d_range^2,30));
+corr_opts.rad_smoothing=nan;
+corr_opts.direction_labels = {'z','x','y'};
+corr_opts.low_mem=true;
+corr_opts.norm_samp_factor=1;
+corr_opts.attenuate_counts=1;
+corr_opts.do_pre_mask=false;
+corr_opts.sorted_dir=1;
+corr_opts.sort_norm=1;
+corr_opts.progress_updates=5;
+
+% both_halo_counts = [top_halo.counts_vel_norm';bottom_halo.counts_vel_norm'];
+both_halo_counts = [top_halo.counts_vel';bottom_halo.counts_vel'];
+
+corr_opts.one_d_smoothing=nan;
+% corr_opts.one_d_smoothing=0.01;
+
+corrs.between_halos.corr_cl=calc_any_g2_type(corr_opts,both_halo_counts);
+
+%% bb (inter halo)
+corr_opts.fig='between halo bb corr';
+corr_opts.type='radial_bb';%'3d_cart_bb';%'1d_cart_bb';%
+corr_opts.one_d_dimension=3;
+% corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*0.05;
+% one_d_range=0.16;
+corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*5e-2;
+one_d_range=0.02;
+corr_opts.one_d_edges=linspace(-one_d_range,one_d_range,100)';
+corr_opts.redges=sqrt(linspace(1e-6^2,one_d_range^2,40));
+corr_opts.rad_smoothing=nan;
+corr_opts.direction_labels = {'z','x','y'};
+corr_opts.low_mem=true;
+corr_opts.norm_samp_factor=1;
+corr_opts.attenuate_counts=1;
+corr_opts.do_pre_mask=false;
+corr_opts.sorted_dir=1;
+corr_opts.sort_norm=1;
+corr_opts.progress_updates=5;
+
+% both_halo_counts = [top_halo.counts_vel_norm';bottom_halo.counts_vel_norm'];
+both_halo_counts = [top_halo.counts_vel';bottom_halo.counts_vel'];
+
+corr_opts.one_d_smoothing=nan;
+% corr_opts.one_d_smoothing=0.0008;
+
+corrs.between_halos.corr_bb=calc_any_g2_type(corr_opts,both_halo_counts);
+end
