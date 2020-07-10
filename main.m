@@ -54,7 +54,7 @@ if (exist(anal_out.dir, 'dir') == 0), mkdir(anal_out.dir); end
 %% import raw data
 [data, ~] = import_mcp_tdc_data(opts.import);
 %% remove any ringing
-opts.ring_lim = 0.1e-6;%0.05e-6;%0;%0.101 %how close can points be in time
+opts.ring_lim = -1;%0.1e-6;%0.05e-6;%0;%0.101 %how close can points be in time
 data_masked = ring_removal(data,opts.ring_lim);
 %% add labview import
 if opts.tag
@@ -153,7 +153,7 @@ ports = {};
 %% calculate the global correlation functions around the halos
 global_corrs_opts.plots = true;
 global_corrs_opts.fit = true;
-global_corrs_opts.calc_err = false;
+global_corrs_opts.calc_err = true;
 
 corrs = global_corrs(top_halo,bottom_halo,global_corrs_opts);
 

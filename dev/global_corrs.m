@@ -17,28 +17,25 @@ corr_opts.attenuate_counts=1;
 
 %% back to back (intra halo)
 corr_opts.fig='top halo bb corr';
-% corr_opts.fig='top halo norm bb corr';%'top halo bb corr';
-corr_opts.type='radial_bb';%'1d_cart_bb';%'3d_cart_bb';%
-% corr_opts.one_d_dimension=1;
-corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*2e-3;
+corr_opts.type='radial_bb';
+% corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*35e-3;
 one_d_range=0.02;
-% corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*2e-2;
-% one_d_range=0.5;
-% corr_opts.one_d_edges=linspace(-one_d_range,one_d_range,60)';
 corr_opts.redges=sqrt(linspace(0^2,one_d_range^2,75));
 corr_opts.rad_smoothing=nan;
-corr_opts.direction_labels = {'z','x','y'};
+% corr_opts.direction_labels = {'z','x','y'};
 corr_opts.low_mem=true;
-corr_opts.norm_samp_factor=1500;
 
+corr_opts.norm_samp_factor=1500;
 corr_opts.do_pre_mask=false;
 corr_opts.sorted_dir=1;
 corr_opts.sort_norm=1;
 
+%% TOP HALO BACK TO BACK
+
 corrs.top_halo.corr_bb=calc_any_g2_type(corr_opts,top_halo.counts_vel');
 % corrs.top_halo.corr_bb=calc_any_g2_type(corr_opts,top_halo.counts_vel_norm');
 
-%%
+%% BOTTOM HALO BACK TO BACK
 
 corr_opts.fig='bottom halo bb corr';
 corrs.bottom_halo.corr_bb=calc_any_g2_type(corr_opts,bottom_halo.counts_vel');
@@ -47,21 +44,21 @@ corrs.bottom_halo.corr_bb=calc_any_g2_type(corr_opts,bottom_halo.counts_vel');
 %% co-linear (intra)
 corr_opts.fig='top halo cl corr';
 corr_opts.type='radial_cl';%'1d_cart_cl';%'3d_cart_cl';%%%
-corr_opts.one_d_dimension=1;
-corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*2e-3;
+% corr_opts.one_d_dimension=3;
+% corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*2e-3;
 one_d_range=0.005;
-% corr_opts.one_d_edges=linspace(-one_d_range,one_d_range,60)';
+% corr_opts.one_d_edges=linspace(-one_d_range,one_d_range,74)';
 corr_opts.redges=sqrt(linspace(0,one_d_range^2,75));
 corr_opts.rad_smoothing=nan;
-corr_opts.direction_labels = {'z','x','y'};
+% corr_opts.direction_labels = {'z','x','y'};
 corr_opts.low_mem=nan;
+
 corr_opts.norm_samp_factor=1500;
-corr_opts.attenuate_counts=1;
 corr_opts.do_pre_mask=false;
 corr_opts.sorted_dir=1;
 corr_opts.sort_norm=1;
 
-corr_opts.one_d_smoothing=nan;
+% corr_opts.one_d_smoothing=nan;
 % corr_opts.one_d_smoothing=0.002;
 
 corrs.top_halo.corr_cl=calc_any_g2_type(corr_opts,top_halo.counts_vel');
