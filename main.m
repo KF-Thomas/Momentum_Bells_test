@@ -23,7 +23,7 @@ opts.import.txylim=[tlim;tmp_xlim;tmp_ylim];
 opts.num_lim = 1.5e3; %minimum atom number
 opts.halo_N_lim = 10; %minimum allowed number in halo
 
-opts.plot_dist = false; %do you want to see all the detailed stuff about the halo distributions
+opts.plot_dist = true; %do you want to see all the detailed stuff about the halo distributions
 
 %% Background stuff
 cli_header('Setting up for %s', data_folder);
