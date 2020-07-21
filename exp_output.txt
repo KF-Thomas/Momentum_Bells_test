@@ -1,0 +1,2 @@
+cost = 9.6424
+bad = False
