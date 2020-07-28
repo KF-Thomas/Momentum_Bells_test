@@ -7,6 +7,18 @@ tf = sqrt(2*d/g0);%arrival time of zero velocity particles
     bottom_halo = halos.bottom_halo;
     bec_masked = halos.bec;
     
+    
+    %% find the widths of the halos in velocity space
+top_halo.bec_vel_width = (mean(bec_masked.vel_width_top,2)+mean(bec_masked.vel_width_mid,2))./2;% add the average bec width
+bottom_halo.bec_vel_width = (mean(bec_masked.vel_width_btm,2)+mean(bec_masked.vel_width_mid,2))./2;
+%% find the mode number
+opts.mode_num.qe = 0.08;
+top_halo.m = halo_mode_occupancy(top_halo,opts.mode_num);
+bottom_halo.m = halo_mode_occupancy(bottom_halo,opts.mode_num);
+%% calculated expected correlation amplitude
+top_halo.g2 = 2 + 1./top_halo.m;
+bottom_halo.g2 = 2 + 1./bottom_halo.m;
+    
     v_top_zxy = cell2mat(top_halo.counts_vel_norm);
     v_top_zxy_unnorm = cell2mat(top_halo.counts_vel);
     r_dist_top = sqrt(v_top_zxy(:,1).^2+v_top_zxy(:,2).^2+v_top_zxy(:,3).^2);
