@@ -1,6 +1,6 @@
-
+function update_nuller(n_0,n_1,n_2,n_3,i)
 % file = 'C:\Remote\settings202021Jul105753.xml';
-file = 'c:\remote\settings202023Jul083316.xml';
+file = 'c:\remote\settings202023Jul135844.xml';
 
 %% read in the xml settings file
 new_path = 'c:\remote\settings202023Jul120059.xml';%file;
@@ -17,14 +17,6 @@ fclose(file_id);
 
 % delete(file);   % DEBUG - delete xml file
 %% make adjustments
-
-params = [-3.5,3.5,0.1,-0.1];
-
-parameter_names = {'n_0','n_1','n_2','n_3'};
-
-for ii = 1:numel(params)
-    eval([parameter_names{ii} '=' num2str(params(ii))]);
-end
 
 nuller_0 = {{{'<Cluster>',1},{'<Cluster>',3},'Waveform Config Array For 6733 M (Ch 0..7)',{'<Cluster>',4},'Final value, Amplitude (exp)',num2str(-n_0)},...
     {{'<Cluster>',1},{'<Cluster>',3},'Waveform Config Array For 6733 M (Ch 0..7)',{'<Cluster>',5},'Initial Value ',num2str(n_0)},...
@@ -63,6 +55,7 @@ fclose(file_id);
 
 %%clean up
 clear('A')
+end
 % 
 % f_log=fopen(path_log,'a');  % append to log-file
 % fprintf(f_log,[datestr(datetime,'yyyymmdd_HHMMSS'),' interfacev5    : finished. \n']);

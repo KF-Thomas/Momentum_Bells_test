@@ -12,7 +12,8 @@ data_masked = struct_mask(data,is_shot_good);
 if strcmp(transfer_state,'mag')
     t_bounds = {[3.86,3.872],[3.872,3.884],[3.884,3.895]}; %time bounds for the different magnetic states mj=+,1,0,-1 respectively
 elseif strcmp(transfer_state,'momentum')
-    t_bounds = {[3.8598,3.871],[3.871,3.8844],[3.8844,3.8972],[3.75,4]}; %time bounds for the different momentum states k=+,1,0,-1 respectively
+%     t_bounds = {[3.8598,3.871],[3.871,3.8844],[3.8844,3.8972],[3.75,4]};
+    t_bounds = {[3.848,3.8598],[3.8598,3.871],[3.871,3.8844],[3.75,4]};%time bounds for the different momentum states k=+,1,0,-1 respectively
 end
 % 
 % t_bounds = {[3.8274,3.8611],[3.8611,3.9],[3.9,3.9467]}; %time bounds for the different magnetic states mj=+,1,0,-1 respectively
@@ -29,6 +30,7 @@ for shot_idx = 1:num_shots
 end
 Ntotals = sum(Ns(:,1:3),2);
 out.fracs = Ns./Ntotals;
+out.fracs(:,4) = Ns(:,4)./sum(Ns(:,1:2),2);
 out.shot_num = data_masked.shot_num;
 out.Ntotal = Ntotals;
 out.Ns = Ns;

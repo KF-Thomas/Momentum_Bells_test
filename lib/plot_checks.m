@@ -31,7 +31,7 @@ bottom_halo.g2 = 2 + 1./bottom_halo.m;
     r_dist_btm_unnorm = sqrt(v_btm_zxy_unnorm(:,1).^2+v_btm_zxy_unnorm(:,2).^2+v_btm_zxy_unnorm(:,3).^2);
     N_btm = bottom_halo.num_counts;
     
-    stfig('Alignment of the BECs');
+    stfig('Alignment of the BECs test');
     clf
     subplot(5,1,1)
     plot(bec_masked.shot_num,bec_masked.centre_top(:,2:3))
@@ -204,7 +204,7 @@ bottom_halo.g2 = 2 + 1./bottom_halo.m;
     ylabel('Transfer Fraction')
     legend('top','mid','btm','oth')
     
-    stfig('Vel Width History');
+    stfig('Vel Width History test');
     subplot(3,1,1)
     plot(top_halo.shot_num,...
         bec_masked.vel_width_top','.',...

@@ -1,7 +1,7 @@
 %optimisation algorithim
 
-shot_num = 88;
-max_num = 151;
+shot_num = 1;
+max_num = 250;
 
 path_input = 'C:\Users\BEC Machine\Documents\MATLAB\exp_input.txt';
 path_output = 'C:\Users\BEC Machine\Documents\MATLAB\exp_output.txt';
@@ -32,7 +32,7 @@ while shot_num<max_num
     fclose(f_log);
     
     %calculate cost of last run
-    %     cost = magnetic_transfer_cost(shot_num);
+%     cost = magnetic_transfer_cost(shot_num);
     cost = momentum_transfer_cost(shot_num);
     
     %write the cost of the next file
@@ -46,10 +46,10 @@ while shot_num<max_num
     %cost write
     fileID = fopen(path_output,'w');
     fprintf(fileID,'cost = %4.4f\n',cost_val);
-    if isfield(cost,'unc')
-        unc = cost.unc;
-        fprintf(fileID,'uncer = %4.4f\n',unc);
-    end
+%     if isfield(cost,'unc')
+%         unc = cost.unc;
+%         fprintf(fileID,'uncer = %4.4f\n',unc);
+%     end
     fprintf(fileID,'bad = %s',bad);
     fclose(fileID);
     

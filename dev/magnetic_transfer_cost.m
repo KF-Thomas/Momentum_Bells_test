@@ -1,7 +1,7 @@
 %cost function
 function cost = magnetic_transfer_cost(shot_num)
 
-frac_opts.num_lim = 1.0e3;
+frac_opts.num_lim = 0.1e3;
 frac_opts.transfer_state = 'mag';
 frac_opts.bounds = [-0.03, 0.03; -0.03, 0.03];%spacecial bounds
 

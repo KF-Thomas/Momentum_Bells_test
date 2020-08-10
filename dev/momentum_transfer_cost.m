@@ -1,7 +1,7 @@
 %cost function
 function cost = momentum_transfer_cost(shot_num)
 
-frac_opts.num_lim = 0.1e3;
+frac_opts.num_lim = 0.05e3;
 frac_opts.transfer_state = 'momentum';
 frac_opts.bounds = [-0.03, 0.03; -0.03, 0.03];%spacecial bounds
 
@@ -35,10 +35,14 @@ cost.val = abs(out_frac.Ns(:,1)-out_frac.Ns(:,2))./(out_frac.Ns(:,1)+out_frac.Ns
     + abs(out_frac.Ns(:,3)-out_frac.Ns(:,2))./(out_frac.Ns(:,3)+out_frac.Ns(:,2))...
     + abs(out_frac.Ns(:,1)-out_frac.Ns(:,3))./(out_frac.Ns(:,1)+out_frac.Ns(:,3))...
     + abs(out_frac.Ns(:,4)-(out_frac.Ns(:,1)+out_frac.Ns(:,2)+out_frac.Ns(:,3)))./out_frac.Ns(:,4);
+
+cost.val = abs(out_frac.Ns(:,1)-out_frac.Ns(:,2))./(out_frac.Ns(:,1)+out_frac.Ns(:,2))...
+    + abs(out_frac.Ns(:,4)-(out_frac.Ns(:,1)+out_frac.Ns(:,2)))./out_frac.Ns(:,4);
+
 %cost.unc = sqrt((1+out_frac.fracs(:,2))./out_frac.Ns(:,2));
 
 %make sure theres enough number in the states
 if ~isempty(out_frac.Ns(:,1:3))
-    cost.val(sum(out_frac.Ns(:,1:3))<frac_opts.num_lim) = nan;
+    cost.val(sum(out_frac.Ns(:,1:3),2)<frac_opts.num_lim) = nan;
 end
 end

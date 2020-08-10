@@ -452,7 +452,7 @@ dF_Bragg_1=0.0e6;%0.045e6
 two sided
 dF_Bragg_1=0.017e6;%0.045e6
     dF_Bragg_2=0.017e6;%-0.01e5
-    f1_Bragg_src=f0_AOM-dF_Bragg_1;
+    f1_Bragg_src=f0_AOM-dF_Bragg_1;n
     f2_Bragg_src=f0_AOM+dF_Bragg_2;
     
     T_Bragg_src=6.7e-6;%15e-6;
@@ -463,4 +463,20 @@ dF_Bragg_1=0.017e6;%0.045e6
 bragg: c:\remote\settings201929Oct153336.xml
 trans: c:\remote\settings201929Oct153457.xml 
 
-jacob: c:\remote\settings201913Nov130202.xml   
+jacob: c:\remote\settings201913Nov130202.xml 
+
+2020-07-22 c:\remote\settings202022Jul114948.xml  
+
+attempting to get k=0,-1,-2
+
+best I have is
+
+    dF_Bragg_1=0.108e6;%0.037e6;%0.037e6;%0.045e6
+    dF_Bragg_2=0.108e6;%0.037e6;%-0.01e5
+    f1_Bragg_src=f0_AOM-dF_Bragg_1;
+    f2_Bragg_src=f0_AOM+dF_Bragg_2;
+    
+    T_Bragg_src=4.2E-6;%16.7e-6;%15e-6;
+    K_Bragg_src=0.18;%0.25;%28%0.086;
+    Gs_mod_Bragg_src=1.0;%1.9;%2.09;%1.81;%1.8
+    

@@ -59,3 +59,53 @@ nullers set up correctly
 c:\remote\settings202021Jul105753.xml
 
 c:\remote\settings202021Jul132407.xml
+
+20 atoms per halo: c:\remote\settings202021Jul143704.xml
+
+messing around c:\remote\settings202022Jul101204.xml
+adjusted old settings: c:\remote\settings202022Jul102158.xml
+
+c:\remote\settings202022Jul110510.xml (reintroduced exp ramp down)
+
+c:\remote\settings202022Jul112534.xml
+
+c:\remote\settings202022Jul120849.xml
+
+old settings introducing quad pulse: c:\remote\settings202022Jul125958.xml
+
+end of day 2020-07-22: c:\remote\settings202022Jul160526.xml
+
+full halo: c:\remote\settings202023Jul083316.xml
+mag transfer: c:\remote\settings202023Jul135844.xml
+
+nuller opt = c:\remote\settings202024Jul114050.xml
+
+testing halo position: c:\remote\settings202027Jul101133.xml
+
+c:\remote\settings202027Jul132940.xml
+end of day: c:\remote\settings202027Jul155949.xml
+c:\remote\settings202028Jul081805.xml
+
+
+c:\remote\settings202028Jul091027.xml
+
+
+c:\remote\settings202028Jul111037.xml
+
+changed nuller ramp: c:\remote\settings202028Jul122011.xml
+
+c:\remote\settings202028Jul125807.xml
+
+current: c:\remote\settings202028Jul153439.xml
+c:\remote\settings202029Jul110624.xml
+
+end of day (2020-07-29) : c:\remote\settings202029Jul145950.xml
+
+current settings : c:\remote\settings202031Jul094651.xml
+
+(2020-08-03)
+decent k = 0, -1, -2, halo settings (reasonably high halo number, EVAP AT 740 kHz): c:\remote\settings202003Aug113051.xml
+colder settings for low mode occ run (EVAP AT 720 kHz): c:\remote\settings202003Aug135722.xml
+
+(2020-08-05)
+settings used during single sided halo (k=-1,-2) dev: c:\remote\settings202005Aug093338.xml

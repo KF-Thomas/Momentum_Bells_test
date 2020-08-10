@@ -6,11 +6,16 @@ core_folder = fullfile(fileparts(this_folder), 'Core_BEC_Analysis\');
 addpath(genpath(core_folder));
 set(groot, 'DefaultTextInterpreter', 'latex')
 %% Import directory
-% opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
+opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
 % opts.data_root = 'Z:\EXPERIMENT-DATA\2020_Momentum_Bells\';
-opts.data_root = 'C:\Users\kieran\Documents\LOCAL-DATA\';
-data_folder = '20191115_halos_attempt_3';
+% opts.data_root = 'C:\Users\kieran\Documents\LOCAL-DATA\';
+% data_folder = '20191115_halos_attempt_3';
 % data_folder = '20191114_halos_attempt_2';
+% data_folder = '20200721_momentum_transfer_optimiser_2';
+% data_folder = '20200721_momentum_transfer_optimiser_1';
+% data_folder = '20200729_brief_movement_data_fat_cloud';
+% data_folder = '20200807_k=0,-1,-2_halos_data_1';
+data_folder = '20200807_k=0,-1,-2_halos_data_2';
 opts.import.dir = fullfile(opts.data_root, data_folder);
 opts.import.force_reimport = false;
 opts.import.force_cache_load = ~opts.import.force_reimport;
@@ -20,8 +25,8 @@ tmp_ylim=[-35e-3, 35e-3];
 tlim=[0,4];
 opts.import.txylim=[tlim;tmp_xlim;tmp_ylim];
 
-opts.num_lim = 1.5e3; %minimum atom number
-opts.halo_N_lim = 10; %minimum allowed number in halo
+opts.num_lim = 2.1e3;%0.5e3;% %minimum atom number 1.5e3
+opts.halo_N_lim = 2;%10;%0;% %minimum allowed number in halo 10
 
 opts.plot_dist = true; %do you want to see all the detailed stuff about the halo distributions
 
@@ -70,21 +75,28 @@ end
 %% set up relevant constants
 hebec_constants
 %% find centers
-opts.cent.visual = 0; %from 0 to 2
+opts.cent.visual = 2; %from 0 to 2
 opts.cent.savefigs = 0;
 % opts.cent.bin_size = 3e-5 * [1, 1, 1]; %1e-5 * [1, 10, 10];
-opts.cent.threshold = [250,100,125].*1e3; %set in inverse units (Hz for time 1/m for space)
-opts.cent.sigma = [8e-5,25e-5,25e-5];
-opts.cent.method = {'margin','margin','margin'};%{'gauss_fit','gauss_fit','gauss_fit'};%
+opts.cent.threshold = [140,750,750].*1e3;%[100,55,55].*1e3; %set in inverse units (Hz for time 1/m for space)
+opts.cent.min_threshold = [16,7,10].*1e3;
+% opts.cent.threshold = [50,20,20].*1e3; %set in inverse units (Hz for time 1/m for space)
+opts.cent.sigma = [6.7e-5,16e-5,16e-5];%[8e-5,25e-5,25e-5];
+% opts.cent.method = {'margin','margin','margin'};
+opts.cent.method = {'average','average','average'};%{'gauss_fit','gauss_fit','gauss_fit'};%
 % opts.cent.t_bounds = {[3.8598,3.871],[3.871,3.8844],[3.8844,3.8972],[3.8,3.95]}; %time bounds for the different momentum states k=+1,0,-1 respectively
-opts.cent.t_bounds = {[3.861,3.867],[3.874,3.881],[3.887,3.895],[3.8,3.95]}; %time bounds for the different momentum states k=+1,0,-1 respectively
+% opts.cent.t_bounds = {[3.861,3.867],[3.874,3.881],[3.887,3.895],[3.8,3.95]}; %time bounds for the different momentum states k=+1,0,-1 respectively
+opts.cent.t_bounds = {[3.848,3.8598],[3.8598,3.871],[3.871,3.8844],[3.75,4]};
 bec = halo_cent(data_masked,opts.cent);
 %% run some checks
 % atoms number
 % laser maybe?
 num_check = data_masked.num_counts>opts.num_lim;
-num_outlier = isoutlier(data_masked.num_counts);
-is_shot_good = ~num_outlier & num_check & bec.centre_OK_top' & bec.centre_OK_mid' & bec.centre_OK_btm' & tag_mask;
+% num_masked = data_masked.num_counts;
+% num_masked(~num_check) = NaN;
+% num_outlier = isoutlier(num_masked);
+% ~num_outlier &
+is_shot_good = num_check & bec.centre_OK_top' & bec.centre_OK_mid' & bec.centre_OK_btm' & tag_mask;
 data_masked_halo = struct_mask(data_masked,is_shot_good);
 bec_masked_halo = struct_mask(bec,is_shot_good);
 %% Find the velocity widths
@@ -93,15 +105,15 @@ opts.bec_width.fall_time = 0.417;
 bec_masked_halo = bec_width_txy_to_vel(bec_masked_halo,opts.bec_width);
 %% convert data to velocity
 %% generate top halo
-opts.vel_conv.top.visual = 0;
-opts.vel_conv.top.plot_percentage = 0.05;
+opts.vel_conv.top.visual = 1;
+opts.vel_conv.top.plot_percentage = 0.95;
 opts.vel_conv.top.title = 'top halo';
 opts.vel_conv.top.const.g0 = const.g0;
 opts.vel_conv.top.const.fall_distance = const.fall_distance;
 opts.vel_conv.top.v_thresh = 0.15; %maximum velocity radius
 opts.vel_conv.top.v_mask=[0.89,1.11]; %bounds on radisu as multiple of radius value
-opts.vel_conv.top.z_mask = [-0.5,0.5]; %in units of radius (standard [-0.76,0.76])
-opts.vel_conv.top.y_mask = [-1.3,1.3]; %in units of radius
+opts.vel_conv.top.z_mask = [-0.68,0.68]; %in units of radius (standard [-0.76,0.76])
+opts.vel_conv.top.y_mask = [-1.9,1.9]; %in units of radius
 opts.vel_conv.top.center = bec_masked_halo.centre_mid; %use the mid BEC as the zero momentum point
 
 opts.vel_conv.top.bec_center.north = bec_masked_halo.centre_top;
@@ -111,15 +123,15 @@ opts.vel_conv.top.bec_width.south = bec_masked_halo.width_mid;
 %%
 top_halo_intial = halo_vel_conv(data_masked_halo,opts.vel_conv.top);
 %% generate bottom halo
-opts.vel_conv.btm.visual = 0;
-opts.vel_conv.btm.plot_percentage = 0.05;
+opts.vel_conv.btm.visual = 1;
+opts.vel_conv.btm.plot_percentage = 0.95;
 opts.vel_conv.btm.title = 'bottom halo';
 opts.vel_conv.btm.const.g0 = const.g0;
 opts.vel_conv.btm.const.fall_distance = const.fall_distance;
 opts.vel_conv.btm.v_thresh = 0.15; %maximum velocity radius
 opts.vel_conv.btm.v_mask=[0.89,1.11]; %bounds on radisu as multiple of radius value
-opts.vel_conv.btm.z_mask = [-0.5,0.5]; %in units of radius
-opts.vel_conv.btm.y_mask = [-1.3,1.3]; %in units of radius
+opts.vel_conv.btm.z_mask = [-0.68,0.68]; %in units of radius
+opts.vel_conv.btm.y_mask = [-1.9,1.9]; %in units of radius
 opts.vel_conv.btm.center = bec_masked_halo.centre_mid; %use the mid BEC as the zero momentum point
 
 opts.vel_conv.btm.bec_center.north = bec_masked_halo.centre_mid;
@@ -153,7 +165,7 @@ ports = {};
 %% calculate the global correlation functions around the halos
 global_corrs_opts.plots = true;
 global_corrs_opts.fit = true;
-global_corrs_opts.calc_err = true;
+global_corrs_opts.calc_err = false;
 
 corrs = global_corrs(top_halo,bottom_halo,global_corrs_opts);
 
@@ -162,11 +174,11 @@ opts_E.calc_err = false;
 opts_E.plots = true;
 opts_E.verbose = false;
 
-% [E_val, corrs.ports] = E(ports,opts_E);
-% 
-% %Expected amplitude
-% g14 = corrs.ports.g14.norm_g2.fitted_g2peak;
-% E_amp = (g14-1)/(g14+1);
+[E_val, corrs.ports] = E(ports,opts_E);
+
+%Expected amplitude
+g14 = corrs.ports.g14.norm_g2.fitted_g2peak;
+E_amp = (g14-1)/(g14+1);
 
 %% Write out results
 top_halo_bb = string_value_with_unc(corrs.top_halo.corr_bb.norm_g2.fitted_g2peak,corrs.top_halo.corr_bb.norm_g2.fitted_g2peak_unc,'type','b');
@@ -183,7 +195,7 @@ cli_format_text('','c',3)
 fprintf('\n Top Halo:       g^{(2)}_{BB} = %s,    g^{(2)}_{CL} = %s\n',top_halo_bb,top_halo_cl)
 fprintf('\n Bottom Halo:    g^{(2)}_{BB} = %s,    g^{(2)}_{CL} = %s\n',bottom_halo_bb,bottom_halo_cl)
 fprintf('\n Between Halos:  g^{(2)}_{BB} = %s,    g^{(2)}_{CL} = %s\n',between_halo_bb,between_halo_cl)
-% fprintf('\n E = %g,   Expected Amplitude = %g\n',E_val,E_amp)
+fprintf('\n E = %g,   Expected Amplitude = %g\n',E_val,E_amp)
 
 
 %HOM around the Halo

@@ -14,9 +14,10 @@ opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
 % data_folder = '20191104_halos_attempt_1';
 % data_folder = '20191101_brief_halo_data';
 % data_folder = '20200715_getting_bec_and_halo';
-data_folder = '20200717_mag_transfer_optimiser_2';
+% data_folder = '20200717_mag_transfer_optimiser_2';
+data_folder = '20200724_mag_transfer_optimiser_9';
 
-frac_opts.num_lim = 1.5e3;
+frac_opts.num_lim = 0.4e3;%1.5e3;
 frac_opts.transfer_state = 'mag';
 frac_opts.bounds = [-0.03, 0.03; -0.03, 0.03];%spacecial bounds 
 
