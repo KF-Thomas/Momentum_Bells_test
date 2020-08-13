@@ -9,7 +9,10 @@ using scattering halos to demonstrate a Bells Test
  **Figure1**- Demonstration of halo interferometer. |
 
 ## Install
-'''
+```
 git clone --recurse-submodules -j8 https://github.com/KF-Thomas/Momentum_Bells_test.git
-'''
+cd ..
+git clone --recursive https://github.com/brycehenson/Core_BEC_Analysis.git
+```
+
 
