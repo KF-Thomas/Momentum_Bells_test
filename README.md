@@ -10,9 +10,9 @@ using scattering halos to demonstrate a Bells Test
 
 ## Install
 ```
-git clone --recurse-submodules -j8 https://github.com/KF-Thomas/Momentum_Bells_test.git
-cd ..
-git clone --recursive https://github.com/brycehenson/Core_BEC_Analysis.git
+git clone --recurse-submodules -j8 https://github.com/KF-Thomas/Momentum_Bells_test.git momentum_bells_test
+git clone --recursive https://github.com/brycehenson/Core_BEC_Analysis.git core_bec_analysis 
+cd momentum_bells_test
 ```
 
 
