@@ -31,8 +31,9 @@ for this_idx = 1:num_shots % Loop over all shots
 
     % Convert to kspace
     this_outtime = -tf;
-    v_north = txy_to_vel(txy_north, this_outtime, g0, d);
-    v_south = txy_to_vel(txy_south, this_outtime, g0, d);
+    vel_shift = txy_to_vel(txy_north, this_outtime, g0, d);
+    v_north = txy_to_vel(txy_north, this_outtime, g0, d)-vel_shift;
+    v_south = txy_to_vel(txy_south, this_outtime, g0, d)-vel_shift;
     v_bec_top = txy_to_vel(txy_bec_top, this_outtime, g0, d);
     v_bec_mid = txy_to_vel(txy_bec_mid, this_outtime, g0, d);
     v_radius = norm(v_north-v_south)./2;
@@ -53,9 +54,10 @@ for this_idx = 1:num_shots % Loop over all shots
     if v_radius>opts_vel_conv.v_thresh
         continue
     end
-    v_zxy = txy_to_vel(centred_counts, this_outtime, g0, d);
+    v_zxy = txy_to_vel(centred_counts, this_outtime, g0, d)-vel_shift;
     v_zxy = v_zxy*rotz(-phix)'*roty(-phiy)';%rotate the BEC to the north and south poles
     v_zxy(:,1) = v_zxy(:,1) - z_sign*v_radius;
+    %% MASKING
     % mask radial
     radius_mask = (v_zxy(:,1).^2+v_zxy(:,2).^2+v_zxy(:,3).^2)<(v_radius.*opts_vel_conv.v_mask(2)).^2 ...
     & (v_zxy(:,1).^2+v_zxy(:,2).^2+v_zxy(:,3).^2)>(v_radius.*opts_vel_conv.v_mask(1)).^2;
@@ -70,7 +72,7 @@ for this_idx = 1:num_shots % Loop over all shots
     v_masked = mask_square(v_masked,y_lim,0);
     %do some angular masking
     
-    %add the data to the structure
+    %% add the data to the structure
     out_halo.counts_txy{this_idx} = this_txy;
     out_halo.num_counts(this_idx) = size(v_masked,1);%size(this_txy,1);
     out_halo.counts_vel{this_idx} = v_masked;
