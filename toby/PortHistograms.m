@@ -1,28 +1,3 @@
-phi = pi/2;
-Tmax = 15;
-lambda = 0.8;
-cycles = 1E7;
-
-[p,event,cap] = problist(lambda,phi,Tmax);
-
-m = zeros(1,cycles); ys = m; xs = m; ws = m; zs = m;
-
-for runs = 1:cycles
-    n = rand;
-    i = 1;
-    while true
-        if n<p(i+1)
-            m(runs) = i;
-            ys(runs) = event(i,1);
-            xs(runs) = event(i,2);
-            ws(runs) = event(i,3);
-            zs(runs) = event(i,4);
-            break
-        end
-        i=i+1;
-    end
-end
-
 % Plotting Histograms
 edges = 0:cap;
 
