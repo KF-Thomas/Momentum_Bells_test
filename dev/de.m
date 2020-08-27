@@ -13,6 +13,9 @@
 % clc;
 % clear;
 % close all;
+%% Optimization Options
+cost_opts.diffraction_order = 9;
+cost_opts.orders = [-2,-1];%[-2,-1,0]; %the difraction orders we want top optimize transfer to
 %% Problem Definition
 CostFunction=@(b) Raman_Nath_Cost(b,cost_opts);    % Cost Function
 nVar=4;            % Number of Decision Variables
@@ -23,23 +26,25 @@ lb = [0.1, 0.01, 0.2, -0.9]; %lowerbounds
 ub = [5, 6, 5, 0.9]; %upperbounds
 
 %% DE Parameters
-MaxIt=250;      % Maximum Number of Iterations
-nPop=50;        % Population Size
-beta_min=0.2;   % Lower Bound of Scaling Factor
-beta_max=0.8;   % Upper Bound of Scaling Factor
+MaxIt=1000;      % Maximum Number of Iterations
+nPop=55;        % Population Size
+beta_min=0.1;   % Lower Bound of Scaling Factor
+beta_max=0.9;   % Upper Bound of Scaling Factor
 pCR=0.2;        % Crossover Probability
 %% Initialization
 empty_individual.Position=[];
 empty_individual.Cost=[];
 BestSol.Cost=inf;
+BestSolHistory={};
 pop=repmat(empty_individual,nPop,1);
 for i=1:nPop
-    pop(i).Position=unifrnd(VarMin,VarMax,VarSize);
+    pop(i).Position=unifrnd(lb,ub,VarSize);
     
     pop(i).Cost=CostFunction(pop(i).Position);
     
     if pop(i).Cost<BestSol.Cost
         BestSol=pop(i);
+        BestSolHistory=[BestSolHistory;BestSol];
     end
     
 end
@@ -97,6 +102,7 @@ for it=1:MaxIt
             
             if pop(i).Cost<BestSol.Cost
                BestSol=pop(i);
+               BestSolHistory=[BestSolHistory;BestSol];
             end
         end
         

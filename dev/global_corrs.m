@@ -16,7 +16,6 @@ corr_opts.num_samp_rep=5;
 corr_opts.attenuate_counts=1;
 
 %% back to back (intra halo)
-corr_opts.fig='top halo bb corr';
 corr_opts.type='radial_bb';
 % corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*35e-3;
 one_d_range=0.017;%0.02
@@ -34,6 +33,7 @@ corr_opts.sort_norm=1;
 
 %% TOP HALO BACK TO BACK
 
+corr_opts.fig='top halo bb corr';
 corrs.top_halo.corr_bb=calc_any_g2_type(corr_opts,top_halo.counts_vel');
 % corrs.top_halo.corr_bb=calc_any_g2_type(corr_opts,top_halo.counts_vel_norm');
 
