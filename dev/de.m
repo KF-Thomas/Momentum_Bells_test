@@ -14,6 +14,9 @@
 % clear;
 % close all;
 %% Problem Definition
+cost_opts.diffraction_order = 9;
+cost_opts.orders = [-1,-2];
+cost_opts.goal = 'mirror';%'transfer';%'splitting';
 CostFunction=@(b) Raman_Nath_Cost(b,cost_opts);    % Cost Function
 nVar=4;            % Number of Decision Variables
 VarSize=[1 nVar];   % Decision Variables Matrix Size
@@ -23,7 +26,7 @@ lb = [0.1, 0.01, 0.2, -0.9]; %lowerbounds
 ub = [5, 6, 5, 0.9]; %upperbounds
 
 %% DE Parameters
-MaxIt=250;      % Maximum Number of Iterations
+MaxIt=10;      % Maximum Number of Iterations
 nPop=50;        % Population Size
 beta_min=0.2;   % Lower Bound of Scaling Factor
 beta_max=0.8;   % Upper Bound of Scaling Factor
@@ -34,7 +37,7 @@ empty_individual.Cost=[];
 BestSol.Cost=inf;
 pop=repmat(empty_individual,nPop,1);
 for i=1:nPop
-    pop(i).Position=unifrnd(VarMin,VarMax,VarSize);
+    pop(i).Position=unifrnd(lb,ub,VarSize);
     
     pop(i).Cost=CostFunction(pop(i).Position);
     
