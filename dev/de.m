@@ -13,6 +13,9 @@
 % clc;
 % clear;
 % close all;
+%% Optimization Options
+cost_opts.diffraction_order = 9;
+cost_opts.orders = [-2,-1];%[-2,-1,0]; %the difraction orders we want top optimize transfer to
 %% Problem Definition
 cost_opts.diffraction_order = 9;
 cost_opts.orders = [-1,-2];
@@ -35,6 +38,7 @@ pCR=0.2;        % Crossover Probability
 empty_individual.Position=[];
 empty_individual.Cost=[];
 BestSol.Cost=inf;
+BestSolHistory={};
 pop=repmat(empty_individual,nPop,1);
 for i=1:nPop
     pop(i).Position=unifrnd(lb,ub,VarSize);
@@ -43,6 +47,7 @@ for i=1:nPop
     
     if pop(i).Cost<BestSol.Cost
         BestSol=pop(i);
+        BestSolHistory=[BestSolHistory;BestSol];
     end
     
 end
@@ -100,6 +105,7 @@ for it=1:MaxIt
             
             if pop(i).Cost<BestSol.Cost
                BestSol=pop(i);
+               BestSolHistory=[BestSolHistory;BestSol];
             end
         end
         

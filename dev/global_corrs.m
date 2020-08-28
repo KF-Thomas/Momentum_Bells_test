@@ -33,7 +33,7 @@ corr_opts.sort_norm=1;
 
 %% TOP HALO BACK TO BACK
 
-corr_opts.fig='top halo bb corr test0';
+corr_opts.fig='top halo bb corr';
 corrs.top_halo.corr_bb=calc_any_g2_type(corr_opts,top_halo.counts_vel');
 % corrs.top_halo.corr_bb=calc_any_g2_type(corr_opts,top_halo.counts_vel_norm');
 
