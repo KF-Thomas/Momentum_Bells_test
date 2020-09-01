@@ -26,7 +26,7 @@ tlim=[0,4];
 opts.import.txylim=[tlim;tmp_xlim;tmp_ylim];
 
 opts.num_lim = 2.1e3;%0.5e3;% %minimum atom number 1.5e3
-opts.halo_N_lim = 0;%2;%10;%0;% %minimum allowed number in halo 10
+opts.halo_N_lim = -1;%2;%10;%0;% %minimum allowed number in halo 10
 
 opts.plot_dist = true; %do you want to see all the detailed stuff about the halo distributions
 
@@ -61,6 +61,7 @@ if (exist(anal_out.dir, 'dir') == 0), mkdir(anal_out.dir); end
 %% remove any ringing
 opts.ring_lim = 0.09e-6;%0.1e-6;%-1;%0;%0.101 %how close can points be in time
 data_masked = ring_removal(data,opts.ring_lim);
+
 %% add labview import
 if opts.tag
     logs = readtable(opts.logfile);
@@ -72,25 +73,41 @@ if opts.tag
 else
     tag_mask = ones(1,length(data_masked.num_counts));
 end
+
 %% set up relevant constants
 hebec_constants
+
 %% find centers
 opts.cent.visual = 2; %from 0 to 2
 opts.cent.savefigs = 0;
 % opts.cent.bin_size = 3e-5 * [1, 1, 1]; %1e-5 * [1, 10, 10];
-opts.cent.threshold = [130,2000,2000].*1e3;
+opts.cent.top.threshold = [130,2000,2000].*1e3;
+opts.cent.top.min_threshold = [16,13,13].*1e3;%[16,7,10].*1e3;
+opts.cent.top.sigma = [6.7e-5,16e-5,16e-5];%[8e-5,25e-5,25e-5];
+opts.cent.top.method = {'margin','average','average'};
+
+opts.cent.mid.threshold = [130,2000,2000].*1e3;
+opts.cent.mid.min_threshold = [16,13,13].*1e3;%[16,7,10].*1e3;
+opts.cent.mid.sigma = [6.7e-5,16e-5,16e-5];%[8e-5,25e-5,25e-5];
+opts.cent.mid.method = {'margin','average','average'};
+
+opts.cent.btm.threshold = [130,2000,2000].*1e3;
+opts.cent.btm.min_threshold = [16,13,13].*1e3;%[16,7,10].*1e3;
+opts.cent.btm.sigma = [6.7e-5,16e-5,16e-5];%[8e-5,25e-5,25e-5];
+opts.cent.btm.method = {'margin','average','average'};
 % opts.cent.threshold = [710,2000,2000].*1e3;%[100,55,55].*1e3; %set in inverse units (Hz for time 1/m for space)
-opts.cent.min_threshold = [16,13,13].*1e3;%[16,7,10].*1e3;
+
 % opts.cent.threshold = [50,20,20].*1e3; %set in inverse units (Hz for time 1/m for space)
-opts.cent.sigma = [6.7e-5,16e-5,16e-5];%[8e-5,25e-5,25e-5];
+
 % opts.cent.sigma = [0.4e-5,16e-5,16e-5];
 % opts.cent.method = {'margin','margin','margin'};
-opts.cent.method = {'margin','average','average'};
+
 % opts.cent.method = {'average','average','average'};%{'gauss_fit','gauss_fit','gauss_fit'};%
 % opts.cent.t_bounds = {[3.8598,3.871],[3.871,3.8844],[3.8844,3.8972],[3.8,3.95]}; %time bounds for the different momentum states k=+1,0,-1 respectively
 % opts.cent.t_bounds = {[3.861,3.867],[3.874,3.881],[3.887,3.895],[3.8,3.95]}; %time bounds for the different momentum states k=+1,0,-1 respectively
 opts.cent.t_bounds = {[3.844,3.8598],[3.8598,3.871],[3.871,3.8844],[3.75,4]};
 bec = halo_cent(data_masked,opts.cent);
+
 %% run some checks
 % atoms number
 % laser maybe?
@@ -102,15 +119,18 @@ num_check = data_masked.num_counts>opts.num_lim;
 is_shot_good = num_check & bec.centre_OK_top' & bec.centre_OK_mid' & bec.centre_OK_btm' & tag_mask;
 data_masked_halo = struct_mask(data_masked,is_shot_good);
 bec_masked_halo = struct_mask(bec,is_shot_good);
+
 %% Find the velocity widths
 opts.bec_width.g0 = const.g0;
 opts.bec_width.fall_time = 0.417;
 bec_masked_halo = bec_width_txy_to_vel(bec_masked_halo,opts.bec_width);
+
 %% convert data to velocity
 % zero velocity point
 t0 = ones(size(bec_masked_halo.centre_top,1),1).*3.8772;%bec_masked_halo.centre_top(:,1);%72;% 
 x0 = bec_masked_halo.centre_top(:,2);%ones(size(bec_masked_halo.centre_top,1),1).*-0.0041;%%-0.00444892593829574;
 y0 = bec_masked_halo.centre_top(:,3);%ones(size(bec_masked_halo.centre_top,1),1).*0.0078;%0.00645675151404596;
+
 %% generate top halo
 opts.vel_conv.top.visual = 0;
 opts.vel_conv.top.plot_percentage = 0.95;
@@ -123,12 +143,16 @@ opts.vel_conv.top.z_mask = [-0.68,0.68]; %in units of radius (standard [-0.76,0.
 opts.vel_conv.top.y_mask = [-1.9,1.9]; %in units of radius
 opts.vel_conv.top.center = [t0,x0,y0];%bec_masked_halo.centre_top;%ones(size(bec_masked_halo.centre_top,1),1).*[t0,x0,y0];%%bec_masked_halo.centre_top;%bec_masked_halo.centre_mid; %use the mid BEC as the zero momentum point
 
+opts.vel_conv.top.centering_correction = [0,0,0]; %correctoin shift to the centering in m/s
+
 opts.vel_conv.top.bec_center.north = bec_masked_halo.centre_top;
 opts.vel_conv.top.bec_center.south = bec_masked_halo.centre_mid;
 opts.vel_conv.top.bec_width.north = bec_masked_halo.width_top;
 opts.vel_conv.top.bec_width.south = bec_masked_halo.width_mid;
+
 %%
 top_halo_intial = halo_vel_conv(data_masked_halo,opts.vel_conv.top);
+
 %% generate bottom halo
 opts.vel_conv.btm.visual = 0;
 opts.vel_conv.btm.plot_percentage = 0.95;
@@ -141,12 +165,16 @@ opts.vel_conv.btm.z_mask = [-0.68,0.68]; %in units of radius
 opts.vel_conv.btm.y_mask = [-1.9,1.9]; %in units of radius
 opts.vel_conv.btm.center = [t0,x0,y0];%bec_masked_halo.centre_top;%ones(size(bec_masked_halo.centre_top,1),1).*[t0,x0,y0];%,bec_masked_halo.centre_top; %use the mid BEC as the zero momentum point
 
+opts.vel_conv.btm.centering_correction = [0,0,0]; %correctoin shift to the centering in m/s
+
 opts.vel_conv.btm.bec_center.north = bec_masked_halo.centre_mid;
 opts.vel_conv.btm.bec_center.south = bec_masked_halo.centre_btm;
 opts.vel_conv.btm.bec_width.north = bec_masked_halo.width_mid;
 opts.vel_conv.btm.bec_width.south = bec_masked_halo.width_btm;
+
 %%
 bottom_halo_intial = halo_vel_conv(data_masked_halo,opts.vel_conv.btm);
+
 %% mask out halos with nums to low
 halo_N_check_top = top_halo_intial.num_counts>opts.halo_N_lim;
 halo_N_check_btm = bottom_halo_intial.num_counts>opts.halo_N_lim;
@@ -154,6 +182,7 @@ halo_N_check = halo_N_check_top & halo_N_check_btm;
 top_halo = struct_mask(top_halo_intial,halo_N_check);
 bottom_halo = struct_mask(bottom_halo_intial,halo_N_check);
 bec_halo = struct_mask(bec_masked_halo,halo_N_check);
+
 %% plot some histogram checks
 halos.top_halo = top_halo;
 halos.bottom_halo = bottom_halo;
@@ -165,6 +194,7 @@ opts.plot_opts.const.fall_distance = const.fall_distance;
 if opts.plot_dist
     plot_checks(halos,opts.plot_opts);
 end
+
 %% Separate data into the four ports
 ports = {};
 [ports.top_left, ports.top_right] = separate_ports(top_halo,0);
@@ -193,6 +223,7 @@ opts_nice_plots.calc_err = false;
 opts_nice_plots.fit = true;
 
 nice_g2_plots(opts_nice_plots,corrs.ports)
+
 %% Write out results
 top_halo_bb = string_value_with_unc(corrs.top_halo.corr_bb.norm_g2.fitted_g2peak,corrs.top_halo.corr_bb.norm_g2.fitted_g2peak_unc,'type','b');
 top_halo_cl = string_value_with_unc(corrs.top_halo.corr_cl.norm_g2.fitted_g2peak,corrs.top_halo.corr_cl.norm_g2.fitted_g2peak_unc,'type','b');
