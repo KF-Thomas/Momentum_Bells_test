@@ -42,7 +42,7 @@ anal_opts.trig_ai_in=20;
 % anal_opts.osc_fit.tlim=[0.86,1.08];
 % anal_opts.osc_fit.dimesion=2; %Sel ect coordinate to bin. 1=X, 2=Y.
 
-anal_opts.history.shots=280;
+anal_opts.history.shots=100;
 
 hebec_constants
 const.fall_distance = 8.52925545e-01;

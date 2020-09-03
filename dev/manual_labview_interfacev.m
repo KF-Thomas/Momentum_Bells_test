@@ -14,8 +14,17 @@
 %new_path 
 
 %% USER SETTINGS
-exp_type = '';
+
 update_keysight = 1;
+
+num_points = 15;
+shots_per_point = 100;
+
+marker = mod(floor((i-1)/shots_per_point),shots_per_point*num_points)+1; %Counts from 1 to num shots before setpt update
+
+sequence = {'mag_transfer','k=0,-1','mirror'}; %Construct desired experimental sequenc from sequences above
+
+new_path='c:\remote\settings202030Jul080637.xml';
 
 %% Keysight settings
 % General settings
@@ -27,50 +36,117 @@ f0_AOM=80e6;            % [Hz]     Central AOMs frequency
 Ek=84.9e3;              % beam geometry (90 deg)
 srate_all=sample_rate;
 
-T_delay_mix=10e-6;      % Delay between the SRC and MIX pulse
+%%% MAGNETIC TRANSFER pulse
+%--------------------------------------------------------------------------
+B_trap_bottom=1.0583782e6;
+del = -41.03543351e3; %detuning for second beam 3e3
+T_pulse_del = +0.0e-6;%delay between pulses
+dF_Raman=-(B_trap_bottom);     %[Hz]    Raman detuning
+T_Raman_mix=19.20368817e-6;
+Gs_mod_R_mix=2.69400894;
+phi1_mix=pi;
+K_R_mix=0.31063277;
+
+f1_Raman_mix=f0_AOM-dF_Raman/2-del;     %[Hz]    45(P) RAMAN   "top"                          45(S) RAMAN   "top"
+f2_Raman_mix=f0_AOM+dF_Raman/2;     %[Hz]   -45(S) RAMAN   "horizontal"                 -45(P) RAMAN   "horizonatal"
+
+%%% DELAYs between pulses
+%--------------------------------------------------------------------------
+% T_delay_mix=3000e-6;      % Delay between the SRC and MIX pulse
+T_delay_mix=3e-6;      % Delay between the MAG and Bragg pulse
+T_delay_mirror=1500e-6;%500e-6; % Delay between the Bragg pulse and Mirror pulse
+
+%%% phases
+%--------------------------------------------------------------------------
+% NOTE: separated out since we find zero gives fine results
 phi1=0;
 phi2=0;
 
-% Magnetic Transfer settings
-B_trap_bottom=1.225e6;%0.9e6;%3.47e6; %2.01e6
-del = 3e3; %detuning for second beam
-T_pulse_del = +0.75e-6;%delay between pulses
-dF_Raman=-(B_trap_bottom);     %[Hz]    Raman detuning
-f1_Raman_mix=f0_AOM-dF_Raman/2-del;     %[Hz]    45(P) RAMAN   "top"                          45(S) RAMAN   "top"
-f2_Raman_mix=f0_AOM+dF_Raman/2;     %[Hz]   -45(S) RAMAN   "horizontal"                 -45(P) RAMAN   "horizonatal"
-T_Raman_mix=6.29e-6;
-Gs_mod_R_mix=2.0;
-phi1_mix=pi;
-K_R_mix=0.4;
+%%% MIRROR pulse
+%--------------------------------------------------------------------------
+dF_Bragg_1=0.12e6;%0.0849e6;%
+dF_Bragg_2=0.12e6;%0.0849e6;%
+f1_Bragg_mirror=f0_AOM-dF_Bragg_1;
+f2_Bragg_mirror=f0_AOM+dF_Bragg_2;
 
-% double sided bragg settings
-dF_Bragg_1=0.017e6;%0.045e6
-dF_Bragg_2=0.017e6;%-0.01e5
-f1_Bragg_d=f0_AOM-dF_Bragg_1;
-f2_Bragg_d=f0_AOM+dF_Bragg_2;
-T_Bragg_d=6.7e-6;%15e-6;
-K_Bragg_d=0.26;%28%0.086;
-Gs_mod_Bragg_d=1.21;%1.8
+T_Bragg_mirror=35E-6;%32E-6;
+P_Bragg_src = 7.0; %power in mW 7 to 9 works well ~5.9
+K_Bragg_mirror_1=ampfun([60.117, 0.5638],P_Bragg_src)/2e3;
+K_Bragg_mirror_2=ampfun([132.62, 0.5283],P_Bragg_src)/2e3;
 
-% k=+1 diffraction
-dF_Bragg_1=0.0e6;%0.045e6
-dF_Bragg_2=0.0e6;%-0.01e5
-f1_Bragg_p=f0_AOM-dF_Bragg_1;
-f2_Bragg_p=f0_AOM+dF_Bragg_2;
-T_Bragg_p=16.7e-6;%15e-6;
-K_Bragg_p=0.26;%28%0.086;
-Gs_mod_Bragg_p=1.81;%1.8
+Gs_mod_Bragg_mirror_1=1.95*T_Bragg_mirror/16.7e-6*sqrt(2)*sqrt(5.63806937736142e-01);%~1.83
+Gs_mod_Bragg_mirror_2=1.95*T_Bragg_mirror/16.7e-6*sqrt(2)*sqrt(5.28341254744861e-01);%~1.83
 
-% k=-1 diffraction
-dF_Bragg_1=0.037e6;%0.045e6
-dF_Bragg_2=0.037e6;%-0.01e5
-f1_Bragg_m=f0_AOM-dF_Bragg_1;
-f2_Bragg_m=f0_AOM+dF_Bragg_2;
-T_Bragg_m=16.7e-6;%15e-6;
-K_Bragg_m=0.25;%28%0.086;
-Gs_mod_Bragg_m=1.81;%1.8
+t0_Bragg_mirror=nan;%3.9895e-6;
 
-% PAL settings
+sinc_scale_Bragg_mirror=6e-6;%5.5e-6;%5.3e-6;%5.3e-6;
+Amp_sinc_Bragg_mirror=sqrt(5);%sqrt(10.0);%0.2;%
+
+wf_mirror_pulse = @(b,t) sinc((t-b(1)/2)./b(4)).*b(3).*cos(pi*(t-b(1)/2)/(b(1))).^2;
+wf_mirror_pulse_1 = @(b,t) ampfun([60.117, 0.5638],abs(wf_mirror_pulse(b,t)).^2)/2e3.*sin(2*pi*b(2)*t).*sign(wf_mirror_pulse(b,t));%sinc((t-b(1)/2)./b(4)).*b(3).*sin(2*pi*b(2)*t);%
+wf_mirror_pulse_2 = @(b,t) ampfun([132.62, 0.5283],abs(wf_mirror_pulse(b,t)).^2)/2e3.*sin(2*pi*b(2)*t).*sign(wf_mirror_pulse(b,t));%sinc((t-b(1)/2)./b(4)).*b(3).*sin(2*pi*b(2)*t);%
+
+%%% 50:50 Beam Splitter pulse
+%--------------------------------------------------------------------------
+dF_Bragg_1=0.1e6;%0.11e6;% or 0.1e6
+dF_Bragg_2=0.1e6;%0.11e6;% or 0.1e6
+f1_Bragg_splitter=f0_AOM-dF_Bragg_1;
+f2_Bragg_splitter=f0_AOM+dF_Bragg_2;
+
+T_Bragg_splitter=32E-6;
+P_Bragg_splt = 5.5; %power in mW 7 to 9 works well
+K_Bragg_splitter_1=ampfun([60.117, 0.5638],P_Bragg_splt)/2e3;
+K_Bragg_splitter_2=ampfun([132.62, 0.5283],P_Bragg_splt)/2e3;
+% Gs_mod_Bragg_mirror=0.2;%1;%1.03135*T_Bragg_src/4.2E-6;
+Gs_mod_Bragg_splitter_1=1.83*T_Bragg_splitter/16.7e-6*sqrt(2)*sqrt(5.63806937736142e-01);
+Gs_mod_Bragg_splitter_2=1.83*T_Bragg_splitter/16.7e-6*sqrt(2)*sqrt(5.28341254744861e-01);
+
+t0_Bragg_splitter=nan;%3.9895e-6;
+
+%%% Momentum splitting
+%--------------------------------------------------------------------------
+
+%%% Bragg splitting: |k=0> |--> |k=0> + |k=-1K> + |k=-2K>
+dF_Bragg_1=0.095e6;%0.099e6;%~0.093;%
+dF_Bragg_2=0.095e6;%0.099e6;
+f1_Bragg_src_f=f0_AOM-dF_Bragg_1;
+f2_Bragg_src_f=f0_AOM+dF_Bragg_2;
+
+T_Bragg_src_f=32E-6;
+P_Bragg_f = 7.2;%7.2;%20.5;%~7.8
+K_Bragg_src_f_1=1.25*ampfun([60.117, 0.5638],P_Bragg_f)/2e3;%0.08;
+K_Bragg_src_f_2=1.33*ampfun([132.62, 0.5283],P_Bragg_f)/2e3;%0.08;%[60.117, 0.5638] multiplier ~1.2 1.4
+Gs_mod_Bragg_src_f_1=0.9*T_Bragg_src_f/4.2E-6*sqrt(2)*sqrt(5.63806937736142e-01);%~0.7 0.95
+Gs_mod_Bragg_src_f_2=0.9*T_Bragg_src_f/4.2E-6*sqrt(2)*sqrt(5.28341254744861e-01);
+t0_Bragg_src_f=nan;
+
+%%% Bragg splitting: |k=0> |--> |k=0> + |k=-1K>
+dF_Bragg_1=0.06e6;
+dF_Bragg_2=0.06e6;
+f1_Bragg_src_t=f0_AOM-dF_Bragg_1;
+f2_Bragg_src_t=f0_AOM+dF_Bragg_2;
+
+T_Bragg_src_t=32e-6;
+P_Bragg_src = 3.6; %power in mW 7 to 9 works well
+K_Bragg_src_1=ampfun([60.117, 0.5638],P_Bragg_src)/2e3;
+K_Bragg_src_2=ampfun([132.62, 0.5283],P_Bragg_src)/2e3;
+Gs_mod_Bragg_src_1=1.82*T_Bragg_src_t/16.7e-6*sqrt(2)*sqrt(5.63806937736142e-01);
+Gs_mod_Bragg_src_2=1.81*T_Bragg_src_t/16.7e-6*sqrt(2)*sqrt(5.28341254744861e-01);
+
+t0_Bragg_src_t=nan;
+
+%%% Bragg splitting: |k=0> |--> |k=-1K> + |k=-2K>
+dF_Bragg_1=0.085e6;
+dF_Bragg_2=0.075e6;
+f1_Bragg_src_b=f0_AOM-dF_Bragg_1;
+f2_Bragg_src_b=f0_AOM+dF_Bragg_2;
+
+T_Bragg_src_b=10.2e-6;
+K_Bragg_src_b=0.24;
+Gs_mod_Bragg_src_b=3.0;
+
+%%% PAL settings
+%--------------------------------------------------------------------------
 freq = 1.2e6;
 amp_PAL = sqrt(2)*0.650; %Vrms
 phase_PAL = 0;
@@ -78,89 +154,134 @@ cycles = 6;
 dur_PAL = cycles/freq;
 
 %% Iteration through parameters
+Amp_sinc_Bragg_mirror_vec = sqrt(linspace(2,15,num_points));
+Amp_sinc_Bragg_mirror = Amp_sinc_Bragg_mirror_vec(marker);
+
 
 %% Waveform generation
-null_wf = {{'const',0,sample_rate,1e-6}};
-burst_wf={
-        {'sine',freq,phase_PAL,amp_PAL*sqrt(2),nan,sample_rate,dur_PAL},...
-        {'const',0,sample_rate,1e-6}
-        };
-trans_null={'const',0, srate_all,T_Raman_mix+abs(T_pulse_del)};
-double_sin_wf={'double_sine',f1_Raman_mix,f2_Raman_mix,phi1_mix,phi2,K_R_mix,K_R_mix,Gs_mod_R_mix,Gs_mod_R_mix,srate_all,T_Raman_mix,T_pulse_del};
-mix_delay_wf ={'const',0, srate_all,T_delay_mix};
-%k=+1 bragg
-sin_1_p_wf={'sine',f1_Bragg_p,phi1,K_Bragg_p,Gs_mod_Bragg_p,srate_all,T_Bragg_p};
-sin_2_p_wf={'sine',f2_Bragg_p,phi2,K_Bragg_p,Gs_mod_Bragg_p,srate_all,T_Bragg_p};
-%k=-1 bragg
-sin_1_m_wf={'sine',f1_Bragg_m,phi1,K_Bragg_m,Gs_mod_Bragg_m,srate_all,T_Bragg_m};
-sin_2_m_wf={'sine',f2_Bragg_m,phi2,K_Bragg_m,Gs_mod_Bragg_m,srate_all,T_Bragg_m};
-%doulbe sided bragg
-sin_1_d_wf={'sine',f1_Bragg_d,phi1,K_Bragg_d,Gs_mod_Bragg_d,srate_all,T_Bragg_d};
-sin_2_d_wf={'sine',f2_Bragg_d,phi2,K_Bragg_d,Gs_mod_Bragg_d,srate_all,T_Bragg_d};
+ch1_raw={}; %waveform for chanel 1
+ch2_raw={}; %waveform for chanel 2
+for ii = 1:length(sequence) %run through each segment
+    segment = sequence{ii}; %the current segment
+    switch segment %add to the waveforms the desired segment
+        case 'mag_transfer'
+            %%% Magentic transfer
+            ch1_raw=[ch1_raw(:)',...
+                {{'double_sine',f1_Raman_mix,f2_Raman_mix,phi1_mix,phi2,K_R_mix,...
+                K_R_mix,Gs_mod_R_mix,Gs_mod_R_mix,srate_all,T_Raman_mix,T_pulse_del}}
+                ];
+            ch2_raw=[ch2_raw(:)',...
+                {{'const',0, srate_all,T_Raman_mix+abs(T_pulse_del)}}
+                ];
+        case 'k=0,-1,-2'
+            %%% Full Halo
+            ch1_raw=[ch1_raw(:)',...
+                {{'const',0, srate_all,T_delay_mix}},...
+                {{'sine',    f1_Bragg_src_f       ,phi1,          K_Bragg_src_f_1,       Gs_mod_Bragg_src_f_1, srate_all,   T_Bragg_src_f,   t0_Bragg_src_f}},...
+                ];
+            
+            ch2_raw=[ch2_raw(:)',...
+                {{'const',0, srate_all,T_delay_mix}},...
+                {{'sine',    f2_Bragg_src_f       ,phi2,          K_Bragg_src_f_2,       Gs_mod_Bragg_src_f_2, srate_all,   T_Bragg_src_f,    t0_Bragg_src_f}},...
+                ];
+        case 'k=0,-1'
+            %%% Top Halo
+            ch1_raw=[ch1_raw(:)',...
+                {{'const',0, srate_all,T_delay_mix}},...
+                {{'sine',    f1_Bragg_src_t       ,phi1,          K_Bragg_src_1,       Gs_mod_Bragg_src_1, srate_all,   T_Bragg_src_t, t0_Bragg_src_t}},...
+                ];
+            
+            ch2_raw=[ch2_raw(:)',...
+                {{'const',0, srate_all,T_delay_mix}},...
+                {{'sine',    f2_Bragg_src_t       ,phi2,          K_Bragg_src_2,       Gs_mod_Bragg_src_2, srate_all,   T_Bragg_src_t, t0_Bragg_src_t}},...
+                ];
+        case 'k=-1,-2'
+            %%% Bottom Halo
+            ch1_raw=[ch1_raw(:)',...
+                {{'const',0, srate_all,T_delay_mix}},...
+                {{'sine',    f1_Bragg_src_b       ,phi1,          K_Bragg_src_b,       Gs_mod_Bragg_src_b, srate_all,   T_Bragg_src_b}},...
+                ];
+            
+            ch2_raw=[ch2_raw(:)',...
+                {{'const',0, srate_all,T_Raman_mix+abs(T_pulse_del)}},...
+                {{'const',0, srate_all,T_delay_mix}},...
+                {{'sine',    f2_Bragg_src_b       ,phi2,          K_Bragg_src_b,       Gs_mod_Bragg_src_b, srate_all,   T_Bragg_src_b}},...
+                ];
+        case 'mirror'
+            %%% Mirror pulse
+            ch1_raw=[ch1_raw(:)',...
+                {{'const',0, srate_all,T_delay_mirror}},...
+                {{'arb',   wf_mirror_pulse_1,  srate_all,  T_Bragg_mirror,  f1_Bragg_mirror,  Amp_sinc_Bragg_mirror,  sinc_scale_Bragg_mirror}}
+                ];
+%             {'sine',    f1_Bragg_mirror       ,phi1,          K_Bragg_mirror_1,       Gs_mod_Bragg_mirror_1, srate_all,   T_Bragg_mirror, t0_Bragg_mirror}
+%             
+%             
+            ch2_raw=[ch2_raw(:)',...
+                {{'const',0, srate_all,T_delay_mirror}},...
+                {{'arb',   wf_mirror_pulse_2,  srate_all,   T_Bragg_mirror, f2_Bragg_mirror,  Amp_sinc_Bragg_mirror,  sinc_scale_Bragg_mirror}}
+                ];
+%             {'sine',    f2_Bragg_mirror       ,phi2,          K_Bragg_mirror_2,       Gs_mod_Bragg_mirror_2, srate_all,   T_Bragg_mirror, t0_Bragg_mirror}
+%             
+%             
+        case 'splitter'
+            %%% 50:50 Beam splitter pulse
+            ch1_raw=[ch1_raw(:)',...
+                {{'const',0, srate_all,T_delay_splitter}},...
+                {{'sine',    f1_Bragg_splitter       ,phi1,          K_Bragg_splitter_1,       Gs_mod_Bragg_splitter_1, srate_all,   T_Bragg_splitter, t0_Bragg_splitter}}
+                ];
+            
+            ch2_raw=[ch2_raw(:)',...
+                {{'const',0, srate_all,T_delay_splitter}},...
+                {{'sine',    f2_Bragg_splitter       ,phi2,          K_Bragg_splitter_2,       Gs_mod_Bragg_splitter_2, srate_all,   T_Bragg_splitter, t0_Bragg_splitter}}
+                ];
+        otherwise
+            error('invalid sequence segment');
+    end
+end
 
 %% Shot sequence settings
 path_log = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\log_LabviewMatlab.txt';
 path_param_log = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\log_KeysightMatlab.txt';
 
-% shot types
-
-shots.transfer.LVfile = 'c:\remote\settings201929Oct153457.xml';
-shots.transfer.log_entry = 'transfer';
-shots.transfer.waveform.ch1= {double_sin_wf};
-shots.transfer.waveform.ch2= {trans_null};
-
-shots.double_halo.LVfile = 'c:\remote\settings201929Oct153336.xml';
-shots.double_halo.log_entry = 'double_halo';
-shots.double_halo.waveform.ch1= {double_sin_wf,mix_delay_wf,sin_1_d_wf};
-shots.double_halo.waveform.ch2= {trans_null,mix_delay_wf,sin_2_d_wf};
-
-shots.double_halo_hi.LVfile = 'c:\remote\settings201901Nov163222.xml';
-shots.double_halo_hi.log_entry = 'double_halo_hi';
-shots.double_halo_hi.waveform.ch1= {double_sin_wf,mix_delay_wf,sin_1_d_wf};
-shots.double_halo_hi.waveform.ch2= {trans_null,mix_delay_wf,sin_2_d_wf};
-
-shots.double_halo_low.LVfile = 'c:\remote\settings201901Nov163250.xml';
-shots.double_halo_low.log_entry = 'double_halo_low';
-shots.double_halo_low.waveform.ch1= {double_sin_wf,mix_delay_wf,sin_1_d_wf};
-shots.double_halo_low.waveform.ch2= {trans_null,mix_delay_wf,sin_2_d_wf};
-
-shots.upper_halo.LVfile = 'c:\remote\settings201929Oct153336.xml';
-shots.upper_halo.log_entry = 'upper_halo';
-shots.upper_halo.waveform.ch1= {double_sin_wf,mix_delay_wf,sin_1_m_wf};
-shots.upper_halo.waveform.ch2= {trans_null,mix_delay_wf,sin_2_m_wf};
-
-shots.upper_halo.LVfile = 'c:\remote\settings201929Oct153336.xml';
-shots.upper_halo.log_entry = 'lower_halo';
-shots.upper_halo.waveform.ch1= {double_sin_wf,mix_delay_wf,sin_1_p_wf};
-shots.upper_halo.waveform.ch2= {trans_null,mix_delay_wf,sin_2_p_wf};
-    
-if strcmp(exp_type,'transfer')    
-    shot_sequence = {'transfer'};
-elseif strcmp(exp_type,'halos')
-    shot_sequence = {'double_halo','double_halo','upper_halo','lower_halo'};
-else   
-    shot_sequence = {'double_halo'};
+%% convert waveforms to printables for logging
+ch1_waveform_str = '';
+ch2_waveform_str = '';
+for waveforms = 1:numel(ch1_raw)
+    if waveforms>1
+        ch1_waveform_str = [ch1_waveform_str,', '];
+    end
+    ch1_waveform_str = [ch1_waveform_str,cell2str(array2str(ch1_raw{waveforms}))];
 end
+for waveforms = 1:numel(ch2_raw)
+    if waveforms>1
+        ch2_waveform_str = [ch2_waveform_str,', '];
+    end
+    ch2_waveform_str = [ch2_waveform_str,cell2str(array2str(ch2_raw{waveforms}))];
+end
+
+ch1_waveform_str = replace(ch1_waveform_str,"'",'');
+ch2_waveform_str = replace(ch2_waveform_str,"'",'');
 
 %% Interface
 
 addpath('C:\Users\BEC Machine\cloudstor\MATLAB\keysight-33600a')
-marker = mod(i-1,numel(shot_sequence))+1; %Counts from 1 to num shots before setpt update
-shot_info = shots.(shot_sequence{marker});
-new_path=shot_info.LVfile;
+% shot_info = shots.(shot_sequence{marker});
+% new_path=shot_info.LVfile;
 % Send waveforms
+chanels_dev1={ch_to_waveforms(ch1_raw),ch_to_waveforms(ch2_raw)};
 if update_keysight
-    send_waveform(shot_info.waveform.ch1,shot_info.waveform.ch2,0);
+    send_segments(chanels_dev1,1);
 end
+%write to log
 %write to log
 f_log=fopen(path_log,'a');  % append to log-file
 nowdt=datetime('now');
-fprintf(f_log,'%d,%.3f,%s,interfacev8,%s,%s\n',...
-    i,posixtime(nowdt),datestr(nowdt,'yyyy-mm-ddTHH:MM:SS.FFF'),shot_info.log_entry,new_path);
+fprintf(f_log,'shot num:%d, posixtime:%.3f, date:%s, matlab:interfacev8, labview settings:%s\n',...
+    i,posixtime(nowdt),datestr(nowdt,'yyyy-mm-ddTHH:MM:SS.FFF'),new_path);
 fclose(f_log);
 f_log=fopen(path_param_log,'a');  % append to param-log-file
-fprintf(f_log,'%d,%.3f,%s,%s,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u\n',...
-    i,posixtime(nowdt),shot_info.log_entry,new_path,...
-    f1_Raman_mix,f2_Raman_mix,T_Raman_mix,K_R_mix,Gs_mod_R_mix,phi1_mix,T_pulse_del,del,...
-    f1_Bragg_d,f2_Bragg_d,T_Bragg_d,K_Bragg_d,Gs_mod_Bragg_d,T_delay_mix);
+fprintf(f_log,'shot num:%d, posixtime:%.3f, ch1 waveform: %s, ch2 waveform: %s\n',...
+    i,posixtime(nowdt),...
+    ch1_waveform_str,ch2_waveform_str);
 fclose(f_log);
+pause(0.1)

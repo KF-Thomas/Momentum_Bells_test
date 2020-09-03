@@ -9,6 +9,9 @@ opts_cent.btm.crop = [opts_cent.t_bounds{1}; -0.022, 0.011; -0.08, 0.018];
 [bec.centre_btm,bec.width_btm,bec.counts_btm,bec.centre_OK_btm] =  find_dist_cen(data,opts_cent.btm);
 
 bec.shot_num = data.shot_num;
+if isfield(opts_cent,'correction') && opts_cent.correction
+    bec = halo_cent_correction(bec,opts_cent.correction_opts);
+end
 
 lim = [opts_cent.t_bounds{4}; -0.03, 0.03; -0.03, 0.03];
 

@@ -1,5 +1,5 @@
 %% Initializing path
-clear all;
+% clear all;
 % close all;
 this_folder = fileparts(which(mfilename));
 addpath(genpath(this_folder));
@@ -8,13 +8,23 @@ addpath(genpath(core_folder));
 set(groot, 'DefaultTextInterpreter', 'latex')
 %% Import directory
 opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
+data_folder = '';
 % data_folder = '20200807_k=0,-1,-2_halos_data_2';
-data_folder = '20200824_k=0,-1_post_mirror';
 % data_folder = '20200824_k=0,-1_splitter_attempt';
 % data_folder = '20200824_k=0,-1_pre_mirror';
 % data_folder = '20200825_attempting_different_mirror_settings';
-data_folder = '20200825_k=0,-1_mirror_attempt_2';
-data_folder = '20200828_k=0,-1_mirror_attempt_3';
+% data_folder = '20200824_k=0,-1_mirror_attempt_1';
+% data_folder = '20200825_k=0,-1_mirror_attempt_2';
+% data_folder = '20200828_k=0,-1_mirror_attempt_3';
+% data_folder = '20200831_k=0,-1_mirror_attempt_4';
+% data_folder = '20200831_k=0,-1_mirror_attempt_5';
+% data_folder = '20200831_k=0,-1_mirror_attempt_6';
+% data_folder = '20200831_k=0,-1_mirror_attempt_7';
+% data_folder = '20200901_k=0,-1_mirror_attempt_8';
+% data_folder = '20200901_k=0,-1_mirror_vs_amp\Pamp_0_5';
+data_folder = '20200901_k=0,-1_mirror_vs_amp\Pamp_10';
+data_folder = '20200901_k=0,-1_mirror_vs_amp\Pamp_0_25';
+data_folder = '20200901_k=0,-1_mirror_vs_amp\Pamp_0_25';
 opts.import.dir = fullfile(opts.data_root, data_folder);
 opts.import.force_reimport = false;
 opts.import.force_cache_load = ~opts.import.force_reimport;
@@ -32,7 +42,7 @@ opts.import.txylim=[tlim;tmp_xlim;tmp_ylim];
 opts.num_lim = 2.5e3;%2.1e3;%0.5e3;% %minimum atom number 1.5e3
 opts.halo_N_lim = -1;%2;%10;%0;% %minimum allowed number in halo 10
 
-opts.plot_dist = true; %do you want to see all the detailed stuff about the halo distributions
+opts.plot_dist = false; %do you want to see all the detailed stuff about the halo distributions
 
 %% Background stuff
 cli_header('Setting up for %s', data_folder);
@@ -73,6 +83,8 @@ hebec_constants
 %% find centers
 opts.cent.visual = 0; %from 0 to 2
 opts.cent.savefigs = 0;
+opts.cent.correction = 1;
+opts.cent.correction_opts.plots = 0;
 
 opts.cent.top.visual = 0; %from 0 to 2
 opts.cent.top.savefigs = 0;
@@ -90,8 +102,8 @@ opts.cent.mid.method = {'margin','average','average'};
 
 opts.cent.btm.visual = 2; %from 0 to 2
 opts.cent.btm.savefigs = 0;
-opts.cent.btm.threshold = [50,5000,5000].*1e3;%[130,2000,2000].*1e3;
-opts.cent.btm.min_threshold = [0,3,1.5].*1e3;%[16,13,13].*1e3;%[16,7,10].*1e3;
+opts.cent.btm.threshold = [15,5000,5000].*1e3;%[130,2000,2000].*1e3;
+opts.cent.btm.min_threshold = [16,7,10].*1e3;%[0,0,0].*1e3;%[16,13,13].*1e3;%[16,7,10].*1e3;
 opts.cent.btm.sigma = [6.7e-5,16e-5,16e-5];%[8e-5,25e-5,25e-5];
 opts.cent.btm.method = {'margin','average','average'};
 
@@ -135,7 +147,7 @@ opts.vel_conv.top.const.g0 = const.g0;
 opts.vel_conv.top.const.fall_distance = const.fall_distance;
 opts.vel_conv.top.v_thresh = 0.15; %maximum velocity radius
 opts.vel_conv.top.v_mask=[0.89,1.11]; %bounds on radisu as multiple of radius value
-opts.vel_conv.top.z_mask = [-0.68,0.68]; %in units of radius (standard [-0.76,0.76])
+opts.vel_conv.top.z_mask = [-0.82,0.82]; %in units of radius (standard [-0.76,0.76] or [-0.68,0.68])
 opts.vel_conv.top.y_mask = [-1.9,1.9]; %in units of radius
 opts.vel_conv.top.center = [t0,x0,y0];%bec_masked_halo.centre_top;%ones(size(bec_masked_halo.centre_top,1),1).*[t0,x0,y0];%%bec_masked_halo.centre_top;%bec_masked_halo.centre_mid; %use the mid BEC as the zero momentum point
 
@@ -163,7 +175,7 @@ opts.vel_conv.btm.const.g0 = const.g0;
 opts.vel_conv.btm.const.fall_distance = const.fall_distance;
 opts.vel_conv.btm.v_thresh = 0.15; %maximum velocity radius
 opts.vel_conv.btm.v_mask=[0.89,1.11]; %bounds on radisu as multiple of radius value
-opts.vel_conv.btm.z_mask = [-0.68,0.68]; %in units of radius
+opts.vel_conv.btm.z_mask = [-0.82,0.82]; %in units of radius ([-0.68,0.68])
 opts.vel_conv.btm.y_mask = [-1.9,1.9]; %in units of radius
 opts.vel_conv.btm.center = [t0,x0,y0];%bec_masked_halo.centre_top;%ones(size(bec_masked_halo.centre_top,1),1).*[t0,x0,y0];%,bec_masked_halo.centre_top; %use the mid BEC as the zero momentum point
 
@@ -379,7 +391,7 @@ legend('bottom','top')
 ylabel('Average radial value')
 xlabel('\(\phi\)')
 
-stfig('density vs angle comp')
+stfig('density vs angle')
 clf
 subplot(2,1,1)
 plot(theta,v_btm_dens(:,1),'linewidth',1.5)
@@ -395,6 +407,20 @@ plot(phi,v_top_dens(:,2),'linewidth',1.5)
 legend('bottom','top')
 ylabel('Average density')
 xlabel('\(\phi\)')
+if opts.do_btm_halo && opts.do_top_halo
+stfig('density ratio vs angle');
+clf
+plot(phi,(v_btm_dens(:,2))./(v_top_dens(:,2)),'linewidth',1.5)
+ylabel('density ratio')
+xlabel('\(\phi\)')
+
+stfig('density visibility vs angle');
+clf
+plot(phi,(v_btm_dens(:,2)-v_top_dens(:,2))./(v_btm_dens(:,2)+v_top_dens(:,2)),'linewidth',1.5)
+ylabel('density vis')
+xlabel('\(\phi\)')
+
+end
 
 stfig('spherical density plot')
 for ii = 1:(nbins-1)
