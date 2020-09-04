@@ -1,3 +1,4 @@
+tic
 dYX = norm(Ycoord-Xcoord); dYW = norm(Ycoord-Wcoord); dYZ = norm(Ycoord-Zcoord);
 dXW = norm(Xcoord-Wcoord); dXZ = norm(Xcoord-Zcoord); dWZ = norm(Wcoord-Zcoord);
 
@@ -63,3 +64,4 @@ subplot(2,1,1)
 histogram(dlist)
 subplot(2,1,2)
 histogram(d2list)
+toc

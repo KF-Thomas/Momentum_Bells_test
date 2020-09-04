@@ -20,7 +20,7 @@ corr_opts.rad_smoothing=nan;
 corr_opts.low_mem=true;
 
 corr_opts.sampling_method='complete';
-corr_opts.sample_proportion=0.65; %proportion of uncorolated pairs to calculate 
+corr_opts.sample_proportion=1; %proportion of uncorolated pairs to calculate 
 corr_opts.attenuate_counts=1; %artifical qe
 corr_opts.do_pre_mask=false;
 corr_opts.sorted_dir=1;

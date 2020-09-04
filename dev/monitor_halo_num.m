@@ -1,11 +1,11 @@
-%% monitor the magnetic transfer
-
+% short function to monitor approximate number in halos
 this_folder = fileparts(fileparts(which(mfilename)));
 addpath(genpath(this_folder));
 core_folder = fullfile(fileparts(this_folder), 'Core_BEC_Analysis\');
 addpath(genpath(core_folder));
 % BEGIN USER VAR-------------------------------------------------
-anal_opts.tdc_import.dir='Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output';
+anal_opts.tdc_import.dir='Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
+% anal_opts.tdc_import.dir='Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20200803_early_k=0,-1,-2_halo_data\';
 anal_opts.tdc_import.file_name='d';
 anal_opts.tdc_import.force_load_save=false;   %takes precidence over force_reimport
 anal_opts.tdc_import.force_reimport=true;
@@ -42,11 +42,30 @@ anal_opts.trig_ai_in=20;
 % anal_opts.osc_fit.tlim=[0.86,1.08];
 % anal_opts.osc_fit.dimesion=2; %Sel ect coordinate to bin. 1=X, 2=Y.
 
-anal_opts.history.shots=280;
+anal_opts.history.shots=50;
 
 hebec_constants
 const.fall_distance = 8.52925545e-01;
+%% find centers
+opts.cent.visual = 2;
+opts.cent.threshold = [100,30,30].*1e3; %set in inverse units (Hz for time 1/m for space)
+opts.cent.sigma = [8e-5,25e-5,25e-5];
+% opts.cent.t_bounds = {[3.8598,3.871],[3.871,3.8844],[3.8844,3.8972],[3.8,3.95]}; %time bounds for the different momentum states k=+1,0,-1 respectively
+opts.cent.t_bounds  = {[3.848,3.8598],[3.8598,3.871],[3.871,3.8844],[3.75,4]};
 
+opts.vel_conv.plot_percentage = 0.2;
+opts.vel_conv.visual = 0;
+opts.vel_conv.title = 'top halo';
+% top halo
+trap_switch_off= 0;
+opts.vel_conv.const.g0 = const.g0;
+opts.vel_conv.const.fall_distance = const.fall_distance;
+opts.vel_conv.v_thresh = 0.15; %maximum velocity radius
+opts.vel_conv.v_mask=[0.8,1.2]; %bounds on radisu as multiple of radius value
+opts.vel_conv.z_mask = [-0.04,0.04];
+
+opts.num_lim = 2e3;%0.5e3;% %minimum atom number 1.5e3
+opts.halo_N_lim = 10;%0;% %minimum allowed number in halo 10
 
 % END USER VAR-----------------------------------------------------------
 fclose('all')
@@ -71,22 +90,31 @@ anal_out.dir=[fullfile(anal_opts.tdc_import.dir,'out','monitor'),filesep];
 if (exist(anal_out.dir, 'dir') == 0), mkdir(anal_out.dir); end
 anal_opts.global.out_dir=anal_out.dir;
 
-frac_opts.num_lim = 0.1e3;
-frac_opts.transfer_state = 'momentum';
-frac_opts.bounds = [-0.03, 0.03; -0.03, 0.03];%spacecial bounds
+
 
 %%
-mag_history.trans_frac=[];
-mag_history.shot_num=[];
-mag_history.all_shots=[];
-mag_history.cost=[];
-mag_history.Ns=[];
-stfig('Momentum Transfer Fraction History');
+
+halo_history.corr_length=[];
+halo_history.trans_frac=[];
+halo_history.shot_num=[];
+
+halo_history.top.halo_N=[];
+halo_history.top.m=[];
+halo_history.top.g2=[];
+
+halo_history.btm.halo_N=[];
+halo_history.btm.m=[];
+halo_history.btm.g2=[];
+
+halo_history.shot_num_masked = [];
+stfig('Halo Num History');
 clf;
-stfig('Momentum Transfer Cost History');
+stfig('Ratio of Halo Number');
 clf;
-stfig('External Fraction');
-clf
+% stfig('Transfer Fraction History');
+% clf
+% stfig('Mode Occupancy and Correlation Amplitude');
+% clf
 
 %%
 
@@ -103,15 +131,15 @@ while true
     %remove processed ones
     
     anal_opts.tdc_import.shot_num=anal_opts.tdc_import.shot_num(...
-        ~ismember(anal_opts.tdc_import.shot_num, mag_history.all_shots ) );
+        ~ismember(anal_opts.tdc_import.shot_num, halo_history.shot_num ) );
     
     if numel(anal_opts.tdc_import.shot_num)==0
         if mod(loop_num,4)==0
-            pause(.7)
+            pause(.2)
             fprintf('\b\b\b')
             loop_num=1;
         else
-            pause(.5) %little wait animation
+            pause(.1) %little wait animation
             fprintf('.')
             loop_num=loop_num+1;
         end
@@ -126,86 +154,39 @@ while true
                 fprintf('waiting for file to be writen\n')
                 pause(1.0)
             else
-                out_frac = fraction_calc(batch_data.mcp_tdc,frac_opts);
-                cost = momentum_transfer_cost(out_frac.shot_num');
-                
-                mag_history.all_shots=[mag_history.all_shots,batch_data.mcp_tdc.shot_num];
-                mag_history.shot_num=[mag_history.shot_num,out_frac.shot_num'];
-                mag_history.trans_frac=[mag_history.trans_frac;out_frac.fracs];
-                mag_history.Ns=[mag_history.Ns;out_frac.Ns];
-                mag_history.cost =[mag_history.cost;cost.val];
-                
-                %trim the history vectors
-                if numel(mag_history.shot_num)>anal_opts.history.shots
-                    %bit sloppy but will assume they are the same length
-                    mag_history.shot_num=mag_history.shot_num(end-anal_opts.history.shots:end);
-                    mag_history.trans_frac=mag_history.trans_frac(end-anal_opts.history.shots:end,:);
-                    mag_history.cost=mag_history.cost(end-anal_opts.history.shots:end,:);
-                    mag_history.Ns=mag_history.Ns(end-anal_opts.history.shots:end,:);
+                num_check = batch_data.mcp_tdc.num_counts>opts.num_lim;
+                num_shots = size(batch_data.mcp_tdc.num_counts,2);
+                masked_data = hotspot_mask(batch_data.mcp_tdc);
+                top_halo_num_counts = zeros(1,num_shots);
+                btm_halo_num_counts = zeros(1,num_shots);
+                for ii = 1:num_shots
+                    this_shot = masked_data.counts_txy{ii};
+                    top_halo_num_counts(ii) = size(masktxy_square(this_shot, [3.866, 3.874; -0.03, 0.03; -0.03, 0.03]),1);
+                    btm_halo_num_counts(ii) = size(masktxy_square(this_shot, [3.854, 3.861; -0.03, 0.03; -0.03, 0.03]),1);
                 end
                 
-                stfig('Momentum Transfer Fraction History');
-                plot(mag_history.shot_num,...
-                    mag_history.trans_frac(:,1:3)',...
-                    'LineWidth',1.5)
-                grid on
-                h=gca;
-                grid on    % turn on major grid lines
-                grid minor % turn on minor grid lines
-                % Set limits and grid spacing separately for the two directions:
-                % Must set major grid line properties for both directions simultaneously:
-                h.GridLineStyle='-'; % the default is some dotted pattern, I prefer solid
-                h.GridAlpha=1;  % the default is partially transparent
-                h.GridColor=[0,0,0]; % here's the color for the major grid lines
-                % Idem for minor grid line properties:
-                h.MinorGridLineStyle='-';
-                h.MinorGridAlpha=0.1;
-                h.MinorGridColor=[0,0,0]; % here's the color for the minor grid lines
-                xlabel('Shot Number')
-                ylabel('Tranfer Fraction')
-%                 legend('$k=+1$','$k=0$','$k=-1$')
-                legend('$k=-2$','$k=-1$','$k=0$')
+                halo_history.shot_num=[halo_history.shot_num,anal_opts.tdc_import.shot_num];
                 
-                pause(0.1)
-                %             saveas(gcf,fullfile(anal_out.dir,'freq_history.png'))
-                stfig('Momentum Transfer Cost History');
-                plot(mag_history.shot_num,...
-                    mag_history.cost',...
-                    'LineWidth',1.5)
-                hold on
-                scatter(mag_history.shot_num,...
-                    mag_history.cost',...
-                    'LineWidth',1.5)
-                hold off 
-                grid on
-                h=gca;
-                grid on    % turn on major grid lines
-                grid minor % turn on minor grid lines
-                % Set limits and grid spacing separately for the two directions:
-                % Must set major grid line properties for both directions simultaneously:
-                h.GridLineStyle='-'; % the default is some dotted pattern, I prefer solid
-                h.GridAlpha=1;  % the default is partially transparent
-                h.GridColor=[0,0,0]; % here's the color for the major grid lines
-                % Idem for minor grid line properties:
-                h.MinorGridLineStyle='-';
-                h.MinorGridAlpha=0.1;
-                h.MinorGridColor=[0,0,0]; % here's the color for the minor grid lines
-                xlabel('Shot Number')
-                ylabel('Tranfer Cost Function')
-                legend('cost')
+                halo_history.btm.halo_N=[halo_history.btm.halo_N,btm_halo_num_counts];
                 
-                stfig('External Fraction');
-                num_mask = ~isnan(mag_history.cost)';
-% %                 plot(mag_history.shot_num(num_mask),1-1./mag_history.trans_frac(num_mask,4),'LineWidth',1.5)
-% %                 hold on
-% %                 scatter(mag_history.shot_num(num_mask),1-1./mag_history.trans_frac(num_mask,4),'LineWidth',1.5)
-%                 plot(mag_history.shot_num(num_mask),1-1./mag_history.trans_frac(num_mask,4),'LineWidth',1.5)
-%                 hold on
-%                 scatter(mag_history.shot_num(num_mask),1-1./mag_history.trans_frac(num_mask,4),'LineWidth',1.5)
-                %external to k=0,-1 states
-                plot(mag_history.shot_num(num_mask),(mag_history.Ns(num_mask,4)-mag_history.Ns(num_mask,2)-mag_history.Ns(num_mask,3))./mag_history.Ns(num_mask,4),'LineWidth',1.5)
+                halo_history.top.halo_N=[halo_history.top.halo_N,top_halo_num_counts];
+                
+                %trim the history vectors
+                if numel(halo_history.shot_num)>anal_opts.history.shots
+                    %bit sloppy but will assume they are the same length
+                    halo_history.shot_num=halo_history.shot_num(end-anal_opts.history.shots:end);
+                    halo_history.top.halo_N=halo_history.top.halo_N(end-anal_opts.history.shots:end);
+                    halo_history.btm.halo_N=halo_history.btm.halo_N(end-anal_opts.history.shots:end);
+                end
+                
+                stfig('Halo Num History');
+                plot(halo_history.shot_num,...
+                    halo_history.top.halo_N,...
+                    'kx-','LineWidth',1.5)
                 hold on
-                scatter(mag_history.shot_num(num_mask),(mag_history.Ns(num_mask,4)-mag_history.Ns(num_mask,2)-mag_history.Ns(num_mask,3))./mag_history.Ns(num_mask,4),'LineWidth',1.5)
+                plot(halo_history.shot_num,...
+                    halo_history.btm.halo_N,...
+                    'bx-','LineWidth',1.5)
                 hold off
                 grid on
                 h=gca;
@@ -221,9 +202,31 @@ while true
                 h.MinorGridAlpha=0.1;
                 h.MinorGridColor=[0,0,0]; % here's the color for the minor grid lines
                 xlabel('Shot Number')
-                ylabel('External Fraction')
+                ylabel('N in Halo')
+                legend('top halo','bottom halo')
                 
-                pause(0.1)
+                stfig('Ratio of Halo Number')
+                plot(halo_history.shot_num,...
+                    halo_history.btm.halo_N./halo_history.top.halo_N,...
+                    'kx-','LineWidth',1.5)
+                grid on
+                h=gca;
+                grid on    % turn on major grid lines
+                grid minor % turn on minor grid lines
+                % Set limits and grid spacing separately for the two directions:
+                % Must set major grid line properties for both directions simultaneously:
+                h.GridLineStyle='-'; % the default is some dotted pattern, I prefer solid
+                h.GridAlpha=1;  % the default is partially transparent
+                h.GridColor=[0,0,0]; % here's the color for the major grid lines
+                % Idem for minor grid line properties:
+                h.MinorGridLineStyle='-';
+                h.MinorGridAlpha=0.1;
+                h.MinorGridColor=[0,0,0]; % here's the color for the minor grid lines
+                xlabel('Shot Number')
+                ylabel('Ratio')
+                pause(1e-6)
+                %             saveas(gcf,fullfile(anal_out.dir,'freq_history.png'))
+                
             end
         catch
             pause(1.0)
