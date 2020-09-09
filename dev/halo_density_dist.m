@@ -1,5 +1,5 @@
 %% Initializing path
-% clear all;
+clear all;
 % close all;
 this_folder = fileparts(which(mfilename));
 addpath(genpath(this_folder));
@@ -8,7 +8,7 @@ addpath(genpath(core_folder));
 set(groot, 'DefaultTextInterpreter', 'latex')
 %% Import directory
 opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
-data_folder = '';
+% data_folder = '';
 % data_folder = '20200807_k=0,-1,-2_halos_data_2';
 % data_folder = '20200824_k=0,-1_splitter_attempt';
 % data_folder = '20200824_k=0,-1_pre_mirror';
@@ -22,9 +22,10 @@ data_folder = '';
 % data_folder = '20200831_k=0,-1_mirror_attempt_7';
 % data_folder = '20200901_k=0,-1_mirror_attempt_8';
 % data_folder = '20200901_k=0,-1_mirror_vs_amp\Pamp_0_5';
-data_folder = '20200901_k=0,-1_mirror_vs_amp\Pamp_10';
-data_folder = '20200901_k=0,-1_mirror_vs_amp\Pamp_0_25';
-data_folder = '20200901_k=0,-1_mirror_vs_amp\Pamp_0_25';
+% data_folder = '20200901_k=0,-1_mirror_vs_amp\Pamp_10';
+% data_folder = '20200901_k=0,-1_mirror_vs_amp\Pamp_0_25';
+% data_folder = '20200901_k=0,-1_mirror_vs_amp\Pamp_11';
+data_folder = '20200907_k=-1,-2_transfer_vs_amp\Pamp_0';
 opts.import.dir = fullfile(opts.data_root, data_folder);
 opts.import.force_reimport = false;
 opts.import.force_cache_load = ~opts.import.force_reimport;
@@ -337,7 +338,7 @@ end
 
 stfig('average radius vs angle')
 clf
-nbins=50;
+nbins=152;
 theta_bins = linspace(-pi,pi,nbins);
 phi_bins = linspace(-pi/2,pi/2,nbins);
 if opts.do_top_halo
@@ -355,41 +356,56 @@ else
     theta_btm = [];
     phi_btm = [];
 end
-for ii = 1:(nbins-1)
-    r_btm_zxy_masked = r_dist_btm_unnorm(theta_bins(ii)<theta_btm & theta_btm<=theta_bins(ii+1));
-    r_top_zxy_masked = r_dist_top_unnorm(theta_bins(ii)<theta_top & theta_top<=theta_bins(ii+1));
-    v_btm_r(ii,1) = mean(r_btm_zxy_masked);
-    v_top_r(ii,1) = mean(r_top_zxy_masked);
-    v_btm_dens(ii,1) = size(r_btm_zxy_masked,1)/(theta_bins(ii+1)-theta_bins(ii));
-    v_top_dens(ii,1) = size(r_top_zxy_masked,1)/(theta_bins(ii+1)-theta_bins(ii));
+% for ii = 1:(nbins-1)
+%     r_btm_zxy_masked = r_dist_btm_unnorm(theta_bins(ii)<theta_btm & theta_btm<=theta_bins(ii+1));
+%     r_top_zxy_masked = r_dist_top_unnorm(theta_bins(ii)<theta_top & theta_top<=theta_bins(ii+1));
+%     v_btm_r(ii,1) = mean(r_btm_zxy_masked);
+%     v_top_r(ii,1) = mean(r_top_zxy_masked);
+%     v_btm_dens(ii,1) = size(r_btm_zxy_masked,1)/(theta_bins(ii+1)-theta_bins(ii));
+%     v_top_dens(ii,1) = size(r_top_zxy_masked,1)/(theta_bins(ii+1)-theta_bins(ii));
+%     
+%     r_btm_zxy_masked = r_dist_btm_unnorm(phi_bins(ii)<phi_btm & phi_btm<=phi_bins(ii+1));
+%     r_top_zxy_masked = r_dist_top_unnorm(phi_bins(ii)<phi_top & phi_top<=phi_bins(ii+1));
+%     v_btm_r(ii,2) = mean(r_btm_zxy_masked);
+%     v_top_r(ii,2) = mean(r_top_zxy_masked);
+%     v_btm_dens(ii,2) = size(r_btm_zxy_masked,1)/(phi_bins(ii+1)-phi_bins(ii));
+%     v_top_dens(ii,2) = size(r_top_zxy_masked,1)/(phi_bins(ii+1)-phi_bins(ii));
+%     
+%     theta(ii) = mean(theta_bins(ii:(ii+1)));
+%     phi(ii) = mean(phi_bins(ii:(ii+1)));
+% end
+% v_btm_dens = v_btm_dens./size(bottom_halo.counts_vel,1);
+% v_top_dens = v_top_dens./size(top_halo.counts_vel,1);
+v_btm_dens = [];
+v_top_dens = [];
+r_btm_zxy_masked=smooth_hist(theta_btm,'sigma',0.04,'lims',[-pi,pi],'bin_num',151);
+    r_top_zxy_masked=smooth_hist(theta_top,'sigma',0.04,'lims',[-pi,pi],'bin_num',151);
+    v_btm_dens(:,1) = r_btm_zxy_masked.count_rate.smooth;
+    v_top_dens(:,1) = r_top_zxy_masked.count_rate.smooth;
     
-    r_btm_zxy_masked = r_dist_btm_unnorm(phi_bins(ii)<phi_btm & phi_btm<=phi_bins(ii+1));
-    r_top_zxy_masked = r_dist_top_unnorm(phi_bins(ii)<phi_top & phi_top<=phi_bins(ii+1));
-    v_btm_r(ii,2) = mean(r_btm_zxy_masked);
-    v_top_r(ii,2) = mean(r_top_zxy_masked);
-    v_btm_dens(ii,2) = size(r_btm_zxy_masked,1)/(phi_bins(ii+1)-phi_bins(ii));
-    v_top_dens(ii,2) = size(r_top_zxy_masked,1)/(phi_bins(ii+1)-phi_bins(ii));
     
-    theta(ii) = mean(theta_bins(ii:(ii+1)));
-    phi(ii) = mean(phi_bins(ii:(ii+1)));
-end
-v_btm_dens = v_btm_dens./size(bottom_halo.counts_vel,1);
-v_top_dens = v_top_dens./size(top_halo.counts_vel,1);
+    r_btm_zxy_masked=smooth_hist(phi_btm,'sigma',0.04,'lims',[-pi/2,pi/2],'bin_num',151);
+    r_top_zxy_masked=smooth_hist(phi_top,'sigma',0.04,'lims',[-pi/2,pi/2],'bin_num',151);
+    v_btm_dens(:,2) = r_btm_zxy_masked.count_rate.smooth;
+    v_top_dens(:,2) = r_top_zxy_masked.count_rate.smooth;
 
-subplot(2,1,1)
-plot(theta,v_btm_r(:,1),'linewidth',1.5)
-hold on
-plot(theta,v_top_r(:,1),'linewidth',1.5)
-legend('bottom','top')
-ylabel('Average radial value')
-xlabel('\(\theta\)')
-subplot(2,1,2)
-plot(phi,v_btm_r(:,2),'linewidth',1.5)
-hold on
-plot(phi,v_top_r(:,2),'linewidth',1.5)
-legend('bottom','top')
-ylabel('Average radial value')
-xlabel('\(\phi\)')
+    theta = linspace(-pi,pi,151);
+    phi = linspace(-pi/2,pi/2,151);
+    
+% subplot(2,1,1)
+% plot(theta,v_btm_r(:,1),'linewidth',1.5)
+% hold on
+% plot(theta,v_top_r(:,1),'linewidth',1.5)
+% legend('bottom','top')
+% ylabel('Average radial value')
+% xlabel('\(\theta\)')
+% subplot(2,1,2)
+% plot(phi,v_btm_r(:,2),'linewidth',1.5)
+% hold on
+% plot(phi,v_top_r(:,2),'linewidth',1.5)
+% legend('bottom','top')
+% ylabel('Average radial value')
+% xlabel('\(\phi\)')
 
 stfig('density vs angle')
 clf

@@ -109,3 +109,9 @@ colder settings for low mode occ run (EVAP AT 720 kHz): c:\remote\settings202003
 
 (2020-08-05)
 settings used during single sided halo (k=-1,-2) dev: c:\remote\settings202005Aug093338.xml
+
+(2020-09-08)
+settings used during rabi flop characterisation c:\remote\settings202008Sep115822.xml
+
+(2020-09-09)
+Halo settings as of today: c:\remote\settings202009Sep154916.xml

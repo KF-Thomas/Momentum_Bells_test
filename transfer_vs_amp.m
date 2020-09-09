@@ -13,7 +13,8 @@ set(groot, 'DefaultTextInterpreter', 'latex')
 opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
 data_folder = '';
 data_folders = {
-    '20200901_k=0,-1_mirror_vs_amp\Pamp_0'
+    '20200901_k=0,-1_mirror_vs_amp\Pamp_0_t2'
+    '20200901_k=0,-1_mirror_vs_amp\Pamp_0_25_t2'
     '20200901_k=0,-1_mirror_vs_amp\Pamp_0_5'
     '20200901_k=0,-1_mirror_vs_amp\Pamp_1'
     '20200901_k=0,-1_mirror_vs_amp\Pamp_2'
@@ -24,7 +25,7 @@ data_folders = {
     '20200901_k=0,-1_mirror_vs_amp\Pamp_7'
     '20200901_k=0,-1_mirror_vs_amp\Pamp_8'
     '20200901_k=0,-1_mirror_vs_amp\Pamp_9'
-    
+    '20200901_k=0,-1_mirror_vs_amp\Pamp_10_t2'
     '20200901_k=0,-1_mirror_vs_amp\Pamp_11'
     '20200901_k=0,-1_mirror_vs_amp\Pamp_12'
     '20200901_k=0,-1_mirror_vs_amp\Pamp_13'
@@ -32,10 +33,16 @@ data_folders = {
     '20200901_k=0,-1_mirror_vs_amp\Pamp_15'
     '20200901_k=0,-1_mirror_vs_amp\Pamp_15_t2'
     '20200901_k=0,-1_mirror_vs_amp\Pamp_16'
-    '20200901_k=0,-1_mirror_vs_amp\Pamp_19'
+    '20200901_k=0,-1_mirror_vs_amp\Pamp_19_t2'
+    
+    '20200907_k=-1,-2_transfer_vs_amp\Pamp_0'
+    '20200907_k=-1,-2_transfer_vs_amp\Pamp_5_3'
+    '20200907_k=-1,-2_transfer_vs_amp\Pamp_11_5'
     };
-% '20200901_k=0,-1_mirror_vs_amp\Pamp_0_25'
+
+%
 % '20200901_k=0,-1_mirror_vs_amp\Pamp_10'
+% '20200901_k=0,-1_mirror_vs_amp\Pamp_0_25'
 
 % % Hamming Sinc Pulse with T=6e-6
 % % P_amplitude = [1,];
@@ -59,8 +66,19 @@ opts.import.txylim=[tlim;tmp_xlim;tmp_ylim];
 opts.num_lim = 2.5e3;%2.1e3;%0.5e3;% %minimum atom number 1.5e3
 opts.halo_N_lim = -1;%2;%10;%0;% %minimum allowed number in halo 10
 
+%% Calibration settings
+norm_folders = [1 22]; %folders to be used in calibrating out the effects of BEC bleed
+btm_halo_comp = [22 23 24];%transfering the bottom halo for comparison
+Eamp = sqrt([0,0.25,0.5,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,15,16,19,0,5.3,11.5]); %amplitude vector %sqrt([0,5.3,11.5]);%
+num_norms = length(norm_folders);
+folder_indxs = [norm_folders, 1:numel(data_folders)];
+calibration_density_btm= [];
+calibration_shot_num = [];
+cal_dens_btm = 0;
+
 %% Run over each folder
-for this_folder = 1:numel(data_folders)
+for folder_indx = 1:length(folder_indxs)
+    this_folder = folder_indxs(folder_indx);
     %% import raw data
     data_folder = data_folders{this_folder};
     opts.import.dir = fullfile(opts.data_root, data_folder);
@@ -93,7 +111,7 @@ for this_folder = 1:numel(data_folders)
     opts.cent.mid.sigma = [6.7e-5,16e-5,16e-5];%[8e-5,25e-5,25e-5];
     opts.cent.mid.method = {'margin','average','average'};
     
-    opts.cent.btm.visual = 2; %from 0 to 2
+    opts.cent.btm.visual = 0; %from 0 to 2
     opts.cent.btm.savefigs = 0;
     opts.cent.btm.threshold = [30,5000,5000].*1e3;%[50,5000,5000].*1e3;%[130,2000,2000].*1e3;
     opts.cent.btm.min_threshold = [0,0,0].*1e3;%[0,3,1.5].*1e3;%[16,13,13].*1e3;%[16,7,10].*1e3;
@@ -185,9 +203,9 @@ for this_folder = 1:numel(data_folders)
     v_top_zxy = cell2mat(top_halo.counts_vel);
     v_btm_zxy = cell2mat(bottom_halo.counts_vel);
     
-    nbins=50;
-    theta_bins = linspace(-pi,pi,nbins);
-    phi_bins = linspace(-pi/2,pi/2,nbins);
+    %     nbins=50;%50
+    %     theta_bins = linspace(-pi,pi,nbins);
+    %     phi_bins = linspace(-pi/2,pi/2,nbins);
     
     [theta_top,~] = cart2pol(v_top_zxy(:,2),v_top_zxy(:,3));
     phi_top = atan(v_top_zxy(:,1)./sqrt(v_top_zxy(:,2).^2+v_top_zxy(:,3).^2));
@@ -195,62 +213,202 @@ for this_folder = 1:numel(data_folders)
     [theta_btm,~] = cart2pol(v_btm_zxy(:,2),v_btm_zxy(:,3));
     phi_btm = atan(v_btm_zxy(:,1)./sqrt(v_btm_zxy(:,2).^2+v_btm_zxy(:,3).^2));
     
-    for ii = 1:(nbins-1)
-        r_btm_zxy_masked = v_btm_zxy(theta_bins(ii)<theta_btm & theta_btm<=theta_bins(ii+1),:);
-        r_top_zxy_masked = v_top_zxy(theta_bins(ii)<theta_top & theta_top<=theta_bins(ii+1),:);
-        v_btm_dens(ii,1) = size(r_btm_zxy_masked,1)/(theta_bins(ii+1)-theta_bins(ii));
-        v_top_dens(ii,1) = size(r_top_zxy_masked,1)/(theta_bins(ii+1)-theta_bins(ii));
+    r_btm_zxy_masked=smooth_hist(theta_btm,'sigma',0.1,'lims',[-pi,pi],'bin_num',151);
+    r_top_zxy_masked=smooth_hist(theta_top,'sigma',0.1,'lims',[-pi,pi],'bin_num',151);
+    v_btm_dens(:,1) = r_btm_zxy_masked.count_rate.smooth;
+    v_top_dens(:,1) = r_top_zxy_masked.count_rate.smooth;
+    
+    
+    r_btm_zxy_masked=smooth_hist(phi_btm,'sigma',0.1,'lims',[-pi/2,pi/2],'bin_num',151);
+    r_top_zxy_masked=smooth_hist(phi_top,'sigma',0.1,'lims',[-pi/2,pi/2],'bin_num',151);
+    v_btm_dens(:,2) = r_btm_zxy_masked.count_rate.smooth;
+    v_top_dens(:,2) = r_top_zxy_masked.count_rate.smooth;
+    
+    if folder_indx == num_norms+1 && num_norms>0
+        cal_dens_top_data_top = squeeze(nansum(calibration_density_top.*calibration_shot_num,1)./nansum(calibration_shot_num(:,1,1)));
+        cal_dens_top_data_btm = squeeze(nansum(calibration_density_btm.*calibration_shot_num,1)./nansum(calibration_shot_num(:,1,1)));
         
-        r_btm_zxy_masked = v_btm_zxy(phi_bins(ii)<phi_btm & phi_btm<=phi_bins(ii+1),:);
-        r_top_zxy_masked = v_top_zxy(phi_bins(ii)<phi_top & phi_top<=phi_bins(ii+1),:);
-        v_btm_dens(ii,2) = size(r_btm_zxy_masked,1)/(phi_bins(ii+1)-phi_bins(ii));
-        v_top_dens(ii,2) = size(r_top_zxy_masked,1)/(phi_bins(ii+1)-phi_bins(ii));
         
-        theta(ii) = mean(theta_bins(ii:(ii+1)));
-        phi(ii) = mean(phi_bins(ii:(ii+1)));
+        cal_dens_btm_data_top = squeeze(nansum(calibration_density_btm_data_top.*calibration_shot_num_btm_data,1)./nansum(calibration_shot_num_btm_data(:,1,1)));
+        cal_dens_btm_data_btm = squeeze(nansum(calibration_density_btm_data_btm.*calibration_shot_num_btm_data,1)./nansum(calibration_shot_num_btm_data(:,1,1)));
+        
     end
     v_btm_dens = v_btm_dens./size(bottom_halo.counts_vel,1);
+    %     stfig('dens btm comp')
+    %     hold on
+    %     plot(phi,v_btm_dens(:,2))
+    %     modelfun = @(b,x) b(1).*exp(-b(2).*(sin(x)-b(3)).^2);
+    %     fit_0 = fitnlm(phi(1:35),v_btm_dens(1:35,2),modelfun,[100,0.5,1])
+    %     parms0 = fit_0.Coefficients.Estimate;
+    %     plot(phi, modelfun([parms0],phi),'--','LineWidth',2.0)
+    %     hold off
     v_top_dens = v_top_dens./size(top_halo.counts_vel,1);
     
+    
     %% Append data to structure
-    out_data.v_dens.top{this_folder} = v_top_dens;
-    out_data.v_dens.btm{this_folder} = v_btm_dens;
-    out_data.num_shots(this_folder) = num_shots;
-    trans_ratio{this_folder} = v_btm_dens./(v_top_dens+v_btm_dens);
-    trans_ratio_unc{this_folder} = v_btm_dens./(v_top_dens+v_btm_dens).*sqrt(1./v_btm_dens+1./(v_top_dens+v_btm_dens));
-    equator_trans_ratio(this_folder) = trans_ratio{this_folder}(25,2);
-    equator_trans_ratio_unc(this_folder) = trans_ratio_unc{this_folder}(25,2);
+    if folder_indx>num_norms
+        out_data.v_dens.top{this_folder} = v_top_dens;
+        out_data.v_dens.btm{this_folder} = v_btm_dens;
+        out_data.num_shots(this_folder) = num_shots;
+        out_data.num_counts.top(this_folder) = size(v_top_zxy,1);
+        out_data.num_counts.btm(this_folder) = size(v_btm_zxy,1);
+        
+        N_Bec(this_folder) = nanmean(bec_halo.counts_mid);
+        Cen_test(this_folder,:) = nanmean(bec_halo.width_mid);
+        
+        if ismember(this_folder,btm_halo_comp)
+            cal_dens_top = cal_dens_btm_data_top;
+            cal_dens_btm = cal_dens_btm_data_btm;
+            N_cal = N_Bec(22);
+            cal_N = cal_N_btm_data;
+        else
+            cal_dens_top = cal_dens_top_data_top;
+            cal_dens_btm = cal_dens_top_data_btm;
+            N_cal = N_Bec(1);
+            cal_N = cal_N_top_data;
+        end
+        
+        if Eamp(this_folder).^2<3
+            Cbtm = N_Bec(this_folder)./N_cal;
+            Ctop = (cal_N./((size(v_top_zxy,1)+size(v_btm_zxy,1))./num_shots)).^(-1);
+        elseif Eamp(this_folder).^2<9
+            Cbtm = N_Bec(this_folder)./N_cal;
+            Ctop = (cal_N./((size(v_top_zxy,1)+size(v_btm_zxy,1))./num_shots)).^(-1);
+        else
+            Cbtm = (cal_N./((size(v_top_zxy,1)+size(v_btm_zxy,1))./num_shots)).^(-1);
+            Ctop = (cal_N./((size(v_top_zxy,1)+size(v_btm_zxy,1))./num_shots)).^(-1);
+        end
+        %         Ctop = Cbtm;
+        
+        
+        %(v_top_dens+v_btm_dens)./(cal_dens_top+cal_dens_btm); %sum
+        %normalisation
+        
+        %(cal_N./((size(v_top_zxy,1)+size(v_btm_zxy,1))./num_shots)).^(-1);
+        %%number normalisation
+        
+        %Bec number normalisation
+        %N_test(this_folder)./N_test(1)
+        
+        %Bec width normalisation
+        %(Cen_test(1,1)./Cen_test(this_folder,1)).^1.5;
+        
+        %1;%no normalisation (unadjusted calibration)
+        
+        C_vec(this_folder,:) = [Ctop,Cbtm];
+        trans_ratio_top{this_folder} = (v_top_dens-Ctop.*cal_dens_top)./(v_top_dens+v_btm_dens-Ctop.*cal_dens_top.*2);
+        trans_ratio_btm{this_folder} = (v_btm_dens-Cbtm.*cal_dens_btm)./(v_top_dens+v_btm_dens-Cbtm.*cal_dens_btm.*2);
+        trans_ratio_naive{this_folder} = (v_btm_dens)./(v_top_dens+v_btm_dens);%
+        
+        nbins = size(v_btm_dens,1);
+        trans_ratio_unc{this_folder} = v_btm_dens./(v_top_dens+v_btm_dens).*sqrt(1./v_btm_dens+1./(v_top_dens+v_btm_dens));
+        equator_trans_ratio_top(this_folder) = trans_ratio_top{this_folder}(round(nbins/2),2);
+        equator_trans_ratio_btm(this_folder) = trans_ratio_btm{this_folder}(round(nbins/2),2);
+        equator_trans_naive(this_folder) = trans_ratio_naive{this_folder}(round(nbins/2),2);
+        equator_trans_ratio_unc(this_folder) = trans_ratio_unc{this_folder}(round(nbins/2),2);
+    else
+        if ismember(this_folder,btm_halo_comp)
+            calibration_density_btm_data_btm(folder_indx,:,:) = v_btm_dens;
+            calibration_density_btm_data_top(folder_indx,:,:) = v_top_dens;
+            calibration_shot_num_btm_data(folder_indx,:,:) = size(bottom_halo.counts_vel,1).*ones(size(v_btm_dens));
+            cal_N_btm_data = (size(v_top_zxy,1)+size(v_btm_zxy,1))./num_shots;
+            
+        else
+            calibration_density_btm(folder_indx,:,:) = v_btm_dens;
+            calibration_density_top(folder_indx,:,:) = v_top_dens;
+            calibration_shot_num(folder_indx,:,:) = size(bottom_halo.counts_vel,1).*ones(size(v_btm_dens));
+            cal_N_top_data = (size(v_top_zxy,1)+size(v_btm_zxy,1))./num_shots;
+        end
+    end
     
 end
 %%
-% Eamp = sqrt([0,0.25,0.5,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,15,16,19]);
-Eamp = sqrt([0,0.5,1,2,3,4,5,6,7,8,9,11,12,13,14,15,15,16,19]);
+top_indx = setdiff(1:numel(data_folders),btm_halo_comp);
+% Eamp = sqrt([0,0.25,0.5,1,2,3,4,5,6,7,8,9,11,12,13,14,15,15,16,19]);
+% Eamp = sqrt([0,0.25,0.5,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,15,16,19,5.3]);
+equator_trans_ratio_top_bounded = equator_trans_ratio_top;
+% equator_trans_ratio_top_bounded>1 |
+% equator_trans_ratio_top_bounded(equator_trans_ratio_top_bounded>1 | equator_trans_ratio_top_bounded<0) = nan;
+equator_trans_ratio_btm_bounded = equator_trans_ratio_btm;
+% equator_trans_ratio_btm_bounded(equator_trans_ratio_btm_bounded>1 | equator_trans_ratio_btm_bounded<0) = nan;
 
-modelfun = @(b,x) b(1).*cos(x(:,1).*b(2)+b(4))+b(3);
-fit_1 = fitnlm(Eamp,equator_trans_ratio,modelfun,[-0.5,2*pi/6,0.5,0])
+equator_trans_ratio_both = nanmean([equator_trans_ratio_top_bounded(top_indx);equator_trans_ratio_btm_bounded(top_indx)]);
+equator_trans_ratio_both_btm = nanmean([equator_trans_ratio_top_bounded(btm_halo_comp);equator_trans_ratio_btm_bounded(btm_halo_comp)]);
+
+%thresholding
+equator_trans_ratio_both(equator_trans_ratio_both<0) = 0;
+equator_trans_ratio_both(equator_trans_ratio_both>1) = 1;
+
+% trans_naive = [out_data.v_dens.btm{:}]./([out_data.v_dens.top{:}]+[out_data.v_dens.btm{:}]);
+
+colors_main=[[88,113,219];[60,220,180]./1.75;[88,113,219]./1.7]./255;
+
+% modelfun = @(b,x) b(1).*cos(x(:,1).*b(2)+b(4))+b(3);
+% fit_1 = fitnlm(Eamp,equator_trans_ratio,modelfun,[-0.5,2*pi/6,0.5,0])
+
+modelfun = @(b,x) b(1).*cos((x(:,1).^b(3)).*b(2)-pi/2).^2;
+fit_top = fitnlm(Eamp,equator_trans_ratio_top,modelfun,[1,-0.5*pi/6,1])
+fit_btm = fitnlm(Eamp,equator_trans_ratio_btm,modelfun,[1,-0.5*pi/6,1])
+fit_naive = fitnlm(Eamp,equator_trans_naive,modelfun,[1,-0.5*pi/6,1])
+fit_both = fitnlm(Eamp(top_indx),equator_trans_ratio_both,modelfun,[1,-0.5*pi/6,1])
 
 stfig('Transfer efficency against pulse amplitude comp');
 clf
-Evec = linspace(0,5,1e4);
-[ysamp_val,ysamp_ci]=predict(fit_1,Evec','Prediction','curve','Alpha',1-erf(1/sqrt(2))); %'Prediction','observation'
+grid on
 hold on
-plot(Evec,ysamp_val,'k','LineWidth',1.5)
+Evec = linspace(0,5,1e4);
+[ysamp_val,ysamp_ci]=predict(fit_both,Evec','Prediction','curve','Alpha',1-erf(1/sqrt(2))); %'Prediction','observation'
+hold on
+plot(Evec.^2,ysamp_val,'k','LineWidth',1.5)
 drawnow
 yl=ylim*1.1;
-plot(Evec,ysamp_ci,'color',[1,1,1].*0.5)
+plot(Evec.^2,ysamp_ci,'color',[1,1,1].*0.5)
 
 curve1 = ysamp_ci(:,1)';
 curve2 = ysamp_ci(:,2)';
-x1 = Evec;
+x1 = Evec.^2;
 x2 = [x1, fliplr(x1)];
 inBetween = [curve1, fliplr(curve2)];
 h = fill(x2, inBetween, 'g');
 h.FaceColor = [0.31 0.31 0.32].*2;
 h.FaceAlpha = 0.5;
-parms1 = fit_1.Coefficients.Estimate;
+parms1 = fit_top.Coefficients.Estimate;
 % equator_trans_ratio_unc  = equator_trans_ratio.*0.1;
-errorbar(Eamp,equator_trans_ratio,equator_trans_ratio_unc./sqrt(out_data.num_shots),'kx')
-% plot(Evec, modelfun(parms1,Evec'))
+p_top = errorbar(Eamp(top_indx).^2,equator_trans_ratio_both,0.5./sqrt(out_data.num_shots(top_indx)),'o','CapSize',0,'MarkerSize',5,'Color',colors_main(3,:),...
+    'MarkerFaceColor',colors_main(2,:),'LineWidth',2.5)
+
+p_btm = errorbar(Eamp(btm_halo_comp).^2,equator_trans_ratio_both_btm,0.5./sqrt(out_data.num_shots(btm_halo_comp)),'o','CapSize',0,'MarkerSize',5,'Color',[0.7,0.4,.3],...
+    'MarkerFaceColor',[0.8,0.2,.2],'LineWidth',2.5)
+
+% errorbar(Eamp.^2,equator_trans_naive,0.5./sqrt(out_data.num_shots),'o','CapSize',0,'MarkerSize',5,'Color',[0.5,0.5,.2],...
+%     'MarkerFaceColor',[0.5,0.7,.05],'LineWidth',2.5)
+%
+% errorbar(Eamp.^2,equator_trans_ratio_btm,0.5./sqrt(out_data.num_shots),'o','CapSize',0,'MarkerSize',5,'Color',[0.8,0.3,.1],...
+%     'MarkerFaceColor',[0.8,0.2,.2],'LineWidth',2.5)
+%
+% errorbar(Eamp.^2,equator_trans_ratio_top,0.5./sqrt(out_data.num_shots),'o','CapSize',0,'MarkerSize',5,'Color',[0.5,0.8,.7],...
+%     'MarkerFaceColor',[0.6,0.8,.7],'LineWidth',2.5)
+
+% errorbar(Eamp(top_indx).^2,equator_trans_ratio_both,0.5./sqrt(out_data.num_shots(top_indx)),'o','CapSize',0,'MarkerSize',5,'Color',[0.5,0.8,.7],...
+%     'MarkerFaceColor',[0.6,0.8,.7],'LineWidth',2.5)
+
+
+% plot(Evec.^2, modelfun([1,pi/10,2],Evec'))
+legend([p_top,p_btm],'Top Halo transfer','Bottom Halo transfer')
+set(gca,'FontSize',22)
 hold off
-xlabel('Transfer Percentage')
-ylabel('Pulse Amplitude')
+ylabel('Transfer Percentage')
+xlabel('Pulse Amplitude')
+
+%% Plot num checks
+
+stfig('num checks')
+clf
+subplot(2,1,2)
+plot(Eamp.^2,(out_data.num_counts.top(:)+out_data.num_counts.btm(:)),'o')
+xlabel('amp')
+ylabel('total counts in both halos')
+subplot(2,1,1)
+plot(Eamp.^2,(out_data.num_counts.top(:)+out_data.num_counts.btm(:))./out_data.num_shots','o')
+xlabel('amp')
+ylabel('avg counts in both halos')

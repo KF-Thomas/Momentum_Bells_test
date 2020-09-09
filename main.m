@@ -15,9 +15,10 @@ opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
 % data_folder = '20200721_momentum_transfer_optimiser_1';
 % data_folder = '20200729_brief_movement_data_fat_cloud';
 % data_folder = '20200807_k=0,-1,-2_halos_data_1';
-data_folder = '20200807_k=0,-1,-2_halos_data_2';
+% data_folder = '20200807_k=0,-1,-2_halos_data_2';
+data_folder = '';
 opts.import.dir = fullfile(opts.data_root, data_folder);
-opts.import.force_reimport = false;
+opts.import.force_reimport = true;
 opts.import.force_cache_load = ~opts.import.force_reimport;
 %% Import parameters
 tmp_xlim=[-35e-3, 35e-3];     %tight XY lims to eliminate hot spot from destroying pulse widths
@@ -80,32 +81,30 @@ hebec_constants
 %% find centers
 opts.cent.visual = 2; %from 0 to 2
 opts.cent.savefigs = 0;
-% opts.cent.bin_size = 3e-5 * [1, 1, 1]; %1e-5 * [1, 10, 10];
-opts.cent.top.threshold = [130,2000,2000].*1e3;
+opts.cent.correction = 1;
+opts.cent.correction_opts.plots = 0;
+
+opts.cent.top.visual = 0; %from 0 to 2
+opts.cent.top.threshold = [130,2000,2000].*1e3;  %set in inverse units (Hz for time 1/m for space)
 opts.cent.top.min_threshold = [16,13,13].*1e3;%[16,7,10].*1e3;
 opts.cent.top.sigma = [6.7e-5,16e-5,16e-5];%[8e-5,25e-5,25e-5];
 opts.cent.top.method = {'margin','average','average'};
 
-opts.cent.mid.threshold = [130,2000,2000].*1e3;
+opts.cent.mid.visual = 0; %from 0 to 2
+opts.cent.mid.threshold = [130,2000,2000].*1e3;  %set in inverse units (Hz for time 1/m for space)
 opts.cent.mid.min_threshold = [16,13,13].*1e3;%[16,7,10].*1e3;
 opts.cent.mid.sigma = [6.7e-5,16e-5,16e-5];%[8e-5,25e-5,25e-5];
 opts.cent.mid.method = {'margin','average','average'};
 
-opts.cent.btm.threshold = [130,2000,2000].*1e3;
+opts.cent.btm.visual = 0; %from 0 to 2
+opts.cent.btm.threshold = [130,2000,2000].*1e3;  %set in inverse units (Hz for time 1/m for space)
 opts.cent.btm.min_threshold = [16,13,13].*1e3;%[16,7,10].*1e3;
 opts.cent.btm.sigma = [6.7e-5,16e-5,16e-5];%[8e-5,25e-5,25e-5];
 opts.cent.btm.method = {'margin','average','average'};
-% opts.cent.threshold = [710,2000,2000].*1e3;%[100,55,55].*1e3; %set in inverse units (Hz for time 1/m for space)
 
-% opts.cent.threshold = [50,20,20].*1e3; %set in inverse units (Hz for time 1/m for space)
-
-% opts.cent.sigma = [0.4e-5,16e-5,16e-5];
-% opts.cent.method = {'margin','margin','margin'};
-
-% opts.cent.method = {'average','average','average'};%{'gauss_fit','gauss_fit','gauss_fit'};%
 % opts.cent.t_bounds = {[3.8598,3.871],[3.871,3.8844],[3.8844,3.8972],[3.8,3.95]}; %time bounds for the different momentum states k=+1,0,-1 respectively
 % opts.cent.t_bounds = {[3.861,3.867],[3.874,3.881],[3.887,3.895],[3.8,3.95]}; %time bounds for the different momentum states k=+1,0,-1 respectively
-opts.cent.t_bounds = {[3.844,3.8598],[3.8598,3.871],[3.871,3.8844],[3.75,4]};
+opts.cent.t_bounds = {[3.844,3.8598],[3.8598,3.871],[3.871,3.8844],[3.75,4]}; %time bounds for the different momentum states k=-2,-1,0 respectively
 bec = halo_cent(data_masked,opts.cent);
 
 %% run some checks
