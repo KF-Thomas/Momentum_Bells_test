@@ -28,17 +28,21 @@ end
 end
 
 function amp = Omega(t,b)
-% amp = gaussian_pulse(t,b(1),b(2)).*b(3);
+amp = gaussian_pulse(t,b(1),b(2)).*b(3);
+% amp = super_gaussian_pulse(t,b(1),b(2),b(4)).*b(3);
 % amp = sinc_pulse(t,b(1),b(2)).*b(3);
 % amp = square_pulse(t,b(1),b(2)).*b(3);
 % amp = sinc_pulse(t,b(1),b(2)).*gaussian_pulse(t,b(1),b(6)).*b(3);
-% amp = sinc_pulse(t,b(1),b(2)).*cos(pi*(t-b(1))/35).^2.*b(3);
-amp = gaussian_pulse(t,b(1),b(2)).*b(3)+ gaussian_pulse(t,b(5),b(6)).*b(7);
+% amp = sinc_pulse(t,b(1),b(2)).*b(3);%.*cos(pi*(t-b(1))/(2*b(1))).^2
+% amp = sinc_pulse(t,b(1),b(2)).*b(3).*cos(pi*(t-b(1))/(2*b(1))).^2;
+% amp = hamming_pulse(t,b(1),b(2)).*b(3);%.*cos(pi*(t-b(1))/(2*b(1))).^2
+% amp = sqrt(abs(sinc_pulse(t,b(1),b(2)).*b(3).*cos(pi*(t-b(1))/(2*b(1))).^2));
 end
 
 function phase = theta(t,b)
 % phase = 0;
-phase = b(4)*t;%(b(4)*t+b(5)*t^2);%
+phase = (b(4)*t+b(5)*t^2+pi/3);%b(4)*t;
+% phase = (b(5)*t+b(6)*t^2);%b(4)*t;
 end
 
 function amp = square_pulse(t,start_time,duration)
@@ -53,6 +57,18 @@ function amp = gaussian_pulse(t,t0,alpha)
 amp = exp(-alpha*(t-t0)^2);
 end
 
+function amp = super_gaussian_pulse(t,t0,alpha,n)
+amp = exp(-alpha*(t-t0).^n);
+end
+
 function amp = sinc_pulse(t,t0,alpha)
 amp = sinc((t-t0)/alpha);
+end
+
+function amp = hamming_pulse(t,t0,L)
+if abs(t-t0)>L/2
+    amp = 0;
+else
+    amp = cos(pi*(t-t0-L/2)/(L)).^2;
+end
 end

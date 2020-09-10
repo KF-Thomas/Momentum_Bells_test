@@ -18,6 +18,9 @@ cost_opts.diffraction_order = 9;
 cost_opts.orders = [-2,-1];%[-2,-1,0]; %the difraction orders we want top optimize transfer to
 cost_opts.goal = 'transfer';%'mirror';%'splitting';
 %% Problem Definition
+cost_opts.diffraction_order = 9;
+cost_opts.orders = [-1,-2];
+cost_opts.goal = 'mirror';%'transfer';%'splitting';
 CostFunction=@(b) Raman_Nath_Cost(b,cost_opts);    % Cost Function
 nVar=7;            % Number of Decision Variables
 VarSize=[1 nVar];   % Decision Variables Matrix Size
