@@ -33,7 +33,7 @@ function colist_test = coordinatelist(lambda,phi,Tmax,cycles,quantum_efficiency,
 
     %% Dark Counts:
     % Scale percentage by 10^6 so that small percentages can affect it.
-    thresh = dark_rate*1E6+.1;
+    thresh = dark_rate*1E8+.1;
     darkYs = randi(1E8,cycles,1)<thresh;
     darkXs = randi(1E8,cycles,1)<thresh;
     darkWs = randi(1E8,cycles,1)<thresh;
