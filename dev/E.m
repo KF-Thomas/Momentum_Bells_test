@@ -2,7 +2,7 @@ function [E_val, corrs] = E(ports,opts_E)
 %calculates the quantum correlator E for our Bell test
 %input data as structure of the 4 different ports
 corr_opts.verbose = opts_E.verbose;
-%% options for correlation caculation
+%% general options for correlation caculation
 if opts_E.plots
     corr_opts.plots=true;
     corr_opts.fig='top halo bb corr';
@@ -31,16 +31,23 @@ corr_opts.print_update = false;
 
 corr_opts.fit = true;
 
-
 corr_opts.calc_err = opts_E.calc_err;
 corr_opts.samp_frac_lims=[0.25,0.5];
 corr_opts.num_samp_frac=2;
 corr_opts.num_samp_rep=5;
 
-corr_opts.g14 = corr_opts;
-corr_opts.g23 = corr_opts;
+port_pairs = {'g14','g23','g12','g34','g13','g24'};
+
+for this_port = port_pairs
+    corr_opts.(this_port{1}) = corr_opts;
+    corr_opts.(this_port{1}).fig = this_port{1};
+end
+
+%% Port specific options
+
 corr_opts.g14.redges=sqrt(linspace((5e-3)^2,0.02^2,40));
 corr_opts.g14.rad_smoothing=nan;
+
 corr_opts.g23.redges=sqrt(linspace((5e-3)^2,one_d_range^2,40));
 corr_opts.g23.rad_smoothing=3e-5;
 
@@ -58,30 +65,17 @@ counts23 = [ports.top_left';ports.bottom_right'];
 counts24 = [ports.top_left';ports.bottom_left'];
 counts34 = [ports.bottom_right';ports.bottom_left'];
 
-if opts_E.plots
-    corr_opts.g14.fig='g14';
-end
 corrs.g14 = calc_any_g2_type(corr_opts.g14,counts14);
-if opts_E.plots
-    corr_opts.g23.fig='g23';
-end
+
 corrs.g23 = calc_any_g2_type(corr_opts.g23,counts23);
-if opts_E.plots
-    corr_opts.fig='g12';
-end
+
 corrs.g12 = calc_any_g2_type(corr_opts,counts12);
-if opts_E.plots
-    corr_opts.fig='g34';
-end
+
 corrs.g34 = calc_any_g2_type(corr_opts,counts34);
-if opts_E.plots
-    corr_opts.fig='g13';
-end
-corrs.g13 = calc_any_g2_type(corr_opts,counts13);
-if opts_E.plots
-    corr_opts.fig='g24';
-end
-corrs.g24 = calc_any_g2_type(corr_opts,counts24);
+
+corrs.g13 = calc_any_g2_type(corr_opts.g13,counts13);
+
+corrs.g24 = calc_any_g2_type(corr_opts.g24,counts24);
 
 %Caculate the correlator
 E_val = (corrs.g14.norm_g2.fitted_g2peak+corrs.g23.norm_g2.fitted_g2peak-corrs.g12.norm_g2.fitted_g2peak-corrs.g34.norm_g2.fitted_g2peak)/...

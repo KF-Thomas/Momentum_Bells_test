@@ -6,8 +6,8 @@ core_folder = fullfile(fileparts(this_folder), 'Core_BEC_Analysis\');
 addpath(genpath(core_folder));
 set(groot, 'DefaultTextInterpreter', 'latex')
 %% Import directory
-opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
-% opts.data_root = 'Z:\EXPERIMENT-DATA\2020_Momentum_Bells\';
+% opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
+opts.data_root = 'Z:\EXPERIMENT-DATA\2020_Momentum_Bells\';
 % opts.data_root = 'C:\Users\kieran\Documents\LOCAL-DATA\';
 % data_folder = '20191115_halos_attempt_3';
 % data_folder = '20191114_halos_attempt_2';
@@ -15,8 +15,8 @@ opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
 % data_folder = '20200721_momentum_transfer_optimiser_1';
 % data_folder = '20200729_brief_movement_data_fat_cloud';
 % data_folder = '20200807_k=0,-1,-2_halos_data_1';
-% data_folder = '20200807_k=0,-1,-2_halos_data_2';
-data_folder = '';
+data_folder = '20200807_k=0,-1,-2_halos_data_2';
+% data_folder = '';
 opts.import.dir = fullfile(opts.data_root, data_folder);
 opts.import.force_reimport = true;
 opts.import.force_cache_load = ~opts.import.force_reimport;
@@ -202,7 +202,7 @@ ports = {};
 %% calculate the global correlation functions around the halos
 global_corrs_opts.plots = true;
 global_corrs_opts.fit = true;
-global_corrs_opts.calc_err = false;
+global_corrs_opts.calc_err = true;
 
 corrs = global_corrs(top_halo,bottom_halo,global_corrs_opts);
 
