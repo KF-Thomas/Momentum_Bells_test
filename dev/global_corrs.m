@@ -15,7 +15,7 @@ corr_opts.num_samp_rep=5;
 
 corr_opts.attenuate_counts=1;
 
-%% back to back (intra halo)
+%% BACK TO BACK (in the same halo)
 corr_opts.type='radial_bb';
 % corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*35e-3;
 one_d_range=0.017;%0.02
@@ -26,7 +26,7 @@ corr_opts.low_mem=true;
 
 corr_opts.norm_samp_factor=1500;%1500;
 corr_opts.sample_proportion=0.65;%1500;
-corr_opts.sampling_method='complete';%method for sampling uncorrelated pairs (either 'basic' or 'complete')
+corr_opts.sampling_method='complete';%'basic';%method for sampling uncorrelated pairs (either 'basic' or 'complete')
 corr_opts.do_pre_mask=false;
 corr_opts.sorted_dir=1;
 corr_opts.sort_norm=1;
@@ -42,7 +42,7 @@ corrs.top_halo.corr_bb=calc_any_g2_type(corr_opts,top_halo.counts_vel');
 corr_opts.fig='bottom halo bb corr test0';
 corrs.bottom_halo.corr_bb=calc_any_g2_type(corr_opts,bottom_halo.counts_vel');
 
-%% co-linear (intra)
+%% CO-LINEAR (in the same halo)
 
 corr_opts.type='radial_cl';%'1d_cart_cl';%'3d_cart_cl';%%%
 % corr_opts.one_d_dimension=3;
@@ -69,12 +69,12 @@ corr_opts.sort_norm=1;
 corr_opts.fig='top halo cl corr';
 corrs.top_halo.corr_cl=calc_any_g2_type(corr_opts,top_halo.counts_vel');
 
-%%
+%% BOTTOM HALO CO-LINEAR
 
 corr_opts.fig='bottom halo cl corr';
 corrs.bottom_halo.corr_cl=calc_any_g2_type(corr_opts,bottom_halo.counts_vel');
 
-%% cl (inter)
+%% BETWEEN HALO CO-LINEAR
 corr_opts.fig='between halo cl corr';
 corr_opts.type='radial_cl';%'3d_cart_cl';%'1d_cart_cl';%
 corr_opts.one_d_dimension=2;
@@ -104,7 +104,7 @@ corr_opts.one_d_smoothing=nan;
 
 corrs.between_halos.corr_cl=calc_any_g2_type(corr_opts,both_halo_counts);
 
-%% bb (inter halo)
+%% BETWEEN HALO BACK TO BACK
 corr_opts.fig='between halo bb corr';
 corr_opts.type='radial_bb';%'3d_cart_bb';%'1d_cart_bb';%
 corr_opts.one_d_dimension=3;
@@ -113,7 +113,7 @@ corr_opts.one_d_dimension=3;
 corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*5e-2;
 one_d_range=0.02;
 corr_opts.one_d_edges=linspace(-one_d_range,one_d_range,100)';
-corr_opts.redges=sqrt(linspace((5e-3)^2,one_d_range^2,40));
+corr_opts.redges=sqrt(linspace(0,one_d_range^2,40));%(5e-3)^2
 corr_opts.rad_smoothing=nan;
 corr_opts.direction_labels = {'z','x','y'};
 corr_opts.low_mem=true;

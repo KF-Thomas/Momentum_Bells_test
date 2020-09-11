@@ -4,7 +4,7 @@ if opts.control == 1
     for ii = 1:length(bs)
         b=bs(ii,:);
         [t,y] = Raman_Nath_Solver(b,opts,k);
-        trans_percentage(ii) = y(end,ord);
+        trans_percentage(ii,:) = y(end,ord);
     end
 else
     trans_percentage=zeros(length(k),length(ord));

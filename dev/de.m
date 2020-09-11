@@ -16,21 +16,22 @@
 %% Optimization Options
 cost_opts.diffraction_order = 9;
 cost_opts.orders = [-2,-1];%[-2,-1,0]; %the difraction orders we want top optimize transfer to
+cost_opts.goal = 'transfer';%'mirror';%'splitting';
 %% Problem Definition
 cost_opts.diffraction_order = 9;
 cost_opts.orders = [-1,-2];
 cost_opts.goal = 'mirror';%'transfer';%'splitting';
 CostFunction=@(b) Raman_Nath_Cost(b,cost_opts);    % Cost Function
-nVar=4;            % Number of Decision Variables
+nVar=7;            % Number of Decision Variables
 VarSize=[1 nVar];   % Decision Variables Matrix Size
 %% Problem constrains
-int_Position = [1.8239 0.0595 1.1221 0.1682]; %intial position
-lb = [0.1, 0.01, 0.2, -0.9]; %lowerbounds
-ub = [5, 6, 5, 0.9]; %upperbounds
+int_Position = [0.5000 2.4141 1.0080 -0.8694 15.9905 0.6040 2.1811];%[17.5 1 1.9018 0.6277 0.9000 15 3.6690];%[1 0.9085 0.2019 0.3000 1.4652 0.4849 0.4457];%[4, 0.6,1.06, 0, 9, 0.6,1.06];%[1.8239 0.0595 1.1221 0.1682]; %intial position
+lb = [0.4,0.008,0.03, -0.9, 0.4,0.008,0.03];%[0.1, 0.01, 0.2, -0.9]; %lowerbounds
+ub = [35, 4, 4.0, 0.9, 35, 4, 4.0];%[5, 6, 5, 0.9]; %upperbounds
 
 %% DE Parameters
-MaxIt=10;      % Maximum Number of Iterations
-nPop=50;        % Population Size
+MaxIt=600;      % Maximum Number of Iterations
+nPop=55;        % Population Size
 beta_min=0.2;   % Lower Bound of Scaling Factor
 beta_max=0.8;   % Upper Bound of Scaling Factor
 pCR=0.2;        % Crossover Probability

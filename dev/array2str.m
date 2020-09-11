@@ -4,7 +4,9 @@ if ~iscellstr(cellstr)
 for row = 1:nrows
     for col = 1:ncols
         if isnumeric(cellstr{row,col})
-        cellstr{row,col} = num2str(cellstr{row,col});
+            cellstr{row,col} = num2str(cellstr{row,col});
+        elseif isa(cellstr{row,col},'function_handle')
+            cellstr{row,col} = func2str(cellstr{row,col});
         end
     end
 end
