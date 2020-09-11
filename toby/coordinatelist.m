@@ -1,14 +1,18 @@
-function colist_test = coordinatelist(lambda,phi,Tmax,cycles)
-    
-    [p,event,cap] = problist(lambda,phi,Tmax);
-    m = zeros(cycles,1); ys = m; xs = m; ws = m; zs = m;
-
+% Returns a cell array with each cell containing the list of detected
+% particle coordinates for each simulated experimental run.
+%% Function:
+function colist_test = coordinatelist(lambda,phi,Tmax,cycles,quantum_efficiency,dark_rate,blur)
+    % Call the divided probability list from problist.m
+    [p,event,~] = problist(lambda,phi,Tmax);
+    % Lists of each event for each trial:
+    ys = zeros(cycles,1); xs = ys; ws = ys; zs = ys;
+    % Find what event each trial corresponds to and note where these events
+    % correlate to detections:
     for runs = 1:cycles
         n = rand;
         i = 1;
         while true
             if n<p(i+1)
-                m(runs) = i;
                 ys(runs) = event(i,1);
                 xs(runs) = event(i,2);
                 ws(runs) = event(i,3);
@@ -18,28 +22,28 @@ function colist_test = coordinatelist(lambda,phi,Tmax,cycles)
             i=i+1;
         end
     end
-    % Lost Counts:
-    lostlist = randi(100,cycles,1)<8.01;
-    survivedm = m.*lostlist;
-    survivedYs = ys.*lostlist;
-    survivedXs = xs.*lostlist;
-    survivedWs = ws.*lostlist;
-    survivedZs = zs.*lostlist;
+    %% Quantum Efficiency:
+    % Cull data, keeping only the efficiency rating:
+    thresh = quantum_efficiency +.01;
+    keeplist = randi(100,cycles,1)<thresh;
+    survivedYs = ys.*keeplist;
+    survivedXs = xs.*keeplist;
+    survivedWs = ws.*keeplist;
+    survivedZs = zs.*keeplist;
 
-    % Dark Counts:
-    darkYs = randi(1000,cycles,1)<1.01;
-    darkXs = randi(1000,cycles,1)<1.01;
-    darkWs = randi(1000,cycles,1)<1.01;
-    darkZs = randi(1000,cycles,1)<1.01;
+    %% Dark Counts:
+    % Scale percentage by 10^6 so that small percentages can affect it.
+    thresh = dark_rate*1E6+.1;
+    darkYs = randi(1E8,cycles,1)<thresh;
+    darkXs = randi(1E8,cycles,1)<thresh;
+    darkWs = randi(1E8,cycles,1)<thresh;
+    darkZs = randi(1E8,cycles,1)<thresh;
     detectedYs = survivedYs + darkYs;
     detectedXs = survivedXs + darkXs;
     detectedWs = survivedWs + darkWs;
     detectedZs = survivedZs + darkZs;
 
-
-
-    coordlist = zeros(sum(detectedYs)+sum(detectedXs)+sum(detectedWs)+sum(detectedZs),3);
-    pos = 1;
+    %% Place detected particles at a position:
     Ycoord = [1 1 0];
     Xcoord = [-1 1 0];
     Wcoord = [1 -1 0];
@@ -48,7 +52,7 @@ function colist_test = coordinatelist(lambda,phi,Tmax,cycles)
     colist_test = cell(1,cycles);
 
     % Blur factor:
-    sigma = 0.05;
+    sigma = blur;
     for i = 1:cycles
         cordlist_temp = [];
         for j=1:detectedYs(i)
