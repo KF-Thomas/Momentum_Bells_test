@@ -495,8 +495,8 @@ xlabel('\(\phi\)')
 title('density')
 
 %% 2d comparison
-z_shift_top = [mean(top_halo.rad).*ones(size(v_top_zxy_unnorm,1),1),zeros(size(v_top_zxy_unnorm,1),2)];
-z_shift_btm = [mean(bottom_halo.rad).*ones(size(v_top_zxy_unnorm,1),1),zeros(size(v_top_zxy_unnorm,1),2)];
+z_shift_top = [mean(top_halo.rad).*ones(size(v_top_zxy_unnorm,1),1)];
+z_shift_btm = [zeros(size(v_top_zxy_unnorm,1),2),mean(bottom_halo.rad).*ones(size(v_top_zxy_unnorm,1),1)];
 if opts.do_top_halo && opts.do_btm_halo
     stfig('density of halos');
     clf
@@ -515,12 +515,10 @@ end
 %% full 3d comparison
 
 stfig('halo comparison');
-clf
-plot_mask_top = rand(size(v_top_zxy,1),1)<0.65;
-plot_mask_btm = rand(size(v_btm_zxy,1),1)<0.65;
-scatter3(v_top_zxy(plot_mask_top,2),v_top_zxy(plot_mask_top,3),v_top_zxy(plot_mask_top,1)+z_shift_top,'r.')
-hold on
-scatter3(v_btm_zxy(plot_mask_btm,2),v_btm_zxy(plot_mask_btm,3),v_btm_zxy(plot_mask_btm,1)-z_shift_btm,'b.')
-xlabel('$v_z$')
-ylabel('$v_y$')
-zlabel('$v_z$')
+    clf
+    plot_mask_top = rand(size(v_top_zxy,1),1)<0.65;
+    plot_mask_btm = rand(size(v_btm_zxy,1),1)<0.65;
+    scatter3(v_top_zxy(plot_mask_top,2),v_top_zxy(plot_mask_top,3),v_top_zxy(plot_mask_top,1),'r.')
+    hold on
+    scatter3(v_btm_zxy(plot_mask_btm,2),v_btm_zxy(plot_mask_btm,3),v_btm_zxy(plot_mask_btm,1),'b.')
+    axis equal
