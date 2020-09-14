@@ -7,7 +7,8 @@ core_folder = fullfile(fileparts(this_folder), 'Core_BEC_Analysis\');
 addpath(genpath(core_folder));
 set(groot, 'DefaultTextInterpreter', 'latex')
 %% Import directory
-opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
+% opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
+opts.data_root = 'Z:\EXPERIMENT-DATA\2020_Momentum_Bells\';
 % data_folder = '';
 % data_folder = '20200807_k=0,-1,-2_halos_data_2';
 % data_folder = '20200824_k=0,-1_splitter_attempt';
@@ -24,8 +25,9 @@ opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
 % data_folder = '20200901_k=0,-1_mirror_vs_amp\Pamp_0_5';
 % data_folder = '20200901_k=0,-1_mirror_vs_amp\Pamp_10';
 % data_folder = '20200901_k=0,-1_mirror_vs_amp\Pamp_0_25';
-% data_folder = '20200901_k=0,-1_mirror_vs_amp\Pamp_11';
-data_folder = '20200907_k=-1,-2_transfer_vs_amp\Pamp_0';
+data_folder = '20200901_k=0,-1_mirror_vs_amp\Pamp_11';
+% data_folder = '20200907_k=-1,-2_transfer_vs_amp\Pamp_0';
+data_folder = '20200907_detuning_vs_delay\3_0_ms\detuning_130_kHz';
 opts.import.dir = fullfile(opts.data_root, data_folder);
 opts.import.force_reimport = false;
 opts.import.force_cache_load = ~opts.import.force_reimport;
@@ -255,10 +257,10 @@ N_btm = bottom_halo.num_counts;
 
 %% histograming
 nbins=151;
-theta_bins = linspace(-pi,pi,nbins);
-phi_bins = linspace(-pi/2,pi/2,nbins);
+theta_bins = linspace(-pi,pi,nbins+1);
+phi_bins = linspace(-pi/2,pi/2,nbins+1);
 if opts.do_top_halo
-    [theta_top,~] = cart2pol(v_top_zxy(:,2),v_top_zxy(:,3));
+    [theta_top,rxy_top] = cart2pol(v_top_zxy_unnorm(:,2),v_top_zxy_unnorm(:,3));
     phi_top = atan(v_top_zxy(:,1)./sqrt(v_top_zxy(:,2).^2+v_top_zxy(:,3).^2));
 else
     theta_top = [];
@@ -266,7 +268,7 @@ else
 end
 
 if opts.do_btm_halo
-    [theta_btm,~] = cart2pol(v_btm_zxy(:,2),v_btm_zxy(:,3));
+    [theta_btm,rxy_btm] = cart2pol(v_btm_zxy_unnorm(:,2),v_btm_zxy_unnorm(:,3));
     phi_btm = atan(v_btm_zxy(:,1)./sqrt(v_btm_zxy(:,2).^2+v_btm_zxy(:,3).^2));
 else
     theta_btm = [];
@@ -450,8 +452,8 @@ end
 
 %% density plot in full spherical coordinates
 stfig('spherical density plot')
-for ii = 1:(nbins-1)
-    for jj = 1:(nbins-1)
+for ii = 1:(nbins)
+    for jj = 1:(nbins)
         ang_mask_btm = theta_bins(ii)<theta_btm & theta_btm<=theta_bins(ii+1) ...
             & phi_bins(jj)<phi_btm & phi_btm<=phi_bins(jj+1);
         area = abs(theta_bins(ii+1)-theta_bins(ii))*abs(sin(phi_bins(jj+1))-sin(phi_bins(jj)));
@@ -496,31 +498,48 @@ title('density')
 
 %% 2d comparison
 z_shift_top = [mean(top_halo.rad).*ones(size(v_top_zxy_unnorm,1),1),zeros(size(v_top_zxy_unnorm,1),2)];
-z_shift_btm = [mean(bottom_halo.rad).*ones(size(v_top_zxy_unnorm,1),1),zeros(size(v_top_zxy_unnorm,1),2)];
+z_shift_btm = [mean(bottom_halo.rad).*ones(size(v_btm_zxy_unnorm,1),1),zeros(size(v_btm_zxy_unnorm,1),2)];
 if opts.do_top_halo && opts.do_btm_halo
     stfig('density of halos');
     clf
     subplot(1,2,1)
     combined_vzxy = [v_top_zxy_unnorm+z_shift_top;...
         v_btm_zxy_unnorm-z_shift_btm];
-    ndhist(combined_vzxy(:,[1,3]));
-    xlabel('$v_z$')
-    ylabel('$v_y$')
+    ndhist(combined_vzxy(:,[3,1]),'bins',5);
+    xlabel('$v_y$ (m/s)')
+    ylabel('$v_z$ (m/s)')
     subplot(1,2,2)
-    ndhist(combined_vzxy(:,1:2));
-    xlabel('$v_z$')
-    ylabel('$v_x$')
+    ndhist(combined_vzxy(:,[2,1]),'bins',5);
+    xlabel('$v_x$ (m/s)')
+    ylabel('$v_z$ (m/s)')
+    colormap('default')
 end
 
-%% full 3d comparison
+%% 2d comparison radius
+if opts.do_top_halo && opts.do_btm_halo
+    stfig('density of halos radius');
+    clf
+    combined_vzr = [v_top_zxy_unnorm(:,1)+z_shift_top(:,1),rxy_top;...
+        v_btm_zxy_unnorm(:,1)-z_shift_btm(:,1),rxy_btm];
+    ndhist(combined_vzr(:,[2,1]),'bins',5);
+    xlabel('$v_r$ (m/s)')
+    ylabel('$v_z$ (m/s)')
+    colormap('default')
+    axis equal
+    caxis([0 8])
+end
 
+
+%% full 3d comparison
+plt_p = 1;
 stfig('halo comparison');
 clf
-plot_mask_top = rand(size(v_top_zxy,1),1)<0.65;
-plot_mask_btm = rand(size(v_btm_zxy,1),1)<0.65;
-scatter3(v_top_zxy(plot_mask_top,2),v_top_zxy(plot_mask_top,3),v_top_zxy(plot_mask_top,1)+z_shift_top,'r.')
+plot_mask_top = rand(size(v_top_zxy_unnorm,1),1)<plt_p;
+plot_mask_btm = rand(size(v_btm_zxy_unnorm,1),1)<plt_p;
+scatter3(v_top_zxy_unnorm(plot_mask_top,2),v_top_zxy_unnorm(plot_mask_top,3),v_top_zxy_unnorm(plot_mask_top,1)+z_shift_top(plot_mask_top,1),'r.')
 hold on
-scatter3(v_btm_zxy(plot_mask_btm,2),v_btm_zxy(plot_mask_btm,3),v_btm_zxy(plot_mask_btm,1)-z_shift_btm,'b.')
+scatter3(v_btm_zxy_unnorm(plot_mask_btm,2),v_btm_zxy_unnorm(plot_mask_btm,3),v_btm_zxy_unnorm(plot_mask_btm,1)-z_shift_btm(plot_mask_btm,1),'b.')
 xlabel('$v_z$')
 ylabel('$v_y$')
 zlabel('$v_z$')
+axis equal
