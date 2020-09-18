@@ -1,8 +1,5 @@
-edges = 0:.01:3.3;
-h1 = histogram(dlist,edges,'Normalization','probability');
-singlerun = h1.Values;
-h2 = histogram(d2list,edges,'Normalization','probability');
-Totalrun = h2.Values;
-
-hlist = singlerun ./ Totalrun;
-plot(hlist)
+%A = [phi; slist]
+data = fopen('R8DE-6B01C.txt','w');
+fprintf(data,'%6s %12s\n','\phi','E(\phi)');
+%fprintf(data,'%6.2f %12.8f\n',A);
+fclose(data);

@@ -7,7 +7,8 @@ core_folder = fullfile(fileparts(this_folder), 'Core_BEC_Analysis\');
 addpath(genpath(core_folder));
 set(groot, 'DefaultTextInterpreter', 'latex')
 %% Import directory
-opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
+% opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
+opts.data_root = 'Z:\EXPERIMENT-DATA\2020_Momentum_Bells\';
 % data_folder = '';
 % data_folder = '20200807_k=0,-1,-2_halos_data_2';
 % data_folder = '20200824_k=0,-1_splitter_attempt';
@@ -24,8 +25,9 @@ opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
 % data_folder = '20200901_k=0,-1_mirror_vs_amp\Pamp_0_5';
 % data_folder = '20200901_k=0,-1_mirror_vs_amp\Pamp_10';
 % data_folder = '20200901_k=0,-1_mirror_vs_amp\Pamp_0_25';
-% data_folder = '20200901_k=0,-1_mirror_vs_amp\Pamp_11';
-data_folder = '20200907_k=-1,-2_transfer_vs_amp\Pamp_0';
+data_folder = '20200901_k=0,-1_mirror_vs_amp\Pamp_11';
+% data_folder = '20200907_k=-1,-2_transfer_vs_amp\Pamp_0';
+data_folder = '20200907_detuning_vs_delay\3_0_ms\detuning_130_kHz';
 opts.import.dir = fullfile(opts.data_root, data_folder);
 opts.import.force_reimport = false;
 opts.import.force_cache_load = ~opts.import.force_reimport;
@@ -215,6 +217,8 @@ end
 bec_halo = struct_mask(bec_masked_halo,halo_N_check);
 
 %% plot some histogram checks
+
+%% Setting up variables
 halos.top_halo = top_halo;
 halos.bottom_halo = bottom_halo;
 halos.bec = bec_halo;
@@ -239,8 +243,8 @@ N_top = top_halo.num_counts;
 v_btm_zxy = cell2mat(bottom_halo.counts_vel_norm);
 v_btm_zxy_unnorm = cell2mat(bottom_halo.counts_vel);
 if ~isempty(v_btm_zxy)
-r_dist_btm = sqrt(v_btm_zxy(:,1).^2+v_btm_zxy(:,2).^2+v_btm_zxy(:,3).^2);
-r_dist_btm_unnorm = sqrt(v_btm_zxy_unnorm(:,1).^2+v_btm_zxy_unnorm(:,2).^2+v_btm_zxy_unnorm(:,3).^2);
+    r_dist_btm = sqrt(v_btm_zxy(:,1).^2+v_btm_zxy(:,2).^2+v_btm_zxy(:,3).^2);
+    r_dist_btm_unnorm = sqrt(v_btm_zxy_unnorm(:,1).^2+v_btm_zxy_unnorm(:,2).^2+v_btm_zxy_unnorm(:,3).^2);
 else
     r_dist_btm = [];
     r_dist_btm_unnorm = [];
@@ -251,107 +255,21 @@ N_btm = bottom_halo.num_counts;
 %     bottom_halo = halos.bottom_halo;
 %     bec_masked = halos.bec;
 
-t=linspace(0,2*pi,1e4);
+%% histograming
+nbins=151;
+theta_bins = linspace(-pi,pi,nbins+1);
+phi_bins = linspace(-pi/2,pi/2,nbins+1);
 if opts.do_top_halo
-stfig('density of top halo');
-clf
-subplot(2,3,1)
-ndhist(v_top_zxy(:,2:3));
-hold on
-plot(cos(t),sin(t),'k')
-axis equal
-xlabel('$v_x$')
-ylabel('$v_y$')
-subplot(2,3,2)
-ndhist(v_top_zxy(:,[1,3]));
-hold on
-plot(cos(t),sin(t),'k')
-axis equal
-xlabel('$v_z$')
-ylabel('$v_y$')
-subplot(2,3,3)
-ndhist(v_top_zxy(:,1:2));
-hold on
-plot(cos(t),sin(t),'k')
-axis equal
-xlabel('$v_z$')
-ylabel('$v_x$')
-
-subplot(2,3,4)
-ndhist(v_top_zxy_unnorm(:,2:3));
-axis equal
-xlabel('$v_x$')
-ylabel('$v_y$')
-subplot(2,3,5)
-ndhist(v_top_zxy_unnorm(:,[1,3]));
-axis equal
-xlabel('$v_z$')
-ylabel('$v_y$')
-subplot(2,3,6)
-ndhist(v_top_zxy_unnorm(:,1:2));
-axis equal
-xlabel('$v_z$')
-ylabel('$v_x$')
-end
-
-if opts.do_btm_halo
-stfig('density of bottom halo');
-clf
-subplot(2,3,1)
-ndhist(v_btm_zxy(:,2:3));
-hold on
-plot(cos(t),sin(t),'k')
-axis equal
-xlabel('$v_x$')
-ylabel('$v_y$')
-subplot(2,3,2)
-ndhist(v_btm_zxy(:,[1,3]));
-hold on
-plot(cos(t),sin(t),'k')
-axis equal
-xlabel('$v_z$')
-ylabel('$v_y$')
-subplot(2,3,3)
-ndhist(v_btm_zxy(:,1:2));
-hold on
-plot(cos(t),sin(t),'k')
-axis equal
-xlabel('$v_z$')
-ylabel('$v_x$')
-
-subplot(2,3,4)
-ndhist(v_btm_zxy_unnorm(:,2:3));
-axis equal
-xlabel('$v_x$')
-ylabel('$v_y$')
-subplot(2,3,5)
-ndhist(v_btm_zxy_unnorm(:,[1,3]));
-axis equal
-xlabel('$v_z$')
-ylabel('$v_y$')
-subplot(2,3,6)
-ndhist(v_btm_zxy_unnorm(:,1:2));
-axis equal
-xlabel('$v_z$')
-ylabel('$v_x$')
-end
-
-stfig('average radius vs angle')
-clf
-nbins=152;
-theta_bins = linspace(-pi,pi,nbins);
-phi_bins = linspace(-pi/2,pi/2,nbins);
-if opts.do_top_halo
-[theta_top,~] = cart2pol(v_top_zxy(:,2),v_top_zxy(:,3));
-phi_top = atan(v_top_zxy(:,1)./sqrt(v_top_zxy(:,2).^2+v_top_zxy(:,3).^2));
+    [theta_top,rxy_top] = cart2pol(v_top_zxy_unnorm(:,2),v_top_zxy_unnorm(:,3));
+    phi_top = atan(v_top_zxy(:,1)./sqrt(v_top_zxy(:,2).^2+v_top_zxy(:,3).^2));
 else
     theta_top = [];
     phi_top = [];
 end
 
 if opts.do_btm_halo
-[theta_btm,~] = cart2pol(v_btm_zxy(:,2),v_btm_zxy(:,3));
-phi_btm = atan(v_btm_zxy(:,1)./sqrt(v_btm_zxy(:,2).^2+v_btm_zxy(:,3).^2));
+    [theta_btm,rxy_btm] = cart2pol(v_btm_zxy_unnorm(:,2),v_btm_zxy_unnorm(:,3));
+    phi_btm = atan(v_btm_zxy(:,1)./sqrt(v_btm_zxy(:,2).^2+v_btm_zxy(:,3).^2));
 else
     theta_btm = [];
     phi_btm = [];
@@ -363,14 +281,14 @@ end
 %     v_top_r(ii,1) = mean(r_top_zxy_masked);
 %     v_btm_dens(ii,1) = size(r_btm_zxy_masked,1)/(theta_bins(ii+1)-theta_bins(ii));
 %     v_top_dens(ii,1) = size(r_top_zxy_masked,1)/(theta_bins(ii+1)-theta_bins(ii));
-%     
+%
 %     r_btm_zxy_masked = r_dist_btm_unnorm(phi_bins(ii)<phi_btm & phi_btm<=phi_bins(ii+1));
 %     r_top_zxy_masked = r_dist_top_unnorm(phi_bins(ii)<phi_top & phi_top<=phi_bins(ii+1));
 %     v_btm_r(ii,2) = mean(r_btm_zxy_masked);
 %     v_top_r(ii,2) = mean(r_top_zxy_masked);
 %     v_btm_dens(ii,2) = size(r_btm_zxy_masked,1)/(phi_bins(ii+1)-phi_bins(ii));
 %     v_top_dens(ii,2) = size(r_top_zxy_masked,1)/(phi_bins(ii+1)-phi_bins(ii));
-%     
+%
 %     theta(ii) = mean(theta_bins(ii:(ii+1)));
 %     phi(ii) = mean(phi_bins(ii:(ii+1)));
 % end
@@ -378,20 +296,111 @@ end
 % v_top_dens = v_top_dens./size(top_halo.counts_vel,1);
 v_btm_dens = [];
 v_top_dens = [];
-r_btm_zxy_masked=smooth_hist(theta_btm,'sigma',0.04,'lims',[-pi,pi],'bin_num',151);
-    r_top_zxy_masked=smooth_hist(theta_top,'sigma',0.04,'lims',[-pi,pi],'bin_num',151);
-    v_btm_dens(:,1) = r_btm_zxy_masked.count_rate.smooth;
-    v_top_dens(:,1) = r_top_zxy_masked.count_rate.smooth;
-    
-    
-    r_btm_zxy_masked=smooth_hist(phi_btm,'sigma',0.04,'lims',[-pi/2,pi/2],'bin_num',151);
-    r_top_zxy_masked=smooth_hist(phi_top,'sigma',0.04,'lims',[-pi/2,pi/2],'bin_num',151);
-    v_btm_dens(:,2) = r_btm_zxy_masked.count_rate.smooth;
-    v_top_dens(:,2) = r_top_zxy_masked.count_rate.smooth;
+r_btm_zxy_masked=smooth_hist(theta_btm,'sigma',0.04,'lims',[-pi,pi],'bin_num',nbins);
+r_top_zxy_masked=smooth_hist(theta_top,'sigma',0.04,'lims',[-pi,pi],'bin_num',nbins);
+v_btm_dens(:,1) = r_btm_zxy_masked.count_rate.smooth;
+v_top_dens(:,1) = r_top_zxy_masked.count_rate.smooth;
 
-    theta = linspace(-pi,pi,151);
-    phi = linspace(-pi/2,pi/2,151);
+
+r_btm_zxy_masked=smooth_hist(phi_btm,'sigma',0.04,'lims',[-pi/2,pi/2],'bin_num',nbins);
+r_top_zxy_masked=smooth_hist(phi_top,'sigma',0.04,'lims',[-pi/2,pi/2],'bin_num',nbins);
+v_btm_dens(:,2) = r_btm_zxy_masked.count_rate.smooth;
+v_top_dens(:,2) = r_top_zxy_masked.count_rate.smooth;
+
+theta = linspace(-pi,pi,nbins);
+phi = linspace(-pi/2,pi/2,nbins);
+
+%% 2D projections in velocity space
+
+t=linspace(0,2*pi,1e4);
+if opts.do_top_halo
+    stfig('density of top halo');
+    clf
+    subplot(2,3,1)
+    ndhist(v_top_zxy(:,2:3));
+    hold on
+    plot(cos(t),sin(t),'k')
+    axis equal
+    xlabel('$v_x$')
+    ylabel('$v_y$')
+    subplot(2,3,2)
+    ndhist(v_top_zxy(:,[1,3]));
+    hold on
+    plot(cos(t),sin(t),'k')
+    axis equal
+    xlabel('$v_z$')
+    ylabel('$v_y$')
+    subplot(2,3,3)
+    ndhist(v_top_zxy(:,1:2));
+    hold on
+    plot(cos(t),sin(t),'k')
+    axis equal
+    xlabel('$v_z$')
+    ylabel('$v_x$')
     
+    subplot(2,3,4)
+    ndhist(v_top_zxy_unnorm(:,2:3));
+    axis equal
+    xlabel('$v_x$')
+    ylabel('$v_y$')
+    subplot(2,3,5)
+    ndhist(v_top_zxy_unnorm(:,[1,3]));
+    axis equal
+    xlabel('$v_z$')
+    ylabel('$v_y$')
+    subplot(2,3,6)
+    ndhist(v_top_zxy_unnorm(:,1:2));
+    axis equal
+    xlabel('$v_z$')
+    ylabel('$v_x$')
+end
+
+if opts.do_btm_halo
+    stfig('density of bottom halo');
+    clf
+    subplot(2,3,1)
+    ndhist(v_btm_zxy(:,2:3));
+    hold on
+    plot(cos(t),sin(t),'k')
+    axis equal
+    xlabel('$v_x$')
+    ylabel('$v_y$')
+    subplot(2,3,2)
+    ndhist(v_btm_zxy(:,[1,3]));
+    hold on
+    plot(cos(t),sin(t),'k')
+    axis equal
+    xlabel('$v_z$')
+    ylabel('$v_y$')
+    subplot(2,3,3)
+    ndhist(v_btm_zxy(:,1:2));
+    hold on
+    plot(cos(t),sin(t),'k')
+    axis equal
+    xlabel('$v_z$')
+    ylabel('$v_x$')
+    
+    subplot(2,3,4)
+    ndhist(v_btm_zxy_unnorm(:,2:3));
+    axis equal
+    xlabel('$v_x$')
+    ylabel('$v_y$')
+    subplot(2,3,5)
+    ndhist(v_btm_zxy_unnorm(:,[1,3]));
+    axis equal
+    xlabel('$v_z$')
+    ylabel('$v_y$')
+    subplot(2,3,6)
+    ndhist(v_btm_zxy_unnorm(:,1:2));
+    axis equal
+    xlabel('$v_z$')
+    ylabel('$v_x$')
+end
+
+
+%% Average radius in spherical coordinates
+stfig('average radius vs angle')
+clf
 % subplot(2,1,1)
 % plot(theta,v_btm_r(:,1),'linewidth',1.5)
 % hold on
@@ -407,6 +416,7 @@ r_btm_zxy_masked=smooth_hist(theta_btm,'sigma',0.04,'lims',[-pi,pi],'bin_num',15
 % ylabel('Average radial value')
 % xlabel('\(\phi\)')
 
+%% Density in spherical coordinates
 stfig('density vs angle')
 clf
 subplot(2,1,1)
@@ -423,24 +433,27 @@ plot(phi,v_top_dens(:,2),'linewidth',1.5)
 legend('bottom','top')
 ylabel('Average density')
 xlabel('\(\phi\)')
+
+%% ratio in spherical coordinates
 if opts.do_btm_halo && opts.do_top_halo
-stfig('density ratio vs angle');
-clf
-plot(phi,(v_btm_dens(:,2))./(v_top_dens(:,2)),'linewidth',1.5)
-ylabel('density ratio')
-xlabel('\(\phi\)')
-
-stfig('density visibility vs angle');
-clf
-plot(phi,(v_btm_dens(:,2)-v_top_dens(:,2))./(v_btm_dens(:,2)+v_top_dens(:,2)),'linewidth',1.5)
-ylabel('density vis')
-xlabel('\(\phi\)')
-
+    stfig('density ratio vs angle');
+    clf
+    plot(phi,(v_btm_dens(:,2))./(v_top_dens(:,2)),'linewidth',1.5)
+    ylabel('density ratio')
+    xlabel('\(\phi\)')
+    
+    stfig('density visibility vs angle');
+    clf
+    plot(phi,(v_btm_dens(:,2)-v_top_dens(:,2))./(v_btm_dens(:,2)+v_top_dens(:,2)),'linewidth',1.5)
+    ylabel('density vis')
+    xlabel('\(\phi\)')
+    
 end
 
+%% density plot in full spherical coordinates
 stfig('spherical density plot')
-for ii = 1:(nbins-1)
-    for jj = 1:(nbins-1)
+for ii = 1:(nbins)
+    for jj = 1:(nbins)
         ang_mask_btm = theta_bins(ii)<theta_btm & theta_btm<=theta_bins(ii+1) ...
             & phi_bins(jj)<phi_btm & phi_btm<=phi_bins(jj+1);
         area = abs(theta_bins(ii+1)-theta_bins(ii))*abs(sin(phi_bins(jj+1))-sin(phi_bins(jj)));
@@ -482,3 +495,51 @@ colorbar
 ylabel('\(\theta\)')
 xlabel('\(\phi\)')
 title('density')
+
+%% 2d comparison
+z_shift_top = [mean(top_halo.rad).*ones(size(v_top_zxy_unnorm,1),1),zeros(size(v_top_zxy_unnorm,1),2)];
+z_shift_btm = [mean(bottom_halo.rad).*ones(size(v_btm_zxy_unnorm,1),1),zeros(size(v_btm_zxy_unnorm,1),2)];
+if opts.do_top_halo && opts.do_btm_halo
+    stfig('density of halos');
+    clf
+    subplot(1,2,1)
+    combined_vzxy = [v_top_zxy_unnorm+z_shift_top;...
+        v_btm_zxy_unnorm-z_shift_btm];
+    ndhist(combined_vzxy(:,[3,1]),'bins',5);
+    xlabel('$v_y$ (m/s)')
+    ylabel('$v_z$ (m/s)')
+    subplot(1,2,2)
+    ndhist(combined_vzxy(:,[2,1]),'bins',5);
+    xlabel('$v_x$ (m/s)')
+    ylabel('$v_z$ (m/s)')
+    colormap('default')
+end
+
+%% 2d comparison radius
+if opts.do_top_halo && opts.do_btm_halo
+    stfig('density of halos radius');
+    clf
+    combined_vzr = [v_top_zxy_unnorm(:,1)+z_shift_top(:,1),rxy_top;...
+        v_btm_zxy_unnorm(:,1)-z_shift_btm(:,1),rxy_btm];
+    ndhist(combined_vzr(:,[2,1]),'bins',5);
+    xlabel('$v_r$ (m/s)')
+    ylabel('$v_z$ (m/s)')
+    colormap('default')
+    axis equal
+    caxis([0 8])
+end
+
+
+%% full 3d comparison
+plt_p = 1;
+stfig('halo comparison');
+clf
+plot_mask_top = rand(size(v_top_zxy_unnorm,1),1)<plt_p;
+plot_mask_btm = rand(size(v_btm_zxy_unnorm,1),1)<plt_p;
+scatter3(v_top_zxy_unnorm(plot_mask_top,2),v_top_zxy_unnorm(plot_mask_top,3),v_top_zxy_unnorm(plot_mask_top,1)+z_shift_top(plot_mask_top,1),'r.')
+hold on
+scatter3(v_btm_zxy_unnorm(plot_mask_btm,2),v_btm_zxy_unnorm(plot_mask_btm,3),v_btm_zxy_unnorm(plot_mask_btm,1)-z_shift_btm(plot_mask_btm,1),'b.')
+xlabel('$v_z$')
+ylabel('$v_y$')
+zlabel('$v_z$')
+axis equal

@@ -39,7 +39,7 @@ corrs.top_halo.corr_bb=calc_any_g2_type(corr_opts,top_halo.counts_vel');
 
 %% BOTTOM HALO BACK TO BACK
 
-corr_opts.fig='bottom halo bb corr';
+corr_opts.fig='bottom halo bb corr test0';
 corrs.bottom_halo.corr_bb=calc_any_g2_type(corr_opts,bottom_halo.counts_vel');
 
 %% CO-LINEAR (in the same halo)

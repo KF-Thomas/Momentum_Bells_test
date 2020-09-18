@@ -1,5 +1,11 @@
+% Given a mode occupancy, an interferometer phase and a cap on the number
+% of detections, the following function will divide [0 1] into a section
+% for each potential state, with the size determined by the probability of
+% that state.  Generating a random number will sit inside one of these
+% sections and hence correspond to a specific detection state.
+%% Function:
 function [p,event,cap] = problist(lambda,phi,Tmax)
-    cap = 2+7*(Tmax)/3 +2*Tmax^2+2*Tmax^3/3;
+    cap = 2+7*(Tmax)/3 +2*Tmax^2+2*Tmax^3/3; % The number of possible states given 
     problist = zeros(1,cap+1);
     YXWZ = zeros(cap,4);
     index = 1;

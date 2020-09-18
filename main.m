@@ -202,7 +202,7 @@ ports = {};
 %% calculate the global correlation functions around the halos
 global_corrs_opts.plots = true;
 global_corrs_opts.fit = true;
-global_corrs_opts.calc_err = false;
+global_corrs_opts.calc_err = true;
 
 corrs = global_corrs(top_halo,bottom_halo,global_corrs_opts);
 
