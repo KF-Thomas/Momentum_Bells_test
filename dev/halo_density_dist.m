@@ -27,7 +27,7 @@ opts.data_root = 'Z:\EXPERIMENT-DATA\2020_Momentum_Bells\';
 % data_folder = '20200901_k=0,-1_mirror_vs_amp\Pamp_0_25';
 data_folder = '20200901_k=0,-1_mirror_vs_amp\Pamp_11';
 % data_folder = '20200907_k=-1,-2_transfer_vs_amp\Pamp_0';
-data_folder = '20200907_detuning_vs_delay\3_0_ms\detuning_130_kHz';
+% data_folder = '20200907_detuning_vs_delay\3_0_ms\detuning_130_kHz';
 opts.import.dir = fullfile(opts.data_root, data_folder);
 opts.import.force_reimport = false;
 opts.import.force_cache_load = ~opts.import.force_reimport;
