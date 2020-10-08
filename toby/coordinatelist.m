@@ -55,24 +55,18 @@ function colist_test = coordinatelist(lambda,phi,Tmax,cycles,quantum_efficiency,
     
     for i = 1:cycles
         cordlist_temp = [];
+        theta = pi*rand;
+        azim = pi*rand;
         for j=1:detectedYs(i)
-            theta = pi*rand;
-            azim = pi*rand;
             cordlist_temp = [cordlist_temp; [R*sin(theta)*cos(azim) R*sin(theta)*sin(azim) R*(1+cos(theta))] + sigma*randn(1,3)];
         end
         for j=1:detectedWs(i)
-            theta = pi*rand;
-            azim = pi*rand;
             cordlist_temp = [cordlist_temp; [R*sin(theta)*cos(azim) R*sin(theta)*sin(azim) R*(cos(theta)-1)] + sigma*randn(1,3)];
         end
         for j=1:detectedXs(i)
-            theta = pi*rand;
-            azim = pi*rand;
             cordlist_temp = [cordlist_temp; [-R*sin(theta)*cos(azim) -R*sin(theta)*sin(azim) R*(1-cos(theta))] + sigma*randn(1,3)];
         end
         for j=1:detectedZs(i)
-            theta = pi*rand;
-            azim = pi*rand;
             cordlist_temp = [cordlist_temp; [-R*sin(theta)*cos(azim) -R*sin(theta)*sin(azim) -R*(1+cos(theta))] + sigma*randn(1,3)];
         end
         %% Quantum Efficiency:
