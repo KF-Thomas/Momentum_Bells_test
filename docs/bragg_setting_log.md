@@ -186,6 +186,20 @@ Gs_mod_Bragg_src_f_1=0.9*T_Bragg_src_f/4.2E-6*sqrt(2)*sqrt(5.63806937736142e-01)
 Gs_mod_Bragg_src_f_2=0.9*T_Bragg_src_f/4.2E-6*sqrt(2)*sqrt(5.28341254744861e-01);
 t0_Bragg_src_f=nan;
 
+(2020-09-23)
+dF_Bragg_1=0.095e6;%0.099e6;%~0.093;%
+dF_Bragg_2=0.095e6;%0.099e6;
+f1_Bragg_src_f=f0_AOM-dF_Bragg_1;
+f2_Bragg_src_f=f0_AOM+dF_Bragg_2;
+
+T_Bragg_src_f=32E-6;
+P_Bragg_f = 8.0;%7.2;%20.5;%~7.8
+K_Bragg_src_f_1=1.25*ampfun([60.117, 0.5638],P_Bragg_f)/2e3;%0.08;
+K_Bragg_src_f_2=1.33*ampfun([132.62, 0.5283],P_Bragg_f)/2e3;%0.08;%[60.117, 0.5638] multiplier ~1.2 1.4
+Gs_mod_Bragg_src_f_1=0.9*T_Bragg_src_f/4.2E-6*sqrt(2)*sqrt(5.63806937736142e-01);%~0.7 0.95
+Gs_mod_Bragg_src_f_2=0.9*T_Bragg_src_f/4.2E-6*sqrt(2)*sqrt(5.28341254744861e-01);
+t0_Bragg_src_f=nan;
+
 ### transfer to k=-1,-2
 	(2020-08-05)
 	dF_Bragg_1=0.085e6;

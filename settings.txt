@@ -115,3 +115,19 @@ settings used during rabi flop characterisation c:\remote\settings202008Sep11582
 
 (2020-09-09)
 Halo settings as of today: c:\remote\settings202009Sep154916.xml
+
+
+c:\remote\settings202022Sep103825.xml
+
+c:\remote\settings202022Sep104040.xml
+
+(2020-09-22)
+current:
+c:\remote\settings202022Sep131639.xml
+
+c:\remote\settings202022Sep132930.xml
+
+c:\remote\settings202022Sep135831.xml
+
+(2020-09-23)
+c:\remote\settings202023Sep152130.xml

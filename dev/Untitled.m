@@ -1,0 +1,2 @@
+counts_chunked=chunk_data_complete(counts,corr_opts.sample_proportion,norm_sort_dir);
+normcorr=corr_func(corr_opts,counts_chunked);

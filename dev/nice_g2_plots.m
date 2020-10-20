@@ -20,7 +20,7 @@ color_shaded=colorspace('LCH->RGB',color_shaded);
 for ii = 1:4
 port = port_labels{ii};
 corrs = ports.(port).norm_g2;
-stfig([port,' distribution'])
+stfig([port,' distribution']);
 clf
     if corr_opts.calc_err
         errorbar(corrs.(centers).*1e3,corrs.g2_amp,xg2_err,'o','CapSize',0,'MarkerSize',5,'Color',colors_main(3,:),...
@@ -36,6 +36,16 @@ clf
         if ~corr_opts.calc_err
             fit =ports.(port).fit;
             [ypred,ypredci] = predict(fit,xx,'Simultaneous',true);
+            
+            curve1 = ypredci(:,1)';
+            curve2 = ypredci(:,2)';
+            x1 = (xx.*1e3)';
+            x2 = [x1, fliplr(x1)];
+            inBetween = [curve1, fliplr(curve2)];
+            h = fill(x2, inBetween, 'g');
+            h.FaceColor = [0.31 0.31 0.32].*2;
+            h.FaceAlpha = 0.5;
+            
             plot(xx.*1e3,ypred,'b-', xx.*1e3,ypredci,'r-');
         else
             plot(xx.*1e3,fun1d(b,xx),'b-')
@@ -50,4 +60,5 @@ ax = gca;
 ax.XAxis.TickLabelFormat= '\\textbf{%g}';
 ax.YAxis.TickLabelFormat= '\\textbf{%g}';
 set(gca,'fontsize',font_size_global)
+xlim([0,max(corrs.(centers).*1e3)])
 end

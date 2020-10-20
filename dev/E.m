@@ -5,7 +5,7 @@ corr_opts.verbose = opts_E.verbose;
 %% general options for correlation caculation
 if opts_E.plots
     corr_opts.plots=true;
-    corr_opts.fig='top halo bb corr';
+    corr_opts.fig='place holder';
     corr_opts.direction_labels = {'z','x','y'};
 else
     corr_opts.plots=false;
@@ -45,11 +45,11 @@ end
 
 %% Port specific options
 
-corr_opts.g14.redges=sqrt(linspace((5e-3)^2,0.02^2,40));
-corr_opts.g14.rad_smoothing=nan;
-
-corr_opts.g23.redges=sqrt(linspace((5e-3)^2,one_d_range^2,40));
-corr_opts.g23.rad_smoothing=3e-5;
+% corr_opts.g14.redges=sqrt(linspace((5e-3)^2,0.02^2,40));
+% corr_opts.g14.rad_smoothing=nan;
+% 
+% corr_opts.g23.redges=sqrt(linspace((5e-3)^2,one_d_range^2,40));
+% corr_opts.g23.rad_smoothing=3e-5;
 
 %%
 %indexing of ports
@@ -69,9 +69,9 @@ corrs.g14 = calc_any_g2_type(corr_opts.g14,counts14);
 
 corrs.g23 = calc_any_g2_type(corr_opts.g23,counts23);
 
-corrs.g12 = calc_any_g2_type(corr_opts,counts12);
+corrs.g12 = calc_any_g2_type(corr_opts.g12,counts12);
 
-corrs.g34 = calc_any_g2_type(corr_opts,counts34);
+corrs.g34 = calc_any_g2_type(corr_opts.g34,counts34);
 
 corrs.g13 = calc_any_g2_type(corr_opts.g13,counts13);
 

@@ -15,10 +15,10 @@ opts.data_root = 'Z:\EXPERIMENT-DATA\2020_Momentum_Bells\';
 % data_folder = '20200721_momentum_transfer_optimiser_1';
 % data_folder = '20200729_brief_movement_data_fat_cloud';
 % data_folder = '20200807_k=0,-1,-2_halos_data_1';
-data_folder = '20200807_k=0,-1,-2_halos_data_2';
-% data_folder = '';
+data_folder = 'k=0,-1,-2_halos_data\20200807_k=0,-1,-2_halos_data_2';
+% data_folder = 'full_interferometer\20200909_k=0,-1,-2_full_interferometer_1';
 opts.import.dir = fullfile(opts.data_root, data_folder);
-opts.import.force_reimport = true;
+opts.import.force_reimport = false;
 opts.import.force_cache_load = ~opts.import.force_reimport;
 %% Import parameters
 tmp_xlim=[-35e-3, 35e-3];     %tight XY lims to eliminate hot spot from destroying pulse widths
@@ -29,7 +29,7 @@ opts.import.txylim=[tlim;tmp_xlim;tmp_ylim];
 opts.num_lim = 2.1e3;%0.5e3;% %minimum atom number 1.5e3
 opts.halo_N_lim = -1;%2;%10;%0;% %minimum allowed number in halo 10
 
-opts.plot_dist = true; %do you want to see all the detailed stuff about the halo distributions
+opts.plot_dist = false; %do you want to see all the detailed stuff about the halo distributions
 
 %% Background stuff
 cli_header('Setting up for %s', data_folder);
@@ -164,7 +164,7 @@ opts.vel_conv.btm.z_mask = [-0.68,0.68]; %in units of radius
 opts.vel_conv.btm.y_mask = [-1.9,1.9]; %in units of radius
 opts.vel_conv.btm.center = [t0,x0,y0];%bec_masked_halo.centre_top;%ones(size(bec_masked_halo.centre_top,1),1).*[t0,x0,y0];%,bec_masked_halo.centre_top; %use the mid BEC as the zero momentum point
 
-opts.vel_conv.btm.centering_correction = [0,0,0]; %correctoin shift to the centering in m/s
+opts.vel_conv.btm.centering_correction = [0,0,0];%[-2,-2,1.5].*-0.5e-3; %correctoin shift to the centering in m/s
 
 opts.vel_conv.btm.bec_center.north = bec_masked_halo.centre_mid;
 opts.vel_conv.btm.bec_center.south = bec_masked_halo.centre_btm;
@@ -202,7 +202,7 @@ ports = {};
 %% calculate the global correlation functions around the halos
 global_corrs_opts.plots = true;
 global_corrs_opts.fit = true;
-global_corrs_opts.calc_err = true;
+global_corrs_opts.calc_err = false;
 
 corrs = global_corrs(top_halo,bottom_halo,global_corrs_opts);
 
