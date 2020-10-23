@@ -1,7 +1,7 @@
 % Returns a cell array with each cell containing the list of detected
 % particle coordinates for each simulated experimental run.
 %% Function:
-function colist_test = coordinatelist(lambda,phi,Tmax,cycles,quantum_efficiency,dark_rate,blur,R,phys,Y_bias,X_bias)
+function colist_test = coordinatelist(lambda,phi,Tmax,cycles,quantum_efficiency,dark_rate,blur,phys,Y_bias,X_bias)
     % Call the divided probability list from problist.m
     [p,event] = problist(lambda,phi,Tmax,phys,Y_bias,X_bias);
     % Lists of each event for each trial:
@@ -22,15 +22,6 @@ function colist_test = coordinatelist(lambda,phi,Tmax,cycles,quantum_efficiency,
             i=i+1;
         end
     end
-    %% Quantum Efficiency:
-    % Cull data, keeping only the efficiency rating:
-    thresh = quantum_efficiency +.01;
-    keeplist = randi(100,cycles,1)<thresh;
-    survivedYs = ys.*keeplist;
-    survivedXs = xs.*keeplist;
-    survivedWs = ws.*keeplist;
-    survivedZs = zs.*keeplist;
-
     %% Dark Counts:
     % Scale percentage by 10^6 so that small percentages can affect it.
     thresh = dark_rate*1E8+.1;
@@ -44,8 +35,6 @@ function colist_test = coordinatelist(lambda,phi,Tmax,cycles,quantum_efficiency,
     detectedZs = zs + darkZs;
 
     %% Place detected particles at a position:
-    
-    
     % Blur factor - Y detections are mapped to somewhere in the Y-quadrant
     % of the sphere but blurred.  This blurring can map a Y detection to an
     % X detection etc.
@@ -57,17 +46,20 @@ function colist_test = coordinatelist(lambda,phi,Tmax,cycles,quantum_efficiency,
         cordlist_temp = [];
         theta = pi*rand;
         azim = pi*rand;
+        xco = sin(theta)*cos(azim);
+        yco = sin(theta)*sin(azim);
+        zco = cos(theta);
         for j=1:detectedYs(i)
-            cordlist_temp = [cordlist_temp; [R*sin(theta)*cos(azim) R*sin(theta)*sin(azim) R*(1+cos(theta))] + sigma*randn(1,3)];
-        end
-        for j=1:detectedWs(i)
-            cordlist_temp = [cordlist_temp; [R*sin(theta)*cos(azim) R*sin(theta)*sin(azim) R*(cos(theta)-1)] + sigma*randn(1,3)];
+            cordlist_temp = [cordlist_temp; [xco yco 1+zco] + sigma*randn(1,3)];
         end
         for j=1:detectedXs(i)
-            cordlist_temp = [cordlist_temp; [-R*sin(theta)*cos(azim) -R*sin(theta)*sin(azim) R*(1-cos(theta))] + sigma*randn(1,3)];
+            cordlist_temp = [cordlist_temp; [xco yco (-1+zco)] + sigma*randn(1,3)];
+        end
+        for j=1:detectedWs(i)
+            cordlist_temp = [cordlist_temp; [-xco -yco (1-zco)] + sigma*randn(1,3)];
         end
         for j=1:detectedZs(i)
-            cordlist_temp = [cordlist_temp; [-R*sin(theta)*cos(azim) -R*sin(theta)*sin(azim) -R*(1+cos(theta))] + sigma*randn(1,3)];
+            cordlist_temp = [cordlist_temp; [-xco -yco (-1-zco)] + sigma*randn(1,3)];
         end
         %% Quantum Efficiency:
         % Cull data, keeping only the efficiency rating:

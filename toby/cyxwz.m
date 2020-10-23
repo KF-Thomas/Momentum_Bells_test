@@ -2,7 +2,7 @@
 % designed by Kieran.  The required state, mode occupancy and relative phase
 % between the two branches define this probability.
 %% Function
-function c = cyxwz(y,x,w,z,lambda,phi,phys,Y_bias,X_bias)
+function c = cyxwz(y,w,x,z,lambda,phi,phys,Y_bias,X_bias)
     % phi minus ignored, phi = phim + phip
     T = y + w;
     % T = total number of pairs.
