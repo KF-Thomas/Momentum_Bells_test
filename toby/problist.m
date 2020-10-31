@@ -5,7 +5,7 @@
 % sections and hence correspond to a specific detection state.
 %% Function:
 function [p,event] = problist(lambda,phi,Tmax,phys,Y_bias,X_bias)
-    cap = 1+13*(Tmax)/6 + (3/2)*Tmax^2 + Tmax^3/3; % The number of possible states given 
+    cap = 1 + 13*Tmax/6 + 1.5*Tmax^2 + Tmax^3/3; % The number of possible states given 
     problist = zeros(1,cap+1);
     YXWZ = zeros(cap,4);
     index = 1;
@@ -19,7 +19,6 @@ function [p,event] = problist(lambda,phi,Tmax,phys,Y_bias,X_bias)
         end
     end
     problist(end) = 1;
-    p = problist;
-    event = YXWZ;
-    cap = cap;
+    p = problist; % List of our consecutive probabilities, distance between two list elements is the probability of state i.
+    event = YXWZ; % List of our generated states |Y,X,W,Z>, each state i corresponds to the ith interval of problist.
 end

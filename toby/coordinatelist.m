@@ -1,5 +1,5 @@
 % Returns a cell array with each cell containing the list of detected
-% particle coordinates for each simulated experimental run.
+% particle coordinates for each simulated cycle.
 %% Function:
 function colist_test = coordinatelist(lambda,phi,Tmax,cycles,quantum_efficiency,dark_rate,blur,phys,Y_bias,X_bias)
     % Call the divided probability list from problist.m
@@ -34,11 +34,9 @@ function colist_test = coordinatelist(lambda,phi,Tmax,cycles,quantum_efficiency,
     detectedWs = ws + darkWs;
     detectedZs = zs + darkZs;
 
-    %% Place detected particles at a position:
-    % Blur factor - Y detections are mapped to somewhere in the Y-quadrant
-    % of the sphere but blurred.  This blurring can map a Y detection to an
-    % X detection etc.
-    
+    %% Place detected particles at a position:   
+    % Map particles to a location in it's quadrant with random azimuthal
+    % and zenith angle, adding in a gaussian blur.
     sigma = blur;
     colist_test = cell(1,cycles);
     

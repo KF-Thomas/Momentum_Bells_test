@@ -22,6 +22,7 @@ function c = cyxwz(y,w,x,z,lambda,phi,phys,Y_bias,X_bias)
         % of the state:
         c = abs(external.*psi).^2;
     else
+        % Classical probability calculation.
         p = (lambda^(2*T))*(1-lambda^2)^2 * (T+1)*(Y_bias^y)*(1-Y_bias)^(T-y)*(X_bias^x)*(1-X_bias)^(T-x)*bincof(T,y)*bincof(T,x);
         c = p;
     end
