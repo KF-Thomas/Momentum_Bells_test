@@ -20,7 +20,7 @@ corr_opts.rad_smoothing=nan;
 corr_opts.low_mem=true;
 
 corr_opts.sampling_method='complete';
-corr_opts.sample_proportion=1; %proportion of uncorolated pairs to calculate 
+corr_opts.sample_proportion=0.3; %proportion of uncorolated pairs to calculate 
 corr_opts.attenuate_counts=1; %artifical qe
 corr_opts.do_pre_mask=false;
 corr_opts.sorted_dir=1;
@@ -69,9 +69,9 @@ corrs.g14 = calc_any_g2_type(corr_opts.g14,counts14);
 
 corrs.g23 = calc_any_g2_type(corr_opts.g23,counts23);
 
-corrs.g12 = calc_any_g2_type(corr_opts.g12,counts12);
+corrs.g12 = calc_any_g2_type(corr_opts.g12,counts12); %top halo bb
 
-corrs.g34 = calc_any_g2_type(corr_opts.g34,counts34);
+corrs.g34 = calc_any_g2_type(corr_opts.g34,counts34); %btm halo bb
 
 corrs.g13 = calc_any_g2_type(corr_opts.g13,counts13);
 

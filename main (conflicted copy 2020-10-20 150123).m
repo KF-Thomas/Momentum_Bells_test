@@ -6,38 +6,19 @@ core_folder = fullfile(fileparts(this_folder), 'Core_BEC_Analysis\');
 addpath(genpath(core_folder));
 set(groot, 'DefaultTextInterpreter', 'latex')
 %% Import directory
-opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
-% opts.data_root = 'Z:\EXPERIMENT-DATA\2020_Momentum_Bells\';
+% opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
+opts.data_root = 'Z:\EXPERIMENT-DATA\2020_Momentum_Bells\';
 % opts.data_root = 'C:\Users\kieran\Documents\LOCAL-DATA\';
 % data_folder = '20191115_halos_attempt_3';
 % data_folder = '20191114_halos_attempt_2';
 % data_folder = '20200721_momentum_transfer_optimiser_2';
 % data_folder = '20200721_momentum_transfer_optimiser_1';
 % data_folder = '20200729_brief_movement_data_fat_cloud';
-%data_folder = '20200807_k=0,-1,-2_halos_data_1';
-% data_folder = 'k=0,-1,-2_halos_data\20200807_k=0,-1,-2_halos_data_2';
-% data_folder = 'k=0,-1,-2_halos_data\20200807_k=0,-1,-2_halos_data_1';
-
-% data_folder = '20201123_beam_splitter_opt\Pamp_13';
-% data_folder = '20201125_k=0,-1,-2_beam_splitter';
-% data_folder = '20201125_k=0,-1,-2_interferometer_phi=0';
-% data_folder = '20201125_k=0,-1,-2_interferometer_phi=pi_4';
-% data_folder = '20201125_k=0,-1,-2_interferometer_phi=pi_6';
-% data_folder = '20201126_k=0,-1,-2_interferometer_phi=pi_6_v2';
-% data_folder = '20201120_k=0,-1,-2_halos_data_4';
-data_folder = '20201126_k=0,-1,-2_halos_data_5';
-
-%data_folder = 'k=0,-1,-2_halos_data\20200803_early_k=0,-1,-2_halo_data';
-
+% data_folder = '20200807_k=0,-1,-2_halos_data_1';
+data_folder = 'k=0,-1,-2_halos_data\20200807_k=0,-1,-2_halos_data_2';
 % data_folder = 'full_interferometer\20200909_k=0,-1,-2_full_interferometer_1';
-% data_folder ='k=+1,0,-1_halos_data\20191101_brief_halo_data';% (error in main.m)
-%data_folder ='k=+1,0,-1_halos_data\20191104_halos_attempt_1';
-%data_folder ='k=+1,0,-1_halos_data\20191114_halos_attempt_2'; %(running time is too long for both t_bounds,more than 5 mins)
-%data_folder ='k=+1,0,-1_halos_data\20191115_halos_attempt_3'; %(running time is too long for both t_bounds)
-%data_folder ='k=+1,0,-1_halos_data\20191105_halos_3766_shots';%(running time is too long for both t_bounds)
-
 opts.import.dir = fullfile(opts.data_root, data_folder);
-opts.import.force_reimport = true;
+opts.import.force_reimport = false;
 opts.import.force_cache_load = ~opts.import.force_reimport;
 %% Import parameters
 tmp_xlim=[-35e-3, 35e-3];     %tight XY lims to eliminate hot spot from destroying pulse widths
@@ -48,8 +29,7 @@ opts.import.txylim=[tlim;tmp_xlim;tmp_ylim];
 opts.num_lim = 2.1e3;%0.5e3;% %minimum atom number 1.5e3
 opts.halo_N_lim = -1;%2;%10;%0;% %minimum allowed number in halo 10
 
-opts.plot_dist = true; %do you want to see all the detailed stuff about the halo distributions
-opts.corr_center_check = true; %do you want a sceond check
+opts.plot_dist = false; %do you want to see all the detailed stuff about the halo distributions
 
 %% Background stuff
 cli_header('Setting up for %s', data_folder);
@@ -99,9 +79,9 @@ end
 hebec_constants
 
 %% find centers
-opts.cent.visual = 0; %from 0 to 2
+opts.cent.visual = 2; %from 0 to 2
 opts.cent.savefigs = 0;
-opts.cent.correction = 0;
+opts.cent.correction = 1;
 opts.cent.correction_opts.plots = 0;
 
 opts.cent.top.visual = 0; %from 0 to 2
@@ -123,8 +103,7 @@ opts.cent.btm.sigma = [6.7e-5,16e-5,16e-5];%[8e-5,25e-5,25e-5];
 opts.cent.btm.method = {'margin','average','average'};
 
 % opts.cent.t_bounds = {[3.8598,3.871],[3.871,3.8844],[3.8844,3.8972],[3.8,3.95]}; %time bounds for the different momentum states k=+1,0,-1 respectively
-%opts.cent.t_bounds = {[3.861,3.867],[3.874,3.881],[3.887,3.895],[3.8,3.95]}; %time bounds for the different momentum states k=+1,0,-1 respectively
-%opts.cent.t_bounds = {[3.887,3.895],[3.874,3.881],[3.861,3.867],[3.8,3.95]}; %time bounds for the different momentum states k=-1,0,+1 respectively
+% opts.cent.t_bounds = {[3.861,3.867],[3.874,3.881],[3.887,3.895],[3.8,3.95]}; %time bounds for the different momentum states k=+1,0,-1 respectively
 opts.cent.t_bounds = {[3.844,3.8598],[3.8598,3.871],[3.871,3.8844],[3.75,4]}; %time bounds for the different momentum states k=-2,-1,0 respectively
 bec = halo_cent(data_masked,opts.cent);
 
@@ -147,23 +126,23 @@ bec_masked_halo = bec_width_txy_to_vel(bec_masked_halo,opts.bec_width);
 
 %% convert data to velocity
 % zero velocity point
-t0 = ones(size(bec_masked_halo.centre_top,1),1).*3.8772;%bec_masked_halo.centre_top(:,1);%72;%
+t0 = ones(size(bec_masked_halo.centre_top,1),1).*3.8772;%bec_masked_halo.centre_top(:,1);%72;% 
 x0 = bec_masked_halo.centre_top(:,2);%ones(size(bec_masked_halo.centre_top,1),1).*-0.0041;%%-0.00444892593829574;
 y0 = bec_masked_halo.centre_top(:,3);%ones(size(bec_masked_halo.centre_top,1),1).*0.0078;%0.00645675151404596;
 
 %% generate top halo
-opts.vel_conv.top.visual = 0;
+opts.vel_conv.top.visual = 2;
 opts.vel_conv.top.plot_percentage = 0.95;
 opts.vel_conv.top.title = 'top halo';
 opts.vel_conv.top.const.g0 = const.g0;
 opts.vel_conv.top.const.fall_distance = const.fall_distance;
 opts.vel_conv.top.v_thresh = 0.15; %maximum velocity radius
 opts.vel_conv.top.v_mask=[0.89,1.11]; %bounds on radisu as multiple of radius value
-opts.vel_conv.top.z_mask = [-0.55,0.55];%[-0.68,0.68]; %[-0.68,0.68]; %in units of radius (standard [-0.76,0.76])
+opts.vel_conv.top.z_mask = [-0.68,0.68]; %in units of radius (standard [-0.76,0.76])
 opts.vel_conv.top.y_mask = [-1.9,1.9]; %in units of radius
 opts.vel_conv.top.center = [t0,x0,y0];%bec_masked_halo.centre_top;%ones(size(bec_masked_halo.centre_top,1),1).*[t0,x0,y0];%%bec_masked_halo.centre_top;%bec_masked_halo.centre_mid; %use the mid BEC as the zero momentum point
 
-opts.vel_conv.top.centering_correction = [0.3244        0.62    -0.39765].*0.5e-3;%[-0.2223,0.5662,-0.8083].*0.5e-3;%[0,0,0]; %[-0.73,0.822,-1.209].*0.5e-3;%[-0.96226,0.788847,-1.11].*0.5e-3;%[-0.6519,0.7836,-1.167].*0.5e-3;%[0,0,0]; %[0.677,0.9842,-1.139].*0.5e-3;%[0,0,0]; %;[3.145e-1,1.313,-1.1705].*0.5e-3;%[0,0,0]; %[0,0,0]; %correctoin shift to the centering in m/s
+opts.vel_conv.top.centering_correction = [0,0,0]; %correctoin shift to the centering in m/s
 
 opts.vel_conv.top.bec_center.north = bec_masked_halo.centre_top;
 opts.vel_conv.top.bec_center.south = bec_masked_halo.centre_mid;
@@ -181,11 +160,11 @@ opts.vel_conv.btm.const.g0 = const.g0;
 opts.vel_conv.btm.const.fall_distance = const.fall_distance;
 opts.vel_conv.btm.v_thresh = 0.15; %maximum velocity radius
 opts.vel_conv.btm.v_mask=[0.89,1.11]; %bounds on radisu as multiple of radius value
-opts.vel_conv.btm.z_mask = [-0.55,0.55];%[-0.68,0.68]; %[-0.68,0.68]; %in units of radius
+opts.vel_conv.btm.z_mask = [-0.68,0.68]; %in units of radius
 opts.vel_conv.btm.y_mask = [-1.9,1.9]; %in units of radius
 opts.vel_conv.btm.center = [t0,x0,y0];%bec_masked_halo.centre_top;%ones(size(bec_masked_halo.centre_top,1),1).*[t0,x0,y0];%,bec_masked_halo.centre_top; %use the mid BEC as the zero momentum point
 
-opts.vel_conv.btm.centering_correction = [1.6391      2.7825     -1.1917].*0.5e-3;%[-0.1733,1.075,-0.9288].*0.5e-3; %[0,0,0].*0.5e-3;%[-0.1733,1.075,-0.9288].*0.5e-3; %[0.1169,1.606,-1.438].*0.5e-3;%[[0.205,1.7893,-1.4207].*0.5e-3;%[0,0,0]; %[-0.452,1.76,-1.561].*0.5e-3;%[-0.1762,1.6035,-1.029].*0.5e-3;%[0,1.73,-1.45].*0.5e-3; %[-2,-2,1.5].*-0.5e-3; %correctoin shift to the centering in m/s
+opts.vel_conv.btm.centering_correction = [0,0,0];%[-2,-2,1.5].*-0.5e-3; %correctoin shift to the centering in m/s
 
 opts.vel_conv.btm.bec_center.north = bec_masked_halo.centre_mid;
 opts.vel_conv.btm.bec_center.south = bec_masked_halo.centre_btm;
@@ -202,13 +181,6 @@ halo_N_check = halo_N_check_top & halo_N_check_btm;
 top_halo = struct_mask(top_halo_intial,halo_N_check);
 bottom_halo = struct_mask(bottom_halo_intial,halo_N_check);
 bec_halo = struct_mask(bec_masked_halo,halo_N_check);
-
-%% check the centering using the cartisan normalisation
-
-if opts.corr_center_check
-    corr_check_top=corr_center_check(top_halo.counts_vel','top halo check');
-    corr_check_bottom=corr_center_check(bottom_halo.counts_vel','bottom halo check');
-end
 
 %% plot some histogram checks
 halos.top_halo = top_halo;
@@ -259,16 +231,6 @@ bottom_halo_cl = string_value_with_unc(corrs.bottom_halo.corr_cl.norm_g2.fitted_
 
 between_halo_bb = string_value_with_unc(corrs.between_halos.corr_bb.norm_g2.fitted_g2peak,corrs.between_halos.corr_bb.norm_g2.fitted_g2peak_unc,'type','b');
 between_halo_cl = string_value_with_unc(corrs.between_halos.corr_cl.norm_g2.fitted_g2peak,corrs.between_halos.corr_cl.norm_g2.fitted_g2peak_unc,'type','b');
-
-if opts.corr_center_check
-    cli_format_text('','c',3)
-    cli_format_text('ALIGNMENT','c',3)
-    cli_format_text('','c',3)
-    fprintf('\n Top Halo:      x center = %.3u, y center = %.3u, z center = %.3u\n',corr_check_top(2,1)...
-        ,corr_check_top(3,1),corr_check_top(1,1))
-    fprintf('\n Bottom Halo:   x center = %.3u, y center = %.3u, z center = %.3u\n',corr_check_bottom(2,1)...
-        ,corr_check_bottom(3,1),corr_check_bottom(1,1))
-end
 
 cli_format_text('','c',3)
 cli_format_text('RESULTS','c',3)

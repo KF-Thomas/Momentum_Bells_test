@@ -7,8 +7,8 @@ core_folder = fullfile(fileparts(this_folder), 'Core_BEC_Analysis\');
 addpath(genpath(core_folder));
 set(groot, 'DefaultTextInterpreter', 'latex')
 %% Import directory
-% opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
-opts.data_root = 'Z:\EXPERIMENT-DATA\2020_Momentum_Bells\';
+opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
+% opts.data_root = 'Z:\EXPERIMENT-DATA\2020_Momentum_Bells\pulse_characterisation\';
 % data_folder = '';
 % data_folder = '20200807_k=0,-1,-2_halos_data_2';
 % data_folder = '20200824_k=0,-1_splitter_attempt';
@@ -25,9 +25,12 @@ opts.data_root = 'Z:\EXPERIMENT-DATA\2020_Momentum_Bells\';
 % data_folder = '20200901_k=0,-1_mirror_vs_amp\Pamp_0_5';
 % data_folder = '20200901_k=0,-1_mirror_vs_amp\Pamp_10';
 % data_folder = '20200901_k=0,-1_mirror_vs_amp\Pamp_0_25';
-data_folder = '20200901_k=0,-1_mirror_vs_amp\Pamp_11';
+% data_folder = '20200901_k=0,-1_transfer_vs_amp\Pamp_11';
 % data_folder = '20200907_k=-1,-2_transfer_vs_amp\Pamp_0';
-data_folder = '20200907_detuning_vs_delay\3_0_ms\detuning_130_kHz';
+% data_folder = '20200907_detuning_vs_delay\3_0_ms\detuning_130_kHz';
+% data_folder = '20201123_k=0,-1_single_halo_high_occ';
+% data_folder = '20201125_mirror_pulse_check';
+data_folder = '20201123_beam_splitter_opt\Pamp_13_5';
 opts.import.dir = fullfile(opts.data_root, data_folder);
 opts.import.force_reimport = false;
 opts.import.force_cache_load = ~opts.import.force_reimport;
@@ -433,6 +436,17 @@ plot(phi,v_top_dens(:,2),'linewidth',1.5)
 legend('bottom','top')
 ylabel('Average density')
 xlabel('\(\phi\)')
+
+%% Density against height in z
+stfig('density vs height')
+rad_mean = mean(bottom_halo_intial.rad);
+clf
+plot(rad_mean.*sin(phi),v_btm_dens(:,2),'linewidth',1.5)
+hold on
+plot(rad_mean.*sin(phi),v_top_dens(:,2),'linewidth',1.5)
+legend('bottom','top')
+ylabel('Average density')
+xlabel('\(v_z\) (m/s)')
 
 %% ratio in spherical coordinates
 if opts.do_btm_halo && opts.do_top_halo

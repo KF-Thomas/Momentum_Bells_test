@@ -35,7 +35,7 @@ for this_idx = 1:num_shots % Loop over all shots
     %% VELOCITY CONVERSION
     % Convert the poles (BEC's) to kspace
     this_outtime = -tf;
-    vel_shift = txy_to_vel(txy_north, this_outtime, g0, d)+opts_vel_conv.centering_correction;
+    vel_shift = txy_to_vel(txy_north, this_outtime, g0, d);%+opts_vel_conv.centering_correction;
     v_north = txy_to_vel(txy_north, this_outtime, g0, d)-vel_shift;
     v_south = txy_to_vel(txy_south, this_outtime, g0, d)-vel_shift;
     v_bec_top = txy_to_vel(txy_bec_top, this_outtime, g0, d);
@@ -61,6 +61,7 @@ for this_idx = 1:num_shots % Loop over all shots
     v_zxy = txy_to_vel(centred_counts, this_outtime, g0, d)-vel_shift;
     v_zxy = v_zxy*rotz(-phix)'*roty(-phiy)';%rotate the BEC to the north and south poles
     v_zxy(:,1) = v_zxy(:,1) - z_sign*v_radius; %shift into center of mass frame
+    v_zxy = v_zxy - opts_vel_conv.centering_correction;
     
     %% MASKING
     % mask radial

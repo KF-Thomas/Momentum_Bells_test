@@ -8,6 +8,8 @@ corr_opts.plots = global_opts.plots;
 corr_opts.fit = global_opts.fit;
 corr_opts.calc_err = global_opts.calc_err;
 
+global_sample_portion = 1.0;
+
 % variables for calculating the error
 corr_opts.samp_frac_lims=[0.65,0.9];
 corr_opts.num_samp_frac=5;
@@ -17,21 +19,23 @@ corr_opts.attenuate_counts=1;
 
 %% BACK TO BACK (in the same halo)
 corr_opts.type='radial_bb';%'1d_cart_bb';%
-corr_opts.one_d_dimension = 2;
-corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*3e-3;
+% corr_opts.one_d_dimension = 2;
+% corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*3e-3;
 one_d_range=0.017;%0.02
 corr_opts.redges=sqrt(linspace(0^2,one_d_range^2,75));%100 or 80 or 85 or 95
-corr_opts.one_d_edges = linspace(-one_d_range,one_d_range,150);
+% corr_opts.one_d_edges = linspace(-one_d_range,one_d_range,150);
 corr_opts.rad_smoothing=nan;
 corr_opts.direction_labels = {'z','x','y'};
 corr_opts.low_mem=true;
 
 corr_opts.norm_samp_factor=1500;%1500;
-corr_opts.sample_proportion=1;%0.65;%1500;
+corr_opts.sample_proportion=global_sample_portion;%0.65;%1500;
 corr_opts.sampling_method='complete';%'basic';%method for sampling uncorrelated pairs (either 'basic' or 'complete')
 corr_opts.do_pre_mask=false;
 corr_opts.sorted_dir=nan;
 corr_opts.sort_norm=0;
+
+corr_opts.gaussian_fit = true; %ensure it always uses a gaussian fit
 
 %% TOP HALO BACK TO BACK
 
@@ -58,7 +62,7 @@ corr_opts.low_mem=nan;
 
 corr_opts.sampling_method='complete';%
 corr_opts.norm_samp_factor=1500;
-corr_opts.sample_proportion=0.5;%1500;
+corr_opts.sample_proportion=global_sample_portion;%1500;
 corr_opts.do_pre_mask=false;
 corr_opts.sorted_dir=1;
 corr_opts.sort_norm=1;
@@ -90,7 +94,7 @@ corr_opts.rad_smoothing=nan;
 corr_opts.direction_labels = {'z','x','y'};
 corr_opts.low_mem=true;
 corr_opts.sampling_method='complete';%
-corr_opts.sample_proportion=0.5;%1500;
+corr_opts.sample_proportion=global_sample_portion;%1500;
 corr_opts.norm_samp_factor=1;
 corr_opts.attenuate_counts=1;
 corr_opts.do_pre_mask=false;
@@ -121,13 +125,15 @@ corr_opts.direction_labels = {'z','x','y'};
 corr_opts.low_mem=true;
 corr_opts.sampling_method='complete';%
 corr_opts.norm_samp_factor=1500;%1500;
-corr_opts.sample_proportion=0.5;%1500;
+corr_opts.sample_proportion=global_sample_portion;%1500;
 corr_opts.norm_samp_factor=1;
 corr_opts.attenuate_counts=1;
 corr_opts.do_pre_mask=false;
 corr_opts.sorted_dir=1;
 corr_opts.sort_norm=1;
 corr_opts.progress_updates=5;
+
+corr_opts.gaussian_fit = false; %ensure it always uses a gaussian fit
 
 % both_halo_counts = [top_halo.counts_vel_norm';bottom_halo.counts_vel_norm'];
 both_halo_counts = [top_halo.counts_vel';bottom_halo.counts_vel'];

@@ -131,3 +131,30 @@ c:\remote\settings202022Sep135831.xml
 
 (2020-09-23)
 c:\remote\settings202023Sep152130.xml
+
+(2020-10-27)
+normal bec: c:\remote\settings202027Oct105250.xml
+
+(2020-11-02)
+c:\remote\settings202002Nov135542.xml
+
+c:\remote\settings202004Nov092708.xml
+
+()
+c:\remote\settings202013Nov103134.xml
+
+(2020-11-16)
+c:\remote\settings202016Nov111648.xml
+
+Normal bec (2020-11-18) c:\remote\settings202018Nov114406.xml (later c:\remote\settings202018Nov145122.xml) (c:\remote\settings202018Nov154237.xml)
+
+(c:\remote\settings202019Nov081029.xml)
+
+(2020-11-23)
+c:\remote\settings202023Nov103241.xml
+
+(later in the day itc updated slightly)
+c:\remote\settings202023Nov150032.xml
+
+(2020-11-24)
+c:\remote\settings202023Nov151918.xml
