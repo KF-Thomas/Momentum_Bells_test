@@ -9,35 +9,44 @@ set(groot, 'DefaultTextInterpreter', 'latex')
 %% Import directory
 opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
 % opts.data_root = 'Z:\EXPERIMENT-DATA\2020_Momentum_Bells\pulse_characterisation\';
-% data_folder = '';
+data_folder = '';
 % data_folder = '20200807_k=0,-1,-2_halos_data_2';
 % data_folder = '20200824_k=0,-1_splitter_attempt';
 % data_folder = '20200824_k=0,-1_pre_mirror';
 % data_folder = '20200825_attempting_different_mirror_settings';
-% data_folder = '20200824_k=0,-1_mirror_attempt_1';
-% data_folder = '20200825_k=0,-1_mirror_attempt_2';
-% data_folder = '20200828_k=0,-1_mirror_attempt_3';
-% data_folder = '20200831_k=0,-1_mirror_attempt_4';
-% data_folder = '20200831_k=0,-1_mirror_attempt_5';
-% data_folder = '20200831_k=0,-1_mirror_attempt_6';
-% data_folder = '20200831_k=0,-1_mirror_attempt_7';
-% data_folder = '20200901_k=0,-1_mirror_attempt_8';
-% data_folder = '20200901_k=0,-1_mirror_vs_amp\Pamp_0_5';
-% data_folder = '20200901_k=0,-1_mirror_vs_amp\Pamp_10';
-% data_folder = '20200901_k=0,-1_mirror_vs_amp\Pamp_0_25';
-% data_folder = '20200901_k=0,-1_transfer_vs_amp\Pamp_11';
+% data_folder = '20200901_k=0,-1_transfer_vs_amp\Pamp_12';
 % data_folder = '20200907_k=-1,-2_transfer_vs_amp\Pamp_0';
 % data_folder = '20200907_detuning_vs_delay\3_0_ms\detuning_130_kHz';
 % data_folder = '20201123_k=0,-1_single_halo_high_occ';
 % data_folder = '20201125_mirror_pulse_check';
-data_folder = '20201123_beam_splitter_opt\Pamp_13_5';
+% data_folder = '20201123_beam_splitter_opt\Pamp_13_5';
+% data_folder = '20201203_alignment_search_7_v6_pamp_9';
+% data_folder = '20201203_alignment_search_8';
+% data_folder = '20201203_alignment_search_9';
+% data_folder = '20201203_alignment_search_10';
+% data_folder = '20201204_k=0,-1,-2_beam_splitter_2';
+% data_folder = '20201204_bragg_pulse_analysis\hamming_sinc_pulse_3';
+% data_folder = '20201204_bragg_pulse_analysis\hamming_sinc_pulse_5';
 opts.import.dir = fullfile(opts.data_root, data_folder);
-opts.import.force_reimport = false;
+opts.import.force_reimport = true;
 opts.import.force_cache_load = ~opts.import.force_reimport;
 
 %% Chose which halo(s) to analyse
 opts.do_top_halo = 1;% analyse the top halo?
 opts.do_btm_halo = 1;% analyse the bottom halo?
+
+%% Chose if you want to look at a narrow or wide slice of the halo
+slice_type = 'wide';
+if strcmp(slice_type,'narrow')
+    opts.vel_conv.top.z_mask = [-0.4,0.4];%
+    opts.vel_conv.btm.z_mask = [-0.4,0.4];%in units of radius ([-0.68,0.68])
+elseif strcmp(slice_type,'extra wide')
+    opts.vel_conv.top.z_mask = [-0.87,0.87];%
+    opts.vel_conv.btm.z_mask = [-0.87,0.87];%in units of radius ([-0.68,0.68])
+else
+    opts.vel_conv.top.z_mask = [-0.82,0.82];
+    opts.vel_conv.btm.z_mask = [-0.82,0.82];%in units of radius ([-0.68,0.68])
+end
 
 %% Import parameters
 tmp_xlim=[-35e-3, 35e-3];     %tight XY lims to eliminate hot spot from destroying pulse widths
@@ -46,7 +55,7 @@ tlim=[0,4];
 opts.import.txylim=[tlim;tmp_xlim;tmp_ylim];
 
 opts.num_lim = 2.5e3;%2.1e3;%0.5e3;% %minimum atom number 1.5e3
-opts.halo_N_lim = -1;%2;%10;%0;% %minimum allowed number in halo 10
+opts.halo_N_lim = 0;%2;%10;%0;% %minimum allowed number in halo 10
 
 opts.plot_dist = false; %do you want to see all the detailed stuff about the halo distributions
 
@@ -89,7 +98,7 @@ hebec_constants
 %% find centers
 opts.cent.visual = 0; %from 0 to 2
 opts.cent.savefigs = 0;
-opts.cent.correction = 1;
+opts.cent.correction = 0;
 opts.cent.correction_opts.plots = 0;
 
 opts.cent.top.visual = 0; %from 0 to 2
@@ -106,10 +115,10 @@ opts.cent.mid.min_threshold = [16,13,13].*1e3;%[16,7,10].*1e3;
 opts.cent.mid.sigma = [6.7e-5,16e-5,16e-5];%[8e-5,25e-5,25e-5];
 opts.cent.mid.method = {'margin','average','average'};
 
-opts.cent.btm.visual = 2; %from 0 to 2
+opts.cent.btm.visual = 0; %from 0 to 2
 opts.cent.btm.savefigs = 0;
-opts.cent.btm.threshold = [15,5000,5000].*1e3;%[130,2000,2000].*1e3;
-opts.cent.btm.min_threshold = [16,7,10].*1e3;%[0,0,0].*1e3;%[16,13,13].*1e3;%[16,7,10].*1e3;
+opts.cent.btm.threshold = [130,5000,5000].*1e3;%[130,2000,2000].*1e3;
+opts.cent.btm.min_threshold = [16,13,13].*1e3;%[0,0,0].*1e3;%[16,13,13].*1e3;%[16,7,10].*1e3;
 opts.cent.btm.sigma = [6.7e-5,16e-5,16e-5];%[8e-5,25e-5,25e-5];
 opts.cent.btm.method = {'margin','average','average'};
 
@@ -153,7 +162,6 @@ opts.vel_conv.top.const.g0 = const.g0;
 opts.vel_conv.top.const.fall_distance = const.fall_distance;
 opts.vel_conv.top.v_thresh = 0.15; %maximum velocity radius
 opts.vel_conv.top.v_mask=[0.89,1.11]; %bounds on radisu as multiple of radius value
-opts.vel_conv.top.z_mask = [-0.82,0.82]; %in units of radius (standard [-0.76,0.76] or [-0.68,0.68])
 opts.vel_conv.top.y_mask = [-1.9,1.9]; %in units of radius
 opts.vel_conv.top.center = [t0,x0,y0];%bec_masked_halo.centre_top;%ones(size(bec_masked_halo.centre_top,1),1).*[t0,x0,y0];%%bec_masked_halo.centre_top;%bec_masked_halo.centre_mid; %use the mid BEC as the zero momentum point
 
@@ -181,7 +189,6 @@ opts.vel_conv.btm.const.g0 = const.g0;
 opts.vel_conv.btm.const.fall_distance = const.fall_distance;
 opts.vel_conv.btm.v_thresh = 0.15; %maximum velocity radius
 opts.vel_conv.btm.v_mask=[0.89,1.11]; %bounds on radisu as multiple of radius value
-opts.vel_conv.btm.z_mask = [-0.82,0.82]; %in units of radius ([-0.68,0.68])
 opts.vel_conv.btm.y_mask = [-1.9,1.9]; %in units of radius
 opts.vel_conv.btm.center = [t0,x0,y0];%bec_masked_halo.centre_top;%ones(size(bec_masked_halo.centre_top,1),1).*[t0,x0,y0];%,bec_masked_halo.centre_top; %use the mid BEC as the zero momentum point
 
@@ -259,7 +266,7 @@ N_btm = bottom_halo.num_counts;
 %     bec_masked = halos.bec;
 
 %% histograming
-nbins=151;
+nbins=151;%50;%
 theta_bins = linspace(-pi,pi,nbins+1);
 phi_bins = linspace(-pi/2,pi/2,nbins+1);
 if opts.do_top_halo
@@ -299,16 +306,27 @@ end
 % v_top_dens = v_top_dens./size(top_halo.counts_vel,1);
 v_btm_dens = [];
 v_top_dens = [];
-r_btm_zxy_masked=smooth_hist(theta_btm,'sigma',0.04,'lims',[-pi,pi],'bin_num',nbins);
-r_top_zxy_masked=smooth_hist(theta_top,'sigma',0.04,'lims',[-pi,pi],'bin_num',nbins);
+v_btm_dens_unc = [];
+v_top_dens_unc = [];
+phi_mask_top = (phi_top<0.154& phi_top>-0.154);
+phi_mask_btm = (phi_btm<0.154& phi_btm>-0.154);
+r_btm_zxy_masked=smooth_hist(theta_btm(phi_mask_btm),'sigma',0.04,'lims',[-pi,pi],'bin_num',nbins);
+r_top_zxy_masked=smooth_hist(theta_top(phi_mask_top),'sigma',0.04,'lims',[-pi,pi],'bin_num',nbins);
 v_btm_dens(:,1) = r_btm_zxy_masked.count_rate.smooth;
 v_top_dens(:,1) = r_top_zxy_masked.count_rate.smooth;
+v_btm_dens_unc(:,1) = sqrt(r_btm_zxy_masked.count_rate.smooth).*sqrt(abs(r_btm_zxy_masked.bin.edge(1:end-1)...
+    -r_btm_zxy_masked.bin.edge(2:end)));
+v_top_dens_unc(:,1) = sqrt(r_top_zxy_masked.count_rate.smooth).*sqrt(abs(r_top_zxy_masked.bin.edge(1:end-1)...
+    -r_top_zxy_masked.bin.edge(2:end)));
 
 
 r_btm_zxy_masked=smooth_hist(phi_btm,'sigma',0.04,'lims',[-pi/2,pi/2],'bin_num',nbins);
 r_top_zxy_masked=smooth_hist(phi_top,'sigma',0.04,'lims',[-pi/2,pi/2],'bin_num',nbins);
 v_btm_dens(:,2) = r_btm_zxy_masked.count_rate.smooth;
 v_top_dens(:,2) = r_top_zxy_masked.count_rate.smooth;
+
+v_top_dens_2d = hist3([theta_top phi_top],'Nbins',[nbins nbins]);
+v_btm_dens_2d = hist3([theta_btm phi_btm],'Nbins',[nbins nbins]);
 
 theta = linspace(-pi,pi,nbins);
 phi = linspace(-pi/2,pi/2,nbins);
@@ -402,7 +420,7 @@ end
 
 
 %% Average radius in spherical coordinates
-stfig('average radius vs angle')
+stfig('average radius vs angle');
 clf
 % subplot(2,1,1)
 % plot(theta,v_btm_r(:,1),'linewidth',1.5)
@@ -420,26 +438,29 @@ clf
 % xlabel('\(\phi\)')
 
 %% Density in spherical coordinates
-stfig('density vs angle')
+stfig('density vs angle');
 clf
 subplot(2,1,1)
-plot(theta,v_btm_dens(:,1),'linewidth',1.5)
+plot(theta./pi,v_btm_dens(:,1),'linewidth',1.5)
 hold on
-plot(theta,v_top_dens(:,1),'linewidth',1.5)
+plot(theta./pi,v_top_dens(:,1),'linewidth',1.5)
+xlim([-1,1])
 legend('bottom','top')
 ylabel('Average density')
 xlabel('\(\theta\)')
 subplot(2,1,2)
-plot(phi,v_btm_dens(:,2),'linewidth',1.5)
+plot(phi./pi,v_btm_dens(:,2),'linewidth',1.5)
 hold on
-plot(phi,v_top_dens(:,2),'linewidth',1.5)
+plot(phi./pi,v_top_dens(:,2),'linewidth',1.5)
+xlim([asin(opts.vel_conv.top.z_mask(1)),asin(opts.vel_conv.top.z_mask(2))]./pi)
 legend('bottom','top')
 ylabel('Average density')
 xlabel('\(\phi\)')
 
 %% Density against height in z
-stfig('density vs height')
-rad_mean = mean(bottom_halo_intial.rad);
+stfig('density vs height');
+% rad_mean = mean(bottom_halo_intial.rad);
+rad_mean = 1;
 clf
 plot(rad_mean.*sin(phi),v_btm_dens(:,2),'linewidth',1.5)
 hold on
@@ -452,9 +473,36 @@ xlabel('\(v_z\) (m/s)')
 if opts.do_btm_halo && opts.do_top_halo
     stfig('density ratio vs angle');
     clf
-    plot(phi,(v_btm_dens(:,2))./(v_top_dens(:,2)),'linewidth',1.5)
+    subplot(2,1,1)
+    theta_ratio = (v_btm_dens(:,1))./(v_top_dens(:,1));
+    plot(theta./pi,theta_ratio,'linewidth',1.5)
+    v_ratio_unc = theta_ratio.*sqrt((v_btm_dens_unc./v_btm_dens(:,1)).^2+(v_top_dens_unc./v_top_dens(:,1)).^2);
+    hold on
+%     plot(theta./pi,(v_btm_dens(:,1))./(v_top_dens(:,1))+v_ratio_unc,...
+%         theta./pi,(v_btm_dens(:,1))./(v_top_dens(:,1))-v_ratio_unc,'r-','linewidth',1.5)
+    xlim([-1,1])
+    ylabel('density ratio')
+    xlabel('\(\theta\)')
+    subplot(2,1,2)
+    hold on
+    plot(phi./pi,(v_btm_dens(:,2))./(v_top_dens(:,2)),'linewidth',1.5)
     ylabel('density ratio')
     xlabel('\(\phi\)')
+    xlim([asin(opts.vel_conv.top.z_mask(1)),asin(opts.vel_conv.top.z_mask(2))]./pi)
+%     if strcmp(slice_type,'narrow')
+%         xlim([-0.153,0.153])
+%     else
+%         xlim([-1,1]./2)
+%     end
+    
+%     stfig('desnity ratio 2d');
+%     clf
+%     pcolor(theta./pi,phi./pi,v_btm_dens_2d./v_top_dens_2d)
+%     xlabel('\(\theta\)')
+%     ylabel('\(\phi\)')
+%     shading flat
+%     colorbar
+%     caxis([0.1 1.1])
     
     stfig('density visibility vs angle');
     clf
@@ -465,7 +513,7 @@ if opts.do_btm_halo && opts.do_top_halo
 end
 
 %% density plot in full spherical coordinates
-stfig('spherical density plot')
+stfig('spherical density plot');
 for ii = 1:(nbins)
     for jj = 1:(nbins)
         ang_mask_btm = theta_bins(ii)<theta_btm & theta_btm<=theta_bins(ii+1) ...

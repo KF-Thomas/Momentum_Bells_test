@@ -11,6 +11,11 @@ if opts_vel_conv.visual
     hold on
     axis equal
 end
+
+if ~isfield(opts_vel_conv,'phi_correction')
+    opts_vel_conv.phi_correction = [0 0];
+end
+
 num_shots = length(data.shot_num);
 for this_idx = 1:num_shots % Loop over all shots
     
@@ -61,7 +66,9 @@ for this_idx = 1:num_shots % Loop over all shots
     v_zxy = txy_to_vel(centred_counts, this_outtime, g0, d)-vel_shift;
     v_zxy = v_zxy*rotz(-phix)'*roty(-phiy)';%rotate the BEC to the north and south poles
     v_zxy(:,1) = v_zxy(:,1) - z_sign*v_radius; %shift into center of mass frame
-    v_zxy = v_zxy - opts_vel_conv.centering_correction;
+    phix_correction = opts_vel_conv.phi_correction(1);
+    phiy_correction = opts_vel_conv.phi_correction(2);
+    v_zxy = (v_zxy - opts_vel_conv.centering_correction)*rotz(-phix_correction)'*roty(-phiy_correction)';
     
     %% MASKING
     % mask radial

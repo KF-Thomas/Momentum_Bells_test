@@ -56,6 +56,20 @@ K_R_mix=0.33063277;%0.31
 f1_Raman_mix=f0_AOM-dF_Raman/2-del;     %[Hz]    45(P) RAMAN   "top"                          45(S) RAMAN   "top"
 f2_Raman_mix=f0_AOM+dF_Raman/2;     %[Hz]   -45(S) RAMAN   "horizontal"                 -45(P) RAMAN   "horizonatal"
 
+
+B_trap_bottom=1.0751e6;%1.025e6;%1.0603782e6;
+del = -45e3;%-41.03543351e3; %detuning for second beam 3e3
+T_pulse_del = +0.0e-6;%delay between pulses
+dF_Raman=-(B_trap_bottom);     %[Hz]    Raman detuning
+T_Raman_mix=23e-6;%19.20368817e-6;
+Gs_mod_R_mix=1.8;%2.69400894;
+phi1_mix=pi;
+phi2=0;
+K_R_mix=0.338;%0.34063277;%0.31
+
+f1_Raman_mix=f0_AOM-dF_Raman/2-del;     %[Hz]    45(P) RAMAN   "top"                          45(S) RAMAN   "top"
+f2_Raman_mix=f0_AOM+dF_Raman/2;     %[Hz]   -45(S) RAMAN   "horizontal"                 -45(P) RAMAN   "horizonatal"
+
 ## momentum splitting
 
 ### transfer to k=0,-1
@@ -238,6 +252,20 @@ T_Bragg_src_f=32E-6;
 P_Bragg_f = 7.9;%7.2;%20.5;%~7.8
 K_Bragg_src_f_1=1.25*ampfun([60.117, 0.5638],P_Bragg_f)/2e3;%0.08;
 K_Bragg_src_f_2=1.33*ampfun([132.62, 0.5283],P_Bragg_f)/2e3;%0.08;%[60.117, 0.5638] multiplier ~1.2 1.4
+Gs_mod_Bragg_src_f_1=0.75*T_Bragg_src_f/4.2E-6*sqrt(2)*sqrt(5.63806937736142e-01);%~0.7 0.95
+Gs_mod_Bragg_src_f_2=0.75*T_Bragg_src_f/4.2E-6*sqrt(2)*sqrt(5.28341254744861e-01);
+t0_Bragg_src_f=nan;
+
+(2020-12-04)
+dF_Bragg_1=0.095e6;%0.099e6;%~0.093;% %%
+dF_Bragg_2=0.095e6;%0.099e6; %%
+f1_Bragg_src_f=f0_AOM-dF_Bragg_1;
+f2_Bragg_src_f=f0_AOM+dF_Bragg_2;
+
+T_Bragg_src_f=31E-6; %%
+P_Bragg_f = 7.5 ;%7.2;%20.5;%~7.8 %%
+K_Bragg_src_f_1=1.37*ampfun([60.117, 0.5638],P_Bragg_f)/2e3;%0.08; 1.25 1.35
+K_Bragg_src_f_2=1.49*ampfun([132.62, 0.5283],P_Bragg_f)/2e3;%0.08;%[60.117, 0.5638] multiplier ~1.2 1.4 1.33 1.45
 Gs_mod_Bragg_src_f_1=0.75*T_Bragg_src_f/4.2E-6*sqrt(2)*sqrt(5.63806937736142e-01);%~0.7 0.95
 Gs_mod_Bragg_src_f_2=0.75*T_Bragg_src_f/4.2E-6*sqrt(2)*sqrt(5.28341254744861e-01);
 t0_Bragg_src_f=nan;

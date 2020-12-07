@@ -22,6 +22,7 @@ corr_opts.type='radial_bb';%'1d_cart_bb';%
 % corr_opts.one_d_dimension = 2;
 % corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*3e-3;
 one_d_range=0.017;%0.02
+% one_d_range=0.16;
 corr_opts.redges=sqrt(linspace(0^2,one_d_range^2,75));%100 or 80 or 85 or 95
 % corr_opts.one_d_edges = linspace(-one_d_range,one_d_range,150);
 corr_opts.rad_smoothing=nan;
@@ -47,6 +48,7 @@ corrs.top_halo.corr_bb=calc_any_g2_type(corr_opts,top_halo.counts_vel');
 
 corr_opts.fig='bottom halo bb corr';
 corrs.bottom_halo.corr_bb=calc_any_g2_type(corr_opts,bottom_halo.counts_vel');
+% corrs.bottom_halo.corr_bb=calc_any_g2_type(corr_opts,bottom_halo.counts_vel_norm');
 
 %% CO-LINEAR (in the same halo)
 
@@ -114,9 +116,9 @@ corrs.between_halos.corr_cl=calc_any_g2_type(corr_opts,both_halo_counts);
 corr_opts.fig='between halo bb corr';
 corr_opts.type='radial_bb';%'3d_cart_bb';%'1d_cart_bb';%
 corr_opts.one_d_dimension=3;
-% corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*0.05;
+corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*0.05;
 % one_d_range=0.16;
-corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*5e-2;
+% corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*5e-2;
 one_d_range=0.02;
 corr_opts.one_d_edges=linspace(-one_d_range,one_d_range,100)';
 corr_opts.redges=sqrt(linspace(0,one_d_range^2,40));%(5e-3)^2

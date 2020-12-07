@@ -12,15 +12,26 @@ else
 end
 
 corr_opts.type='radial_bb';
-corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*2e-3;
-one_d_range=0.017;
+corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]].*0.05;
+corr_opts.one_d_dimension=2;
+
+if opts_E.norm
+    one_d_range=0.16;
+    data_type = 'norm';
+else
+    one_d_range=0.017;
+    data_type = 'unnorm';
+end
+
+
 corr_opts.redges=sqrt(linspace(0^2,one_d_range^2,75));
+corr_opts.one_d_edges=linspace(-one_d_range,one_d_range,100)';
 corr_opts.rad_smoothing=nan;
 
 corr_opts.low_mem=true;
 
 corr_opts.sampling_method='complete';
-corr_opts.sample_proportion=0.3; %proportion of uncorolated pairs to calculate 
+corr_opts.sample_proportion=1.0; %proportion of uncorolated pairs to calculate 
 corr_opts.attenuate_counts=1; %artifical qe
 corr_opts.do_pre_mask=false;
 corr_opts.sorted_dir=1;
@@ -58,12 +69,12 @@ end
 %3: bottom right
 %4: bottom left
 
-counts12 = [ports.top_right';ports.top_left'];
-counts13 = [ports.top_right';ports.bottom_right'];
-counts14 = [ports.top_right';ports.bottom_left'];
-counts23 = [ports.top_left';ports.bottom_right'];
-counts24 = [ports.top_left';ports.bottom_left'];
-counts34 = [ports.bottom_right';ports.bottom_left'];
+counts12 = [ports.top_right.(data_type)';ports.top_left.(data_type)'];
+counts13 = [ports.top_right.(data_type)';ports.bottom_right.(data_type)'];
+counts14 = [ports.top_right.(data_type)';ports.bottom_left.(data_type)'];
+counts23 = [ports.top_left.(data_type)';ports.bottom_right.(data_type)'];
+counts24 = [ports.top_left.(data_type)';ports.bottom_left.(data_type)'];
+counts34 = [ports.bottom_right.(data_type)';ports.bottom_left.(data_type)'];
 
 corrs.g14 = calc_any_g2_type(corr_opts.g14,counts14);
 
@@ -73,9 +84,9 @@ corrs.g12 = calc_any_g2_type(corr_opts.g12,counts12); %top halo bb
 
 corrs.g34 = calc_any_g2_type(corr_opts.g34,counts34); %btm halo bb
 
-corrs.g13 = calc_any_g2_type(corr_opts.g13,counts13);
+% corrs.g13 = calc_any_g2_type(corr_opts.g13,counts13);
 
-corrs.g24 = calc_any_g2_type(corr_opts.g24,counts24);
+% corrs.g24 = calc_any_g2_type(corr_opts.g24,counts24);
 
 %Caculate the correlator
 E_val = (corrs.g14.norm_g2.fitted_g2peak+corrs.g23.norm_g2.fitted_g2peak-corrs.g12.norm_g2.fitted_g2peak-corrs.g34.norm_g2.fitted_g2peak)/...

@@ -42,7 +42,7 @@ anal_opts.trig_ai_in=20;
 % anal_opts.osc_fit.tlim=[0.86,1.08];
 % anal_opts.osc_fit.dimesion=2; %Sel ect coordinate to bin. 1=X, 2=Y.
 
-anal_opts.history.shots=20;
+anal_opts.history.shots=200;
 
 hebec_constants
 const.fall_distance = 8.52925545e-01;
@@ -71,7 +71,7 @@ anal_out.dir=[fullfile(anal_opts.tdc_import.dir,'out','monitor'),filesep];
 if (exist(anal_out.dir, 'dir') == 0), mkdir(anal_out.dir); end
 anal_opts.global.out_dir=anal_out.dir;
 
-frac_opts.num_lim = 0.1e3;
+frac_opts.num_lim = 4e3;
 frac_opts.transfer_state = 'momentum';
 frac_opts.bounds = [-0.03, 0.03; -0.03, 0.03];%spacecial bounds
 
