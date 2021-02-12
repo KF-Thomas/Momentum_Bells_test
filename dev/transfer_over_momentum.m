@@ -36,8 +36,9 @@ opts.timer=0;
 % [17.5 6.0 0.5151 -0.0849*2*2*pi 0.00]
 
 opts.time_span = 35;
+%
 ks = [linspace(0,2,num_pts).*-4.101078618245948e+06 linspace(2,4,num_pts).*-4.101078618245948e+06];
-ys=transfer_percentage([17 0.05 0.405 -0.0849*2*2*pi, 0.00],[9,10,11],opts,ks);
+ys=transfer_percentage([17 0.05 0.405 -0.115*2*2*pi, 0.00],[9,10,11],opts,ks);
 %% cost
 k = linspace(0,4,num_pts).*-4.101078618245948e+06;
 mask_t =  logical(k<0.25.*-4.101078618245948e+06) & ...
@@ -89,8 +90,8 @@ amp_vec=linspace(0.0,4.5,num_pts);
 % linspace(0,4,num_pts).*
 % [17 0.1 0.5 2 -0.0849*2*2*pi 0.000]
 % b_matrix = [17.*ones(num_pts,1) 0.07.*ones(num_pts,1) linspace(0.0,1.4,num_pts)' 2.*ones(num_pts,1) -0.0849*2*2*pi.*ones(num_pts,1) 0.00.*ones(num_pts,1)];
-b_matrix_gauss = [17.*ones(num_pts,1) 0.05.*ones(num_pts,1) amp_vec' -0.0849*2*2*pi.*ones(num_pts,1) 0.00.*ones(num_pts,1)];
-% b_matrix_sinc = [17.5.*ones(num_pts,1) 6.*ones(num_pts,1) amp_vec' -0.0849*2*2*pi.*ones(num_pts,1) 0.00.*ones(num_pts,1)]; %cost = 1.245
+% b_matrix_gauss = [17.*ones(num_pts,1) 0.05.*ones(num_pts,1) amp_vec' -0.0849*2*2*pi.*ones(num_pts,1) 0.00.*ones(num_pts,1)];
+b_matrix_gauss = [17.0.*ones(num_pts,1) 0.0156.*ones(num_pts,1) amp_vec' -0.0849*2*2*pi.*ones(num_pts,1) 0.00.*ones(num_pts,1)]; %cost = 1.245
 
 ybs=transfer_percentage(b_matrix_gauss,[9,10,11],opts,-4.101078618245948e+06);
 %
@@ -110,14 +111,17 @@ alpha_vec = linspace(0.01,1,num_pts)';
 % [17 0.1 0.5 2 -0.0849*2*2*pi 0.000]
 % b_matrix = [17.*ones(num_pts,1) 0.07.*ones(num_pts,1) linspace(0.0,1.4,num_pts)' 2.*ones(num_pts,1) -0.0849*2*2*pi.*ones(num_pts,1) 0.00.*ones(num_pts,1)];
 % b_matrix = [17.5.*ones(num_pts,1) alpha_vec 0.5151.*ones(num_pts,1) -0.0849*2*2*pi.*ones(num_pts,1) 0.00.*ones(num_pts,1)];
-b_matrix_gauss = [17.0.*ones(num_pts,1) alpha_vec 0.411.*ones(num_pts,1) -0.0849*2*2*pi.*ones(num_pts,1) 0.00.*ones(num_pts,1)];
+% b_matrix_gauss = [17.0.*ones(num_pts,1) alpha_vec 0.411.*ones(num_pts,1) -0.0849*2*2*pi.*ones(num_pts,1) 0.00.*ones(num_pts,1)];
+b_matrix_gauss = [17.0.*ones(num_pts,1) alpha_vec 0.5.*ones(num_pts,1) -0.0849*2*2*pi.*ones(num_pts,1) 0.00.*ones(num_pts,1)];
+
+
 
 yAs=transfer_percentage(b_matrix_gauss,[9,10,11],opts,-4.101078618245948e+06);
 %
 stfig('transfer over parameter space (alpha)')
 clf
 % hold on
-plot(alpha_vec,abs(yAs).^2,'linewidth',2)
+plot(sqrt(1./alpha_vec),abs(yAs).^2,'linewidth',2)
 
 xlabel('alpha')
 ylabel('transfer percentage')

@@ -158,3 +158,5 @@ c:\remote\settings202023Nov150032.xml
 
 (2020-11-24)
 c:\remote\settings202023Nov151918.xml
+
+normal bec c:\remote\settings202119Jan165218.xml

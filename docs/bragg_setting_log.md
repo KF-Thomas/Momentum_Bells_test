@@ -351,3 +351,131 @@ Gs_mod_Bragg_mirror_2=1.83*T_Bragg_src_t/16.7e-6*sqrt(2)*sqrt(5.28341254744861e-
 	
 
 t0_Bragg_mirror=nan;%3.9895e-6;
+
+(2021-01)
+
+%%% 50:50 Beam Splitter pulse
+%--------------------------------------------------------------------------
+dF_Bragg_1=0.128e6;%0.11e6;% or 0.1e6
+dF_Bragg_2=0.128e6;%0.11e6;% or 0.1e6
+f1_Bragg_splitter=f0_AOM-dF_Bragg_1;
+f2_Bragg_splitter=f0_AOM+dF_Bragg_2;
+
+T_Bragg_splitter=35E-6;
+
+t0_Bragg_splitter=nan;%3.9895e-6;
+
+sinc_scale_Bragg_splitter=5.5e-6;%4.4e-6;%5.3e-6;%5.3e-6;
+% Amp_sinc_Bragg_splitter=sqrt(12.1);%sqrt(5.3)%sqrt(11.5);0;%sqrt(15);%sqrt(10.0);%0.2;%
+
+Amp_sinc_Bragg_splitter_1=sqrt(12.2);%sqrt(12.1);%sqrt(0.1);%sqrt(5.3)%sqrt(11.5);0;%sqrt(15);%sqrt(10.0);%0.2;%
+Amp_sinc_Bragg_splitter_2=sqrt(12.2);%sqrt(12.1);%sqrt(0.16);%sqrt(5.3)%sqrt(11.5);0;%sqrt(15);%sqrt(10.0);%0.2;%
+
+wf_splitter_pulse = @(b,t) sinc((t-b(1)/2)./b(4)).*b(3).*cos(pi*(t-b(1)/2)/(b(1))).^2;
+% wf_splitter_pulse = @(b,t)exp(-((t-b(1)/2)./b(4)).^2).*b(3);
+
+% wf_splitter_pulse_1 = @(b,t) ampfun([60.117, 0.5638],abs(wf_splitter_pulse(b,t)).^2)/2e3.*sin(2*pi*b(2)*t+b(5)).*sign(wf_splitter_pulse(b,t));%sinc((t-b(1)/2)./b(4)).*b(3).*sin(2*pi*b(2)*t);%
+% wf_splitter_pulse_2 = @(b,t) ampfun([132.62, 0.5283],abs(wf_splitter_pulse(b,t)).^2)/2e3.*sin(2*pi*b(2)*t+b(5)).*sign(wf_splitter_pulse(b,t));%sinc((t-b(1)/2)./b(4)).*b(3).*sin(2*pi*b(2)*t);%
+
+wf_splitter_pulse_1 = @(b,t) ampfun([133.4, 0.5325],abs(wf_splitter_pulse(b,t)).^2)/2e3.*sin(2*pi*b(2)*t+b(5)).*sign(wf_splitter_pulse(b,t));%sinc((t-b(1)/2)./b(4)).*b(3).*sin(2*pi*b(2)*t);%
+wf_splitter_pulse_2 = @(b,t) ampfun([50.197, 0.6073],1.5*abs(wf_splitter_pulse(b,t)).^2)/2e3.*sin(2*pi*b(2)*t+b(5)).*sign(wf_splitter_pulse(b,t));%sinc((t-b(1)/2)./b(4)).*b(3).*sin(2*pi*b(2)*t);%
+
+
+% wf_splitter_pulse_1 = @(b,t) wf_splitter_pulse(b,t).^2.*sin(2*pi*b(2)*t+b(5)).*sign(wf_splitter_pulse(b,t));%sinc((t-b(1)/2)./b(4)).*b(3).*sin(2*pi*b(2)*t);%
+% wf_splitter_pulse_2 = @(b,t) wf_splitter_pulse(b,t).^2.*sin(2*pi*b(2)*t+b(5)).*sign(wf_splitter_pulse(b,t));%sinc((t-b(1)/2)./b(4)).*b(3).*sin(2*pi*b(2)*t);%
+
+
+
+## shorter pulse  settings
+%%% MIRROR pulse
+%--------------------------------------------------------------------------
+dF_Bragg_1=0.118e6;%0.12e6;%0.0849e6;%
+dF_Bragg_2=0.118e6;%0.12e6;%0.0849e6;%
+f1_Bragg_mirror=f0_AOM-dF_Bragg_1;
+f2_Bragg_mirror=f0_AOM+dF_Bragg_2;
+
+T_Bragg_mirror=32E-6;%32E-6;
+
+sinc_scale_Bragg_mirror=5.5e-6;%4.4e-6;%5.5e-6;%5.3e-6;%5.3e-6;
+Amp_sinc_Bragg_mirror=sqrt(21);%sqrt(5.3)%sqrt(11.5);0;%sqrt(15);%sqrt(10.0);%0.2;%
+
+wf_mirror_pulse = @(b,t) sinc((t-b(1)/2)./b(4)).*b(3).*cos(pi*(t-b(1)/2)/(b(1))).^2;
+% wf_mirror_pulse = @(b,t) exp(-((t-b(1)/2)./b(4)).^4).*b(3);%sinc((t-b(1)/2)./b(4)).*b(3);%.*cos(pi*(t-b(1)/2)/(b(1))).^2;
+
+wf_mirror_pulse_1 = @(b,t) ampfun([133.4, 0.5325],abs(wf_mirror_pulse(b,t)).^2)/2e3.*sin(2*pi*b(2)*t+b(5)).*sign(wf_mirror_pulse(b,t));%sinc((t-b(1)/2)./b(4)).*b(3).*sin(2*pi*b(2)*t);%
+wf_mirror_pulse_2 = @(b,t) ampfun([50.197, 0.6073],1.5*abs(wf_mirror_pulse(b,t)).^2)/2e3.*sin(2*pi*b(2)*t+b(5)).*sign(wf_mirror_pulse(b,t));%sinc((t-b(1)/2)./b(4)).*b(3).*sin(2*pi*b(2)*t);%
+
+% wf_mirror_pulse_1 = @(b,t) ampfun_sin([6.141e+01, 9.213e-04],abs(wf_mirror_pulse(b,t)).^2)/2e3.*sin(2*pi*b(2)*t+b(5)).*sign(wf_mirror_pulse(b,t));%sinc((t-b(1)/2)./b(4)).*b(3).*sin(2*pi*b(2)*t);%
+% wf_mirror_pulse_2 = @(b,t) ampfun_sin([8.441e+01, 1.679e-03],abs(wf_mirror_pulse(b,t)).^2)/2e3.*sin(2*pi*b(2)*t+b(5)).*sign(wf_mirror_pulse(b,t));%sinc((t-b(1)/2)./b(4)).*b(3).*sin(2*pi*b(2)*t);%
+
+%%% 50:50 Beam Splitter pulse
+%--------------------------------------------------------------------------
+dF_Bragg_1=0.128e6;%0.11e6;% or 0.1e6
+dF_Bragg_2=0.128e6;%0.11e6;% or 0.1e6
+f1_Bragg_splitter=f0_AOM-dF_Bragg_1;
+f2_Bragg_splitter=f0_AOM+dF_Bragg_2;
+
+T_Bragg_splitter=35E-6;
+
+t0_Bragg_splitter=nan;%3.9895e-6;
+
+sinc_scale_Bragg_splitter=5.5e-6;%4.4e-6;%5.3e-6;%5.3e-6;
+% Amp_sinc_Bragg_splitter=sqrt(12.1);%sqrt(5.3)%sqrt(11.5);0;%sqrt(15);%sqrt(10.0);%0.2;%
+
+Amp_sinc_Bragg_splitter_1=sqrt(12.2);%sqrt(12.1);%sqrt(0.1);%sqrt(5.3)%sqrt(11.5);0;%sqrt(15);%sqrt(10.0);%0.2;%
+Amp_sinc_Bragg_splitter_2=sqrt(12.2);%sqrt(12.1);%sqrt(0.16);%sqrt(5.3)%sqrt(11.5);0;%sqrt(15);%sqrt(10.0);%0.2;%
+
+wf_splitter_pulse = @(b,t) sinc((t-b(1)/2)./b(4)).*b(3).*cos(pi*(t-b(1)/2)/(b(1))).^2;
+% wf_splitter_pulse = @(b,t)exp(-((t-b(1)/2)./b(4)).^2).*b(3);
+
+% wf_splitter_pulse_1 = @(b,t) ampfun([60.117, 0.5638],abs(wf_splitter_pulse(b,t)).^2)/2e3.*sin(2*pi*b(2)*t+b(5)).*sign(wf_splitter_pulse(b,t));%sinc((t-b(1)/2)./b(4)).*b(3).*sin(2*pi*b(2)*t);%
+% wf_splitter_pulse_2 = @(b,t) ampfun([132.62, 0.5283],abs(wf_splitter_pulse(b,t)).^2)/2e3.*sin(2*pi*b(2)*t+b(5)).*sign(wf_splitter_pulse(b,t));%sinc((t-b(1)/2)./b(4)).*b(3).*sin(2*pi*b(2)*t);%
+
+wf_splitter_pulse_1 = @(b,t) ampfun([133.4, 0.5325],abs(wf_splitter_pulse(b,t)).^2)/2e3.*sin(2*pi*b(2)*t+b(5)).*sign(wf_splitter_pulse(b,t));%sinc((t-b(1)/2)./b(4)).*b(3).*sin(2*pi*b(2)*t);%
+wf_splitter_pulse_2 = @(b,t) ampfun([50.197, 0.6073],1.5*abs(wf_splitter_pulse(b,t)).^2)/2e3.*sin(2*pi*b(2)*t+b(5)).*sign(wf_splitter_pulse(b,t));%sinc((t-b(1)/2)./b(4)).*b(3).*sin(2*pi*b(2)*t);%
+
+
+% wf_splitter_pulse_1 = @(b,t) wf_splitter_pulse(b,t).^2.*sin(2*pi*b(2)*t+b(5)).*sign(wf_splitter_pulse(b,t));%sinc((t-b(1)/2)./b(4)).*b(3).*sin(2*pi*b(2)*t);%
+% wf_splitter_pulse_2 = @(b,t) wf_splitter_pulse(b,t).^2.*sin(2*pi*b(2)*t+b(5)).*sign(wf_splitter_pulse(b,t));%sinc((t-b(1)/2)./b(4)).*b(3).*sin(2*pi*b(2)*t);%
+
+
+## setting sfor 2021-01
+
+%%% MIRROR pulse
+%--------------------------------------------------------------------------
+dF_Bragg_1=0.115e6;
+dF_Bragg_2=0.115e6;
+f1_Bragg_mirror=f0_AOM-dF_Bragg_1;
+f2_Bragg_mirror=f0_AOM+dF_Bragg_2;
+
+T_Bragg_mirror=32E-6;
+
+sinc_scale_Bragg_mirror=5.5e-6;%4.4e-6;%5.5e-6;%5.3e-6;%5.3e-6;
+Amp_sinc_Bragg_mirror=sqrt(16);%0;%sqrt(5.3)%sqrt(11.5);0;%sqrt(15);%sqrt(10.0);%0.2;%
+
+wf_mirror_pulse = @(b,t) sinc((t-b(1)/2)./b(4)).*b(3).*cos(pi*(t-b(1)/2)/(b(1))).^2;
+
+wf_mirror_pulse_1 = @(b,t) ampfun([138.4, 0.5325],abs(wf_mirror_pulse(b,t)).^2)/2e3.*sin(2*pi*b(2)*t+b(5)).*sign(wf_mirror_pulse(b,t));%sinc((t-b(1)/2)./b(4)).*b(3).*sin(2*pi*b(2)*t);%
+wf_mirror_pulse_2 = @(b,t) ampfun([50.197, 0.6073],1.5*abs(wf_mirror_pulse(b,t)).^2)/2e3.*sin(2*pi*b(2)*t+b(5)).*sign(wf_mirror_pulse(b,t));%sinc((t-b(1)/2)./b(4)).*b(3).*sin(2*pi*b(2)*t);%
+
+
+%%% 50:50 Beam Splitter pulse
+%--------------------------------------------------------------------------
+dF_Bragg_1=0.118e6;%0.11e6;% or 0.1e6
+dF_Bragg_2=0.118e6;%0.11e6;% or 0.1e6
+f1_Bragg_splitter=f0_AOM-dF_Bragg_1;
+f2_Bragg_splitter=f0_AOM+dF_Bragg_2;
+
+T_Bragg_splitter=35E-6;
+
+t0_Bragg_splitter=nan;%3.9895e-6;
+
+sinc_scale_Bragg_splitter=5.5e-6;%4.4e-6;%5.3e-6;%5.3e-6;
+
+Amp_sinc_Bragg_splitter_1=sqrt(10.2);%sqrt(12.1);%sqrt(0.1);%sqrt(5.3)%sqrt(11.5);0;%sqrt(15);%sqrt(10.0);%0.2;%
+Amp_sinc_Bragg_splitter_2=sqrt(10.2);%sqrt(12.1);%sqrt(0.16);%sqrt(5.3)%sqrt(11.5);0;%sqrt(15);%sqrt(10.0);%0.2;%
+
+wf_splitter_pulse = @(b,t) sinc((t-b(1)/2)./b(4)).*b(3).*cos(pi*(t-b(1)/2)/(b(1))).^2;
+
+wf_splitter_pulse_1 = @(b,t) ampfun([133.4, 0.5325],abs(wf_splitter_pulse(b,t)).^2)/2e3.*sin(2*pi*b(2)*t+b(5)).*sign(wf_splitter_pulse(b,t));%sinc((t-b(1)/2)./b(4)).*b(3).*sin(2*pi*b(2)*t);%
+wf_splitter_pulse_2 = @(b,t) ampfun([50.197, 0.6073],1.5*abs(wf_splitter_pulse(b,t)).^2)/2e3.*sin(2*pi*b(2)*t+b(5)).*sign(wf_splitter_pulse(b,t));%sinc((t-b(1)/2)./b(4)).*b(3).*sin(2*pi*b(2)*t);%

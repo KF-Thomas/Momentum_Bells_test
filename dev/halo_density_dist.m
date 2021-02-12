@@ -8,25 +8,25 @@ addpath(genpath(core_folder));
 set(groot, 'DefaultTextInterpreter', 'latex')
 %% Import directory
 opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
-% opts.data_root = 'Z:\EXPERIMENT-DATA\2020_Momentum_Bells\pulse_characterisation\';
-data_folder = '';
-% data_folder = '20200807_k=0,-1,-2_halos_data_2';
-% data_folder = '20200824_k=0,-1_splitter_attempt';
-% data_folder = '20200824_k=0,-1_pre_mirror';
-% data_folder = '20200825_attempting_different_mirror_settings';
-% data_folder = '20200901_k=0,-1_transfer_vs_amp\Pamp_12';
-% data_folder = '20200907_k=-1,-2_transfer_vs_amp\Pamp_0';
-% data_folder = '20200907_detuning_vs_delay\3_0_ms\detuning_130_kHz';
-% data_folder = '20201123_k=0,-1_single_halo_high_occ';
-% data_folder = '20201125_mirror_pulse_check';
-% data_folder = '20201123_beam_splitter_opt\Pamp_13_5';
-% data_folder = '20201203_alignment_search_7_v6_pamp_9';
-% data_folder = '20201203_alignment_search_8';
-% data_folder = '20201203_alignment_search_9';
-% data_folder = '20201203_alignment_search_10';
-% data_folder = '20201204_k=0,-1,-2_beam_splitter_2';
-% data_folder = '20201204_bragg_pulse_analysis\hamming_sinc_pulse_3';
-% data_folder = '20201204_bragg_pulse_analysis\hamming_sinc_pulse_5';
+% opts.data_root = 'Z:\EXPERIMENT-DATA\2020_Momentum_Bells\';
+% data_folder = '20210121_testing_mirror\test_3';
+% data_folder = 'single_halo_data\20200820_k=0,-1_extra_halo_data';
+% data_folder = '202101_second_Mach_Zender_attempt\20210121_mach_zender_k=0,-1_phi=3pi_2';
+% data_folder = '20201210_k=0,-1,-2_interferometer_phi=0';
+% data_folder = '20201211_k=0,-1,-2_interferometer_phi=pi_8';
+% data_folder = '20201210_k=0,-1,-2_interferometer_phi=pi_4_v2';
+% data_folder = '20201211_k=0,-1,-2_interferometer_phi=pi';
+%data_folder='20201214_Mach_Zehnder\20201214_mirror_75ms_amp_sqrt_21';
+% data_folder='20201214_Mach_Zehnder\20201214_BS_30ms_sqrt_12.2';
+%data_folder='20201214_Mach_Zehnder\top_halo(k=0,-1)';
+% data_folder='20201204_bragg_pulse_analysis\3_0ms_delay\bragg_pulse_1';
+data_folder='';
+% data_folder='20210209_k=0,-1_norm_lower_evap';
+% data_folder='20210204_k=0,-1_norm';
+% data_folder='20210201_bragg_pulse_testing\scan\amp_0';
+% data_folder='20210201_bragg_pulse_testing\prototyping\sinc_3';
+% data_folder='20210201_bragg_pulse_testing\scan\amp_3_5\alpha_3_5';
+% data_folder='20210201_bragg_pulse_testing\scan\amp_3\alpha_3_5';
 opts.import.dir = fullfile(opts.data_root, data_folder);
 opts.import.force_reimport = true;
 opts.import.force_cache_load = ~opts.import.force_reimport;
@@ -54,10 +54,12 @@ tmp_ylim=[-35e-3, 35e-3];
 tlim=[0,4];
 opts.import.txylim=[tlim;tmp_xlim;tmp_ylim];
 
-opts.num_lim = 2.5e3;%2.1e3;%0.5e3;% %minimum atom number 1.5e3
+opts.num_lim = 0e3;%2.1e3;%0.5e3;% %minimum atom number 1.5e3
 opts.halo_N_lim = 0;%2;%10;%0;% %minimum allowed number in halo 10
 
 opts.plot_dist = false; %do you want to see all the detailed stuff about the halo distributions
+
+opts.cent.nan_cull = true; %do you want to cull nan's
 
 %% Background stuff
 cli_header('Setting up for %s', data_folder);
@@ -98,27 +100,27 @@ hebec_constants
 %% find centers
 opts.cent.visual = 0; %from 0 to 2
 opts.cent.savefigs = 0;
-opts.cent.correction = 0;
+opts.cent.correction = 1;
 opts.cent.correction_opts.plots = 0;
 
 opts.cent.top.visual = 0; %from 0 to 2
 opts.cent.top.savefigs = 0;
-opts.cent.top.threshold = [130,2000,2000].*1e3;
-opts.cent.top.min_threshold = [16,13,13].*1e3;%[16,7,10].*1e3;
+opts.cent.top.threshold = [130,5000,5000].*1e3;
+opts.cent.top.min_threshold = [16,3,3].*1e3;%[16,7,10].*1e3;
 opts.cent.top.sigma = [6.7e-5,16e-5,16e-5];%[8e-5,25e-5,25e-5];
 opts.cent.top.method = {'margin','average','average'};
 
 opts.cent.mid.visual = 0; %from 0 to 2
 opts.cent.mid.savefigs = 0;
-opts.cent.mid.threshold = [130,2000,2000].*1e3;
-opts.cent.mid.min_threshold = [16,13,13].*1e3;%[16,7,10].*1e3;
+opts.cent.mid.threshold = [130,5000,5000].*1e3;
+opts.cent.mid.min_threshold = [16,3,3].*1e3;%[16,7,10].*1e3;
 opts.cent.mid.sigma = [6.7e-5,16e-5,16e-5];%[8e-5,25e-5,25e-5];
 opts.cent.mid.method = {'margin','average','average'};
 
 opts.cent.btm.visual = 0; %from 0 to 2
 opts.cent.btm.savefigs = 0;
 opts.cent.btm.threshold = [130,5000,5000].*1e3;%[130,2000,2000].*1e3;
-opts.cent.btm.min_threshold = [16,13,13].*1e3;%[0,0,0].*1e3;%[16,13,13].*1e3;%[16,7,10].*1e3;
+opts.cent.btm.min_threshold = [16,3,3].*1e3;%[0,0,0].*1e3;%[16,13,13].*1e3;%[16,7,10].*1e3;
 opts.cent.btm.sigma = [6.7e-5,16e-5,16e-5];%[8e-5,25e-5,25e-5];
 opts.cent.btm.method = {'margin','average','average'};
 
@@ -264,6 +266,11 @@ N_btm = bottom_halo.num_counts;
 %     top_halo = halos.top_halo;
 %     bottom_halo = halos.bottom_halo;
 %     bec_masked = halos.bec;
+%%
+% for ii = 1:size(top_halo.counts_vel,1)
+%     top_halo.counts_vel
+%     bottom_halo.counts_vel
+% end
 
 %% histograming
 nbins=151;%50;%
@@ -439,7 +446,7 @@ clf
 
 %% Density in spherical coordinates
 stfig('density vs angle');
-clf
+% clf
 subplot(2,1,1)
 plot(theta./pi,v_btm_dens(:,1),'linewidth',1.5)
 hold on
@@ -447,21 +454,22 @@ plot(theta./pi,v_top_dens(:,1),'linewidth',1.5)
 xlim([-1,1])
 legend('bottom','top')
 ylabel('Average density')
-xlabel('\(\theta\)')
+xlabel('\(\theta/\pi\)')
 subplot(2,1,2)
 plot(phi./pi,v_btm_dens(:,2),'linewidth',1.5)
 hold on
 plot(phi./pi,v_top_dens(:,2),'linewidth',1.5)
 xlim([asin(opts.vel_conv.top.z_mask(1)),asin(opts.vel_conv.top.z_mask(2))]./pi)
+% ylim([0 6000])
 legend('bottom','top')
 ylabel('Average density')
-xlabel('\(\phi\)')
+xlabel('\(\phi/\pi\)')
 
 %% Density against height in z
 stfig('density vs height');
 % rad_mean = mean(bottom_halo_intial.rad);
 rad_mean = 1;
-clf
+% clf
 plot(rad_mean.*sin(phi),v_btm_dens(:,2),'linewidth',1.5)
 hold on
 plot(rad_mean.*sin(phi),v_top_dens(:,2),'linewidth',1.5)
@@ -472,7 +480,7 @@ xlabel('\(v_z\) (m/s)')
 %% ratio in spherical coordinates
 if opts.do_btm_halo && opts.do_top_halo
     stfig('density ratio vs angle');
-    clf
+%     clf
     subplot(2,1,1)
     theta_ratio = (v_btm_dens(:,1))./(v_top_dens(:,1));
     plot(theta./pi,theta_ratio,'linewidth',1.5)
@@ -482,13 +490,15 @@ if opts.do_btm_halo && opts.do_top_halo
 %         theta./pi,(v_btm_dens(:,1))./(v_top_dens(:,1))-v_ratio_unc,'r-','linewidth',1.5)
     xlim([-1,1])
     ylabel('density ratio')
-    xlabel('\(\theta\)')
+    xlabel('\(\theta/\pi\)')
     subplot(2,1,2)
     hold on
     plot(phi./pi,(v_btm_dens(:,2))./(v_top_dens(:,2)),'linewidth',1.5)
     ylabel('density ratio')
-    xlabel('\(\phi\)')
+    xlabel('\(\phi/\pi\)')
+    
     xlim([asin(opts.vel_conv.top.z_mask(1)),asin(opts.vel_conv.top.z_mask(2))]./pi)
+%     xlim([-0.1,0.1])
 %     if strcmp(slice_type,'narrow')
 %         xlim([-0.153,0.153])
 %     else
@@ -503,13 +513,18 @@ if opts.do_btm_halo && opts.do_top_halo
 %     shading flat
 %     colorbar
 %     caxis([0.1 1.1])
-    
+    top_dens_norm = (v_top_dens(:,2))./(v_btm_dens(:,2)+v_top_dens(:,2));
     stfig('density visibility vs angle');
-    clf
-    plot(phi,(v_btm_dens(:,2)-v_top_dens(:,2))./(v_btm_dens(:,2)+v_top_dens(:,2)),'linewidth',1.5)
+%     clf
+hold on
+    plot(phi./pi,top_dens_norm,'linewidth',1.5)
     ylabel('density vis')
-    xlabel('\(\phi\)')
-    
+    xlabel('\(\phi/\pi\)')
+%     xlim([-0.4,0.4])
+    xlim([asin(opts.vel_conv.top.z_mask(1)),asin(opts.vel_conv.top.z_mask(2))]./pi)
+    phi_mask = phi<0.1 & phi>-0.1;
+    top_dens_avg = trapz(phi(phi_mask),top_dens_norm(phi_mask))./range(phi(phi_mask));
+    top_dens_std = sqrt(trapz(phi(phi_mask),(top_dens_avg-top_dens_norm(phi_mask)).^2)./0.2);
 end
 
 %% density plot in full spherical coordinates

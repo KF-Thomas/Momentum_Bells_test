@@ -40,7 +40,7 @@ corr_opts.sort_norm=1;
 corr_opts.timer=false;
 corr_opts.print_update = false;
 
-corr_opts.fit = true;
+corr_opts.fit = opts_E.fit;
 
 corr_opts.calc_err = opts_E.calc_err;
 corr_opts.samp_frac_lims=[0.25,0.5];
@@ -56,10 +56,10 @@ end
 
 %% Port specific options
 
-% corr_opts.g14.redges=sqrt(linspace((5e-3)^2,0.02^2,40));
+% corr_opts.g14.redges=sqrt(linspace(0,0.02^2,40));
 % corr_opts.g14.rad_smoothing=nan;
 % 
-% corr_opts.g23.redges=sqrt(linspace((5e-3)^2,one_d_range^2,40));
+% corr_opts.g23.redges=sqrt(linspace(0,one_d_range^2,40));
 % corr_opts.g23.rad_smoothing=3e-5;
 
 %%
@@ -76,9 +76,9 @@ counts23 = [ports.top_left.(data_type)';ports.bottom_right.(data_type)'];
 counts24 = [ports.top_left.(data_type)';ports.bottom_left.(data_type)'];
 counts34 = [ports.bottom_right.(data_type)';ports.bottom_left.(data_type)'];
 
-corrs.g14 = calc_any_g2_type(corr_opts.g14,counts14);
+corrs.g14 = calc_any_g2_type(corr_opts.g14,counts14); %btw halo bb
 
-corrs.g23 = calc_any_g2_type(corr_opts.g23,counts23);
+corrs.g23 = calc_any_g2_type(corr_opts.g23,counts23); %btw halo bb
 
 corrs.g12 = calc_any_g2_type(corr_opts.g12,counts12); %top halo bb
 
@@ -89,6 +89,12 @@ corrs.g34 = calc_any_g2_type(corr_opts.g34,counts34); %btm halo bb
 % corrs.g24 = calc_any_g2_type(corr_opts.g24,counts24);
 
 %Caculate the correlator
-E_val = (corrs.g14.norm_g2.fitted_g2peak+corrs.g23.norm_g2.fitted_g2peak-corrs.g12.norm_g2.fitted_g2peak-corrs.g34.norm_g2.fitted_g2peak)/...
-    (corrs.g14.norm_g2.fitted_g2peak+corrs.g23.norm_g2.fitted_g2peak+corrs.g12.norm_g2.fitted_g2peak+corrs.g34.norm_g2.fitted_g2peak);
+
+g12 = corrs.g12.norm_g2.g2_amp(1);
+g14 = corrs.g14.norm_g2.g2_amp(1);
+g23 = corrs.g23.norm_g2.g2_amp(1);
+g34 = corrs.g34.norm_g2.g2_amp(1);
+
+E_val = (g14+g23-g12-g34)/...
+    (g14+g23+g12+g34);
 end

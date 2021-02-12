@@ -60,25 +60,25 @@ for ii = 1:3
     end
     
     subplot(3,1,ii)
-    plot(normcorr.(centers),normcorr.(corr_density),'.k-','MarkerSize',10)
+    plot(normcorr.(centers).*1e3,normcorr.(corr_density),'.k-','MarkerSize',10)
     hold on
     fun1d =  @(b,x) b(1).*exp(-((x-b(3)).^2)./(2*b(2).^2))+b(4);
 %     fun1d =  @(b,x) b(1)./((x-b(3)).^2+b(2).^2);
     [muHat,sigmaHat] = normfit(normcorr.(centers),0.01,zeros(size(normcorr.(centers))),abs(normcorr.(corr_density)).^2);
     inital_guess=[max(normcorr.(corr_density)),sigmaHat,muHat,0];
-    fit=fitnlm(normcorr.(centers),normcorr.(corr_density),...
-        fun1d,...
-        inital_guess);
+%     fit=fitnlm(normcorr.(centers),normcorr.(corr_density),...
+%         fun1d,...
+%         inital_guess);
     out(ii,1) = trapz(normcorr.(centers),normcorr.(centers).*normcorr.(corr_density))/trapz(normcorr.(centers),normcorr.(corr_density));%fit.Coefficients.Estimate(3);
-    out(ii,2) = fit.Rsquared.Adjusted;
+%     out(ii,2) = fit.Rsquared.Adjusted;
     xx = linspace(-max(normcorr.(centers)),max(normcorr.(centers)),3e3)';
     
-    [ypred,ypredci] = predict(fit,xx,'Simultaneous',true);
-    plot(xx,ypred,'b-', xx,ypredci,'r-');
+%     [ypred,ypredci] = predict(fit,xx,'Simultaneous',true);
+%     plot(xx,ypred,'b-', xx,ypredci,'r-');
     
     ylabel(sprintf('$G^{(2)}(\\Delta %s)$ coincedence density',direction_label))
-    xlabel(sprintf('$\\Delta %s$ Seperation',direction_label))
-    xlim([-max(normcorr.(centers)),max(normcorr.(centers))])
+    xlabel(sprintf('$\\Delta %s$ Seperation $\\times 10^{-3}$',direction_label))
+    xlim([-max(normcorr.(centers)),max(normcorr.(centers))].*1e3)
 end
 
 end

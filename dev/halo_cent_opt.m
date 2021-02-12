@@ -1,6 +1,6 @@
-function out = halo_cent_opt(data_masked_halo,bec_masked_halo,correction,top_or_btm)
+function out = halo_cent_opt(data_masked_halo,bec_masked_halo,correction,top_or_btm,z_limit)
 hebec_constants
-opts.halo_N_lim = 0;
+opts.halo_N_lim = -1;
 %% BACK TO BACK (in the same halo)
 %% general settings
 corr_opts.verbose = false;
@@ -55,8 +55,8 @@ switch top_or_btm
         opts.vel_conv.top.const.fall_distance = const.fall_distance;
         opts.vel_conv.top.v_thresh = 0.15; %maximum velocity radius
         opts.vel_conv.top.v_mask=[0.89,1.11]; %bounds on radisu as multiple of radius value
-        opts.vel_conv.top.z_mask = [-0.65,0.65];%[-0.68,0.68]; %[-0.68,0.68]; %in units of radius (standard [-0.76,0.76])
-        opts.vel_conv.top.y_mask = [-0.8,0.8]; %in units of radius
+        opts.vel_conv.top.z_mask = z_limit;%[-0.65,0.65];%[-0.68,0.68]; %[-0.68,0.68]; %in units of radius (standard [-0.76,0.76])
+        opts.vel_conv.top.y_mask = [-1.9,1.9];%[-0.8,0.8]; %in units of radius
         opts.vel_conv.top.center = [t0,x0,y0];%bec_masked_halo.centre_top;%ones(size(bec_masked_halo.centre_top,1),1).*[t0,x0,y0];%%bec_masked_halo.centre_top;%bec_masked_halo.centre_mid; %use the mid BEC as the zero momentum point
         
         opts.vel_conv.top.centering_correction = correction.*0.5e-3;%[-0.2223,0.5662,-0.8083].*0.5e-3;%[0,0,0]; %[-0.73,0.822,-1.209].*0.5e-3;%[-0.96226,0.788847,-1.11].*0.5e-3;%[-0.6519,0.7836,-1.167].*0.5e-3;%[0,0,0]; %[0.677,0.9842,-1.139].*0.5e-3;%[0,0,0]; %;[3.145e-1,1.313,-1.1705].*0.5e-3;%[0,0,0]; %[0,0,0]; %correctoin shift to the centering in m/s
@@ -91,8 +91,8 @@ switch top_or_btm
         opts.vel_conv.btm.const.fall_distance = const.fall_distance;
         opts.vel_conv.btm.v_thresh = 0.15; %maximum velocity radius
         opts.vel_conv.btm.v_mask=[0.89,1.11]; %bounds on radisu as multiple of radius value
-        opts.vel_conv.btm.z_mask = [-0.65,0.65];%[-0.68,0.68]; %[-0.68,0.68]; %in units of radius
-        opts.vel_conv.btm.y_mask = [-0.8,0.8]; %in units of radius
+        opts.vel_conv.btm.z_mask = z_limit;%[-0.65,0.65];%[-0.68,0.68]; %[-0.68,0.68]; %in units of radius
+        opts.vel_conv.btm.y_mask = [-1.9,1.9];%[-0.8,0.8]; %in units of radius
         opts.vel_conv.btm.center = [t0,x0,y0];%bec_masked_halo.centre_top;%ones(size(bec_masked_halo.centre_top,1),1).*[t0,x0,y0];%,bec_masked_halo.centre_top; %use the mid BEC as the zero momentum point
         
         opts.vel_conv.btm.centering_correction = correction.*0.5e-3;%[-0.1733,1.075,-0.9288].*0.5e-3; %[0,0,0].*0.5e-3;%[-0.1733,1.075,-0.9288].*0.5e-3; %[0.1169,1.606,-1.438].*0.5e-3;%[[0.205,1.7893,-1.4207].*0.5e-3;%[0,0,0]; %[-0.452,1.76,-1.561].*0.5e-3;%[-0.1762,1.6035,-1.029].*0.5e-3;%[0,1.73,-1.45].*0.5e-3; %[-2,-2,1.5].*-0.5e-3; %correctoin shift to the centering in m/s
@@ -125,11 +125,11 @@ switch top_or_btm
         opts.vel_conv.top.const.fall_distance = const.fall_distance;
         opts.vel_conv.top.v_thresh = 0.15; %maximum velocity radius
         opts.vel_conv.top.v_mask=[0.89,1.11]; %bounds on radisu as multiple of radius value
-        opts.vel_conv.top.z_mask = [-0.55,0.55];%[-0.68,0.68]; %[-0.68,0.68]; %in units of radius (standard [-0.76,0.76])
+        opts.vel_conv.top.z_mask = z_limit;%[-0.36,0.36];%[-0.68,0.68]; %[-0.68,0.68]; %in units of radius (standard [-0.76,0.76])
         opts.vel_conv.top.y_mask = [-1.9,1.9]; %in units of radius
         opts.vel_conv.top.center = [t0,x0,y0];%bec_masked_halo.centre_top;%ones(size(bec_masked_halo.centre_top,1),1).*[t0,x0,y0];%%bec_masked_halo.centre_top;%bec_masked_halo.centre_mid; %use the mid BEC as the zero momentum point
         
-        opts.vel_conv.top.centering_correction = [-0.40102     0.39517     0.40242].*0.5e-3;%correction(1:3).*0.5e-3;%[-0.2223,0.5662,-0.8083].*0.5e-3;%[0,0,0]; %[-0.73,0.822,-1.209].*0.5e-3;%[-0.96226,0.788847,-1.11].*0.5e-3;%[-0.6519,0.7836,-1.167].*0.5e-3;%[0,0,0]; %[0.677,0.9842,-1.139].*0.5e-3;%[0,0,0]; %;[3.145e-1,1.313,-1.1705].*0.5e-3;%[0,0,0]; %[0,0,0]; %correctoin shift to the centering in m/s
+        opts.vel_conv.top.centering_correction = correction(1:3).*0.5e-3;%[-0.40102     0.39517     0.40242].*0.5e-3;%[-0.2223,0.5662,-0.8083].*0.5e-3;%[0,0,0]; %[-0.73,0.822,-1.209].*0.5e-3;%[-0.96226,0.788847,-1.11].*0.5e-3;%[-0.6519,0.7836,-1.167].*0.5e-3;%[0,0,0]; %[0.677,0.9842,-1.139].*0.5e-3;%[0,0,0]; %;[3.145e-1,1.313,-1.1705].*0.5e-3;%[0,0,0]; %[0,0,0]; %correctoin shift to the centering in m/s
         opts.vel_conv.top.phi_correction = [0 0];
         
         opts.vel_conv.top.bec_center.north = bec_masked_halo.centre_top;
@@ -153,12 +153,12 @@ switch top_or_btm
         opts.vel_conv.btm.const.fall_distance = const.fall_distance;
         opts.vel_conv.btm.v_thresh = 0.15; %maximum velocity radius
         opts.vel_conv.btm.v_mask=[0.89,1.11]; %bounds on radisu as multiple of radius value
-        opts.vel_conv.btm.z_mask = [-0.55,0.55];%[-0.68,0.68]; %[-0.68,0.68]; %in units of radius
+        opts.vel_conv.btm.z_mask = z_limit;%[-0.36,0.36];%[-0.68,0.68]; %[-0.68,0.68]; %in units of radius
         opts.vel_conv.btm.y_mask = [-1.9,1.9]; %in units of radius
         opts.vel_conv.btm.center = [t0,x0,y0];%bec_masked_halo.centre_top;%ones(size(bec_masked_halo.centre_top,1),1).*[t0,x0,y0];%,bec_masked_halo.centre_top; %use the mid BEC as the zero momentum point
         
-        opts.vel_conv.btm.centering_correction = [2.3195      1.2916     -1.5342].*0.5e-3;%correction(4:6).*0.5e-3;%[-0.1733,1.075,-0.9288].*0.5e-3; %[0,0,0].*0.5e-3;%[-0.1733,1.075,-0.9288].*0.5e-3; %[0.1169,1.606,-1.438].*0.5e-3;%[[0.205,1.7893,-1.4207].*0.5e-3;%[0,0,0]; %[-0.452,1.76,-1.561].*0.5e-3;%[-0.1762,1.6035,-1.029].*0.5e-3;%[0,1.73,-1.45].*0.5e-3; %[-2,-2,1.5].*-0.5e-3; %correctoin shift to the centering in m/s
-        opts.vel_conv.btm.phi_correction = correction(1:2);
+        opts.vel_conv.btm.centering_correction = correction(4:6).*0.5e-3;%[2.3195      1.2916     -1.5342].*0.5e-3;%[-0.1733,1.075,-0.9288].*0.5e-3; %[0,0,0].*0.5e-3;%[-0.1733,1.075,-0.9288].*0.5e-3; %[0.1169,1.606,-1.438].*0.5e-3;%[[0.205,1.7893,-1.4207].*0.5e-3;%[0,0,0]; %[-0.452,1.76,-1.561].*0.5e-3;%[-0.1762,1.6035,-1.029].*0.5e-3;%[0,1.73,-1.45].*0.5e-3; %[-2,-2,1.5].*-0.5e-3; %correctoin shift to the centering in m/s
+        opts.vel_conv.btm.phi_correction = correction(7:8);%correction(1:2);
         
         opts.vel_conv.btm.bec_center.north = bec_masked_halo.centre_mid;
         opts.vel_conv.btm.bec_center.south = bec_masked_halo.centre_btm;

@@ -62,11 +62,14 @@ subplot(2,1,2)
 plot(r_hist_top_un.bin.centers,r_hist_top_un.counts.smooth,'linewidth',1.5)
 hold on
 plot(r_hist_btm_un.bin.centers,r_hist_btm_un.counts.smooth,'linewidth',1.5)
+ylimit = max([r_hist_top_un.counts.smooth;r_hist_btm_un.counts.smooth]);
+plot([0.130159/2 0.130159/2],[-0.1,ylimit.*2],'k-','linewidth',1.5)
+ylim([0 ylimit.*1.1])
 xlabel('r')
 ylabel('Freq')
 xlim([min([r_hist_top_un.bin.centers;r_hist_btm_un.bin.centers]),...
     max([r_hist_top_un.bin.centers;r_hist_btm_un.bin.centers])])
-legend('top','btm')
+legend('top','btm','expected radius')
 %     if plot_opts.only_dists
 %         error('breaking out')
 %     end

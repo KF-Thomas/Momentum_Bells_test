@@ -21,4 +21,17 @@ bec.trans_mid = bec.counts_mid./(tot_N);
 bec.trans_btm = bec.counts_btm./(tot_N);
 bec.trans_oth = 1-(bec.trans_top+bec.trans_mid+bec.trans_btm);
 
+num_shots = length(data.shot_num);
+if isfield(opts_cent,'nan_cull') && opts_cent.nan_cull
+    for this_idx = 1:num_shots % Loop over all shots
+        if sum(isnan(bec.centre_top(this_idx, :))) + sum(isnan(bec.width_top(this_idx, :)))>0
+            bec.centre_OK_top(this_idx) = 0;
+        end
+        if sum(isnan(bec.centre_mid(this_idx, :))) + sum(isnan(bec.width_mid(this_idx, :)))>0
+            bec.centre_OK_mid(this_idx) = 0;
+        end
+        if sum(isnan(bec.centre_btm(this_idx, :))) + sum(isnan(bec.width_btm(this_idx, :)))>0
+            bec.centre_OK_btm(this_idx) = 0;
+        end
+    end
 end

@@ -11,62 +11,28 @@ set(groot, 'DefaultTextInterpreter', 'latex')
 
 %% Import directories
 % opts.data_root = 'Z:\EXPERIMENT-DATA\2020_Momentum_Bells\pulse_characterisation\';
-opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
+opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output';
 data_folder = '';
 data_folders = {
-    %original scan
-%     '20200901_k=0,-1_transfer_vs_amp\Pamp_0_t2'
-%     '20200901_k=0,-1_transfer_vs_amp\Pamp_0_25_t2'
-%     '20200901_k=0,-1_transfer_vs_amp\Pamp_0_5'
-%     '20200901_k=0,-1_transfer_vs_amp\Pamp_1'
-%     '20200901_k=0,-1_transfer_vs_amp\Pamp_2'
-%     '20200901_k=0,-1_transfer_vs_amp\Pamp_3'
-%     '20200901_k=0,-1_transfer_vs_amp\Pamp_4'
-%     '20200901_k=0,-1_transfer_vs_amp\Pamp_5'
-%     '20200901_k=0,-1_transfer_vs_amp\Pamp_6'
-%     '20200901_k=0,-1_transfer_vs_amp\Pamp_7'
-%     '20200901_k=0,-1_transfer_vs_amp\Pamp_8'
-%     '20200901_k=0,-1_transfer_vs_amp\Pamp_9'
-%     '20200901_k=0,-1_transfer_vs_amp\Pamp_10_t2'
-%     '20200901_k=0,-1_transfer_vs_amp\Pamp_11'
-%     '20200901_k=0,-1_transfer_vs_amp\Pamp_12'
-%     '20200901_k=0,-1_transfer_vs_amp\Pamp_13'
-%     '20200901_k=0,-1_transfer_vs_amp\Pamp_14'
-%     '20200901_k=0,-1_transfer_vs_amp\Pamp_15'
-%     '20200901_k=0,-1_transfer_vs_amp\Pamp_15_t2'
-%     '20200901_k=0,-1_transfer_vs_amp\Pamp_16'
-%     '20200901_k=0,-1_transfer_vs_amp\Pamp_19_t2'
-%     
-%     '20200907_k=-1,-2_transfer_vs_amp\Pamp_0'
-%     '20200907_k=-1,-2_transfer_vs_amp\Pamp_5_3'
-%     '20200907_k=-1,-2_transfer_vs_amp\Pamp_11_5'
-
-    %new scan
-    '20210201_bragg_pulse_testing\scan\amp_0'
-%     '20210201_bragg_pulse_testing\scan\amp_2'
-%     '20210201_bragg_pulse_testing\scan\amp_2_5'
-%     '20210201_bragg_pulse_testing\scan\amp_3\alpha_3_5'
-%     '20210201_bragg_pulse_testing\scan\amp_3_5\alpha_3_5'
-%     '20210201_bragg_pulse_testing\scan\amp_4'
-%     '20210201_bragg_pulse_testing\scan\amp_4_5\alpha_3_5'
-%     '20210201_bragg_pulse_testing\scan\amp_5'
-%     '20210201_bragg_pulse_testing\scan\amp_5_5'
+    '20201204_bragg_pulse_analysis\1_5ms_delay\scan_over_amp\amp_0'
+    '20201204_bragg_pulse_analysis\1_5ms_delay\initial_attempts\hamming_sinc_pulse_12'
+    '20201204_bragg_pulse_analysis\1_5ms_delay\initial_attempts\hamming_sinc_pulse_13'
+    '20201204_bragg_pulse_analysis\1_5ms_delay\initial_attempts\hamming_sinc_pulse_14'
+    '20201204_bragg_pulse_analysis\1_5ms_delay\initial_attempts\hamming_sinc_pulse_15'
+    '20201204_bragg_pulse_analysis\1_5ms_delay\scan_over_amp\amp_10'
+    '20201204_bragg_pulse_analysis\1_5ms_delay\scan_over_amp\amp_5'
+    '20201204_bragg_pulse_analysis\1_5ms_delay\scan_over_amp\amp_15'
+    '20201204_bragg_pulse_analysis\1_5ms_delay\scan_over_amp\amp_30'
+    '20201204_bragg_pulse_analysis\1_5ms_delay\scan_over_amp\amp_35'
+    '20201204_bragg_pulse_analysis\1_5ms_delay\scan_over_amp\amp_25'
+    '20201204_bragg_pulse_analysis\1_5ms_delay\scan_over_amp\amp_17'
     
-    %alpha scan
-%     '20210201_bragg_pulse_testing\scan\amp_3_5\alpha_3'
-%     '20210201_bragg_pulse_testing\scan\amp_3_5\alpha_3_5'
-%     '20210201_bragg_pulse_testing\scan\amp_3_5\alpha_4'
-%     '20210201_bragg_pulse_testing\scan\amp_3_5\alpha_4_5'
-
-    '20210201_bragg_pulse_testing\scan\amp_4_5\alpha_2_5'
-    '20210201_bragg_pulse_testing\scan\amp_4_5\alpha_3'
-    '20210201_bragg_pulse_testing\scan\amp_4_5\alpha_3_25'
-    '20210201_bragg_pulse_testing\scan\amp_4_5\alpha_3_5'
-    '20210201_bragg_pulse_testing\scan\amp_4_5\alpha_3_75'
-    '20210201_bragg_pulse_testing\scan\amp_4_5\alpha_4'
-    '20210201_bragg_pulse_testing\scan\amp_4_5\alpha_4_5'
-    '20210201_bragg_pulse_testing\scan\amp_4_5\alpha_5'
-    '20210201_bragg_pulse_testing\scan\amp_4_5\alpha_6'
+    '20201204_bragg_pulse_analysis\1_5ms_delay\yu_data\Amp_sinc_Bragg_sqrt_15'
+    '20201204_bragg_pulse_analysis\1_5ms_delay\yu_data\Amp_sinc_Bragg_sqrt_18'
+    '20201204_bragg_pulse_analysis\1_5ms_delay\yu_data\Amp_sinc_Bragg_sqrt_21'
+    '20201204_bragg_pulse_analysis\1_5ms_delay\yu_data\Amp_sinc_Bragg_sqrt_24'
+    '20201204_bragg_pulse_analysis\1_5ms_delay\yu_data\Amp_sinc_Bragg_sqrt_27'
+    '20201204_bragg_pulse_analysis\1_5ms_delay\yu_data\Amp_sinc_Bragg_sqrt_30'
     };
 
 %
@@ -83,7 +49,7 @@ data_folders = {
 %     5,
 %                     ];
 
-opts.import.force_reimport = true;
+opts.import.force_reimport = false;
 opts.import.force_cache_load = ~opts.import.force_reimport;
 
 %% Import parameters
@@ -96,19 +62,15 @@ opts.num_lim = 2.5e3;%2.1e3;%0.5e3;% %minimum atom number 1.5e3
 opts.halo_N_lim = -1;%2;%10;%0;% %minimum allowed number in halo 10
 
 %% Calibration settings
-% norm_folders = [1 22]; %folders to be used in calibrating out the effects of BEC bleed
 norm_folders = [1]; %folders to be used in calibrating out the effects of BEC bleed
-% btm_halo_comp = [22 23 24];%transfering the bottom halo for comparison
-btm_halo_comp = [];
-% Eamp = sqrt([0,0.25,0.5,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,15,16,19,0,5.3,11.5]); %amplitude vector %sqrt([0,5.3,11.5]);%
-% Eamp = [0,2,2.5,3,3.5,4,4.5,5,5.5];
-% Eamp = sqrt([0,3,3.5,4,4.5]);
-Eamp = sqrt([0,2.5,3,3.25,3.5,3.75,4,4.5,5,6]);
+btm_halo_comp = [];%transfering the bottom halo for comparison
+Eamp = sqrt([0 20 25 18 24 10 5 15 30 35 25 17 15 18 21 24 27 30]); %amplitude vector %sqrt([0,5.3,11.5]);%
 num_norms = length(norm_folders);
 folder_indxs = [norm_folders, 1:numel(data_folders)];
 calibration_density_btm= [];
 calibration_shot_num = [];
 cal_dens_btm = 0;
+% cal_dens_top = 0;
 
 %% Run over each folder
 for folder_indx = 1:length(folder_indxs)
@@ -305,7 +267,7 @@ for folder_indx = 1:length(folder_indxs)
         if Eamp(this_folder).^2<3
             Cbtm = N_Bec(this_folder)./N_cal;
             Ctop = (cal_N./((size(v_top_zxy,1)+size(v_btm_zxy,1))./num_shots)).^(-1);
-        elseif Eamp(this_folder).^2<9
+        elseif Eamp(this_folder).^2<4
             Cbtm = N_Bec(this_folder)./N_cal;
             Ctop = (cal_N./((size(v_top_zxy,1)+size(v_btm_zxy,1))./num_shots)).^(-1);
         else
@@ -336,14 +298,10 @@ for folder_indx = 1:length(folder_indxs)
         
         nbins = size(v_btm_dens,1);
         trans_ratio_unc{this_folder} = v_btm_dens./(v_top_dens+v_btm_dens).*sqrt(1./v_btm_dens+1./(v_top_dens+v_btm_dens));
-%         equator_trans_ratio_top(this_folder) = trans_ratio_top{this_folder}(round(nbins/2),2);
-%         equator_trans_ratio_btm(this_folder) = trans_ratio_btm{this_folder}(round(nbins/2),2);
-%         equator_trans_naive(this_folder) = trans_ratio_naive{this_folder}(round(nbins/2),2);
-%         equator_trans_ratio_unc(this_folder) = trans_ratio_unc{this_folder}(round(nbins/2),2);
-        equator_trans_ratio_top(this_folder) = nanmean(trans_ratio_top{this_folder}(69:73,2));
-        equator_trans_ratio_btm(this_folder) = nanmean(trans_ratio_btm{this_folder}(69:73,2));
-        equator_trans_naive(this_folder) = nanmean(trans_ratio_naive{this_folder}(69:73,2));
-        equator_trans_ratio_unc(this_folder) = nanmean(trans_ratio_unc{this_folder}(69:73,2));
+        equator_trans_ratio_top(this_folder) = trans_ratio_top{this_folder}(round(nbins/2),2);
+        equator_trans_ratio_btm(this_folder) = trans_ratio_btm{this_folder}(round(nbins/2),2);
+        equator_trans_naive(this_folder) = trans_ratio_naive{this_folder}(round(nbins/2),2);
+        equator_trans_ratio_unc(this_folder) = trans_ratio_unc{this_folder}(round(nbins/2),2);
     else
         if ismember(this_folder,btm_halo_comp)
             calibration_density_btm_data_btm(folder_indx,:,:) = v_btm_dens;
@@ -390,11 +348,13 @@ fit_btm = fitnlm(Eamp,equator_trans_ratio_btm,modelfun,[1,-0.5*pi/6,1])
 fit_naive = fitnlm(Eamp,equator_trans_naive,modelfun,[1,-0.5*pi/6,1])
 fit_both = fitnlm(Eamp(top_indx),equator_trans_ratio_both,modelfun,[1,-0.5*pi/6,1])
 
+amp_limit = max(Eamp).*1.2;
+
 stfig('Transfer efficency against pulse amplitude comp');
 clf
 grid on
 hold on
-Evec = linspace(0,6,1e4);
+Evec = linspace(0,amp_limit,1e4);
 [ysamp_val,ysamp_ci]=predict(fit_both,Evec','Prediction','curve','Alpha',1-erf(1/sqrt(2))); %'Prediction','observation'
 hold on
 plot(Evec.^2,ysamp_val,'k','LineWidth',1.5)
@@ -413,10 +373,10 @@ h.FaceAlpha = 0.5;
 parms1 = fit_top.Coefficients.Estimate;
 % equator_trans_ratio_unc  = equator_trans_ratio.*0.1;
 p_top = errorbar(Eamp(top_indx).^2,equator_trans_ratio_both,0.5./sqrt(out_data.num_shots(top_indx)),'o','CapSize',0,'MarkerSize',5,'Color',colors_main(3,:),...
-    'MarkerFaceColor',colors_main(2,:),'LineWidth',2.5)
+    'MarkerFaceColor',colors_main(2,:),'LineWidth',2.5);
 
 p_btm = errorbar(Eamp(btm_halo_comp).^2,equator_trans_ratio_both_btm,0.5./sqrt(out_data.num_shots(btm_halo_comp)),'o','CapSize',0,'MarkerSize',5,'Color',[0.7,0.4,.3],...
-    'MarkerFaceColor',[0.8,0.2,.2],'LineWidth',2.5)
+    'MarkerFaceColor',[0.8,0.2,.2],'LineWidth',2.5);
 
 % errorbar(Eamp.^2,equator_trans_naive,0.5./sqrt(out_data.num_shots),'o','CapSize',0,'MarkerSize',5,'Color',[0.5,0.5,.2],...
 %     'MarkerFaceColor',[0.5,0.7,.05],'LineWidth',2.5)
@@ -435,12 +395,13 @@ p_btm = errorbar(Eamp(btm_halo_comp).^2,equator_trans_ratio_both_btm,0.5./sqrt(o
 legend([p_top,p_btm],'Top Halo transfer','Bottom Halo transfer')
 set(gca,'FontSize',22)
 hold off
+box on
 ylabel('Transfer Percentage')
 xlabel('Pulse Amplitude')
-
+xlim([0 amp_limit.^2])
 %% Plot num checks
 
-stfig('num checks')
+stfig('num checks');
 clf
 subplot(2,1,2)
 plot(Eamp.^2,(out_data.num_counts.top(:)+out_data.num_counts.btm(:)),'o')
@@ -450,3 +411,16 @@ subplot(2,1,1)
 plot(Eamp.^2,(out_data.num_counts.top(:)+out_data.num_counts.btm(:))./out_data.num_shots','o')
 xlabel('amp')
 ylabel('avg counts in both halos')
+%% write out results
+params_both = fit_both.Coefficients.Estimate;
+params_unc = fit_both.Coefficients.SE;
+mirror_amp=(pi/2/abs(params_both(2))).^(2/params_both(3));
+mirror_unc= mirror_amp*sqrt((params_unc(2)./params_both(2))^2+(params_unc(3)./params_both(3))^2);
+splitter_amp=((acos(sqrt(0.5/params_both(1)))-pi/2)*(1/params_both(2))).^(2/params_both(3));
+splitter_unc= splitter_amp*sqrt((params_unc(2)./params_both(2))^2+(params_unc(3)./params_both(3))^2+(params_unc(1)./params_both(1))^2);
+
+mirror_str = string_value_with_unc(mirror_amp,mirror_unc,'type','b');
+splitter_str = string_value_with_unc(splitter_amp,splitter_unc,'type','b');
+
+fprintf('\n mirror amplitude = %s\n',mirror_str)
+fprintf('\n 50/50 amplitude = %s\n',splitter_str)

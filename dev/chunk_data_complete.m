@@ -23,8 +23,8 @@ if sample_proportion>1 || sample_proportion<=0
     error('Sample proportion must be between 0 and 1')
 end
 num_chunks= round(num_shots^2.*sample_proportion);
-sample_mask = [zeros(1,num_shots^2-num_chunks) ones(1,num_chunks)];  %# Fill the vector with 0 and 1
-sample_mask = sample_mask(randperm(num_shots^2));  %# Randomly reorder it
+sample_mask = [zeros(1,num_shots^2-num_chunks) ones(1,num_chunks)];  % Fill the vector with 0 and 1
+sample_mask = sample_mask(randperm(num_shots^2));  % Randomly reorder it
 counts_chunked=cell(2,num_chunks);
 total_indx = 1;
 chunk_indx = 1;

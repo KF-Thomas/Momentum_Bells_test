@@ -5,7 +5,7 @@ addpath(genpath(this_folder));
 core_folder = fullfile(fileparts(this_folder), 'Core_BEC_Analysis\');
 addpath(genpath(core_folder));
 % BEGIN USER VAR-------------------------------------------------
-anal_opts.tdc_import.dir='Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
+anal_opts.tdc_import.dir='Z:\EXPERIMENT-DATA\2020_Momentum_Bells\mag_transfer_opt\20200623_mag_transfer_cal';
 anal_opts.tdc_import.file_name='d';
 anal_opts.tdc_import.force_load_save=false;   %takes precidence over force_reimport
 anal_opts.tdc_import.force_reimport=true;

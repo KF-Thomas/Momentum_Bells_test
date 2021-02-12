@@ -6,8 +6,8 @@ core_folder = fullfile(fileparts(this_folder), 'Core_BEC_Analysis\');
 addpath(genpath(core_folder));
 set(groot, 'DefaultTextInterpreter', 'latex')
 %% Import directory
-opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
-% opts.data_root = 'Z:\EXPERIMENT-DATA\2020_Momentum_Bells\';
+%opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
+ opts.data_root = 'Z:\EXPERIMENT-DATA\2020_Momentum_Bells\';
 % opts.data_root = 'C:\Users\kieran\Documents\LOCAL-DATA\';
 % data_folder = '20191115_halos_attempt_3';
 % data_folder = '20191114_halos_attempt_2';
@@ -15,7 +15,7 @@ opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
 % data_folder = '20200721_momentum_transfer_optimiser_1';
 % data_folder = '20200729_brief_movement_data_fat_cloud';
 %data_folder = '20200807_k=0,-1,-2_halos_data_1';
-% data_folder = 'k=0,-1,-2_halos_data\20200807_k=0,-1,-2_halos_data_2';
+ data_folder = 'k=0,-1,-2_halos_data\20200807_k=0,-1,-2_halos_data_2';
 % data_folder = 'k=0,-1,-2_halos_data\20200807_k=0,-1,-2_halos_data_1';
 
 % data_folder = '20201123_beam_splitter_opt\Pamp_13';
@@ -32,12 +32,20 @@ opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
 % data_folder = '20201123_beam_splitter_opt\Pamp_13_5';
 % data_folder = '20201204_k=0,-1,-2_beam_splitter_2';
 % data_folder = '20201204_k=0,-1,-2_beam_splitter_3';
+% data_folder = '20201207_k=0,-1,-2_beam_splitter_5';
+% data_folder = '20201207_k=0,-1,-2_beam_splitter_6';
 
 % data_folder = '20201127_k=0,-1,-2_interferometer_phi=0_no_mirror';
 % data_folder = '20201127_k=0,-1,-2_interferometer_phi=0';
 % data_folder = '20201127_k=0,-1,-2_interferometer_phi=pi_6';
 % data_folder = '20201127_k=0,-1,-2_interferometer_phi=pi_3';
 % data_folder = '20201127_k=0,-1,-2_interferometer_phi=pi_2';
+
+% data_folder = '20201210_k=0,-1,-2_interferometer_phi=0';
+% data_folder = '20201210_k=0,-1,-2_interferometer_phi=pi_4';
+% data_folder = '20201210_k=0,-1,-2_interferometer_phi=pi_4_v2';
+% data_folder = '20201211_k=0,-1,-2_interferometer_phi=pi_8';
+%data_folder = '20201211_k=0,-1,-2_interferometer_phi=pi';
 
 %data_folder = 'k=0,-1,-2_halos_data\20200803_early_k=0,-1,-2_halo_data';
 
@@ -50,10 +58,15 @@ opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
 %data_folder = 'k=+1,0,-1_halos_data\20191115_halos_attempt_3'; %(running time is too long for both t_bounds)
 %data_folder = 'k=+1,0,-1_halos_data\20191105_halos_3766_shots';%(running time is too long for both t_bounds)
 
-data_folder = '';
+% data_folder = '20201209_k=0,-1_mirro_and_splitter_2';
+% data_folder = '20201208_k=0,-1_mirro_and_splitter';
+% data_folder = '20201214_Mach_Zehnder\20201218_Mach_Zehnder_3pi_2'
+% data_folder = '20201214_Mach_Zehnder\20201214_mirror_30ms';
+% data_folder = '20210122_interferometer_phi=5pi_4';
 
+%data_folder = '202101_second_Mach_Zender_attempt\20210121_mach_zender_k=0,-1_phi=3pi_2';
 opts.import.dir = fullfile(opts.data_root, data_folder);
-opts.import.force_reimport = true;
+opts.import.force_reimport = false;
 opts.import.force_cache_load = ~opts.import.force_reimport;
 %% Import parameters
 tmp_xlim=[-35e-3, 35e-3];     %tight XY lims to eliminate hot spot from destroying pulse widths
@@ -63,9 +76,10 @@ opts.import.txylim=[tlim;tmp_xlim;tmp_ylim];
 
 opts.num_lim = 2.1e3;%0.5e3;% %minimum atom number 1.5e3
 opts.halo_N_lim = -1;%2;%10;%0;% %minimum allowed number in halo 10
+z_limits = [-0.4,0.4];%[-0.36,0.36];%[-0.15,0.15];%
 
-opts.plot_dist = false; %do you want to see all the detailed stuff about the halo distributions
-opts.corr_center_check = false; %do you want a sceond check
+opts.plot_dist = true; %do you want to see all the detailed stuff about the halo distributions
+opts.corr_center_check = true; %do you want a sceond check
 
 %% Background stuff
 cli_header('Setting up for %s', data_folder);
@@ -169,19 +183,21 @@ x0 = bec_masked_halo.centre_top(:,2);%ones(size(bec_masked_halo.centre_top,1),1)
 y0 = bec_masked_halo.centre_top(:,3);%ones(size(bec_masked_halo.centre_top,1),1).*0.0078;%0.00645675151404596;
 
 %% generate top halo
-opts.vel_conv.top.visual = 0;
+opts.vel_conv.top.visual = 2;
 opts.vel_conv.top.plot_percentage = 0.95;
 opts.vel_conv.top.title = 'top halo';
 opts.vel_conv.top.const.g0 = const.g0;
 opts.vel_conv.top.const.fall_distance = const.fall_distance;
 opts.vel_conv.top.v_thresh = 0.15; %maximum velocity radius
 opts.vel_conv.top.v_mask=[0.89,1.11]; %bounds on radisu as multiple of radius value
-opts.vel_conv.top.z_mask = [-0.36,0.36];%[-0.65,0.65];%[-0.55,0.55];%[-0.68,0.68]; %[-0.68,0.68]; %in units of radius (standard [-0.76,0.76])
+opts.vel_conv.top.z_mask = z_limits;%[-0.36,0.36];%[-0.65,0.65];%[-0.55,0.55];%[-0.68,0.68]; %[-0.68,0.68]; %in units of radius (standard [-0.76,0.76])
 opts.vel_conv.top.y_mask = [-1.9,1.9];%[-0.8,0.8]; %in units of radius
 opts.vel_conv.top.center = [t0,x0,y0];%bec_masked_halo.centre_top;%ones(size(bec_masked_halo.centre_top,1),1).*[t0,x0,y0];%%bec_masked_halo.centre_top;%bec_masked_halo.centre_mid; %use the mid BEC as the zero momentum point
 
-opts.vel_conv.top.centering_correction = [2.0462      2.0499    -0.10486].*0.5e-3;%[-0.40102     0.39517     0.40242].*0.5e-3;%[0.95943        0.62    -0.39765].*0.5e-3;%[-0.2223,0.5662,-0.8083].*0.5e-3;%[0,0,0]; %[-0.73,0.822,-1.209].*0.5e-3;%[-0.96226,0.788847,-1.11].*0.5e-3;%[-0.6519,0.7836,-1.167].*0.5e-3;%[0,0,0]; %[0.677,0.9842,-1.139].*0.5e-3;%[0,0,0]; %;[3.145e-1,1.313,-1.1705].*0.5e-3;%[0,0,0]; %[0,0,0]; %correctoin shift to the centering in m/s
+opts.vel_conv.top.centering_correction = [0 0 0].*0.5e-3;%[-0.40102     0.39517     0.40242].*0.5e-3;%[0.95943        0.62    -0.39765].*0.5e-3;%[-0.2223,0.5662,-0.8083].*0.5e-3;%[0,0,0]; %[-0.73,0.822,-1.209].*0.5e-3;%[-0.96226,0.788847,-1.11].*0.5e-3;%[-0.6519,0.7836,-1.167].*0.5e-3;%[0,0,0]; %[0.677,0.9842,-1.139].*0.5e-3;%[0,0,0]; %;[3.145e-1,1.313,-1.1705].*0.5e-3;%[0,0,0]; %[0,0,0]; %correctoin shift to the centering in m/s
 %0.41531      0.6356    0.026711 or %0.3244        0.62    -0.39765
+%[0.46 -0.7 -1.78]
+%[1.4771+1.14     0.81776+1.14     -3.4974+2.28]
 opts.vel_conv.top.phi_correction = [0 0];
 
 opts.vel_conv.top.bec_center.north = bec_masked_halo.centre_top;
@@ -193,18 +209,20 @@ opts.vel_conv.top.bec_width.south = bec_masked_halo.width_mid;
 top_halo_intial = halo_vel_conv(data_masked_halo,opts.vel_conv.top);
 
 %% generate bottom halo
-opts.vel_conv.btm.visual = 0;
+opts.vel_conv.btm.visual = 2;
 opts.vel_conv.btm.plot_percentage = 0.95;
 opts.vel_conv.btm.title = 'bottom halo';
 opts.vel_conv.btm.const.g0 = const.g0;
 opts.vel_conv.btm.const.fall_distance = const.fall_distance;
 opts.vel_conv.btm.v_thresh = 0.15; %maximum velocity radius
 opts.vel_conv.btm.v_mask=[0.89,1.11]; %bounds on radisu as multiple of radius value
-opts.vel_conv.btm.z_mask = [-0.36,0.36];%[-0.65,0.65];%[-0.55,0.55];%[-0.68,0.68]; %[-0.68,0.68]; %in units of radius
+opts.vel_conv.btm.z_mask = z_limits;%[-0.36,0.36];%[-0.65,0.65];%[-0.55,0.55];%[-0.68,0.68]; %[-0.68,0.68]; %in units of radius
 opts.vel_conv.btm.y_mask = [-1.9,1.9];%[-0.8,0.8]; %in units of radius
 opts.vel_conv.btm.center = [t0,x0,y0];%bec_masked_halo.centre_top;%ones(size(bec_masked_halo.centre_top,1),1).*[t0,x0,y0];%,bec_masked_halo.centre_top; %use the mid BEC as the zero momentum point
 
-opts.vel_conv.btm.centering_correction = [2.3622     -1.1176      2.1499].*0.5e-3;%[2.3195      1.2916     -1.5342].*0.5e-3;%[2.1338      2.3395     -1.3643].*0.5e-3;%[-0.1733,1.075,-0.9288].*0.5e-3; %[0,0,0].*0.5e-3;%[-0.1733,1.075,-0.9288].*0.5e-3; %[0.1169,1.606,-1.438].*0.5e-3;%[[0.205,1.7893,-1.4207].*0.5e-3;%[0,0,0]; %[-0.452,1.76,-1.561].*0.5e-3;%[-0.1762,1.6035,-1.029].*0.5e-3;%[0,1.73,-1.45].*0.5e-3; %[-2,-2,1.5].*-0.5e-3; %correctoin shift to the centering in m/s
+opts.vel_conv.btm.centering_correction = [0 0 0].*0.5e-3;%[2.3195      1.2916     -1.5342].*0.5e-3;%[2.1338      2.3395     -1.3643].*0.5e-3;%[-0.1733,1.075,-0.9288].*0.5e-3; %[0,0,0].*0.5e-3;%[-0.1733,1.075,-0.9288].*0.5e-3; %[0.1169,1.606,-1.438].*0.5e-3;%[[0.205,1.7893,-1.4207].*0.5e-3;%[0,0,0]; %[-0.452,1.76,-1.561].*0.5e-3;%[-0.1762,1.6035,-1.029].*0.5e-3;%[0,1.73,-1.45].*0.5e-3; %[-2,-2,1.5].*-0.5e-3; %correctoin shift to the centering in m/s
+%[1.02 0.681 -1.1]
+%[-0.68 1.37 -1.6]
 opts.vel_conv.btm.phi_correction = [0 0];
 
 opts.vel_conv.btm.bec_center.north = bec_masked_halo.centre_mid;
@@ -228,6 +246,8 @@ bec_halo = struct_mask(bec_masked_halo,halo_N_check);
 if opts.corr_center_check
     corr_check_top=corr_center_check(top_halo.counts_vel','top halo check');
     corr_check_bottom=corr_center_check(bottom_halo.counts_vel','bottom halo check');
+    both_halo_counts = [top_halo.counts_vel';bottom_halo.counts_vel'];
+    corr_check_between=corr_center_check(both_halo_counts,'between halo check');
 end
 
 %% plot some histogram checks
@@ -258,6 +278,7 @@ corrs = global_corrs(top_halo,bottom_halo,global_corrs_opts);
 opts_E.calc_err = false;
 opts_E.plots = true;
 opts_E.verbose = false;
+opts_E.fit = false;
 opts_E.norm = false; %use normalised or unnormalised data
 
 [E_val, corrs.ports] = E(ports,opts_E);
@@ -274,7 +295,7 @@ E_amp = (g14-1)/(g14+1);
 opts_nice_plots.calc_err = false;
 opts_nice_plots.fit = true;
 
-nice_g2_plots(opts_nice_plots,corrs.ports)
+% nice_g2_plots(opts_nice_plots,corrs.ports)
 
 %% Write out results
 g2_type = 'fitted';
@@ -286,12 +307,15 @@ else
     g2peak_unc = 'fitted_g2peak_unc';
 end
 top_halo_bb = string_value_with_unc(corrs.top_halo.corr_bb.norm_g2.(g2peak),corrs.top_halo.corr_bb.norm_g2.fitted_g2peak_unc,'type','b');
-top_halo_cl = string_value_with_unc(corrs.top_halo.corr_cl.norm_g2.(g2peak),corrs.top_halo.corr_cl.norm_g2.fitted_g2peak_unc,'type','b');
+% top_halo_cl = string_value_with_unc(corrs.top_halo.corr_cl.norm_g2.(g2peak),corrs.top_halo.corr_cl.norm_g2.fitted_g2peak_unc,'type','b');
+top_halo_cl = '0';
 bottom_halo_bb = string_value_with_unc(corrs.bottom_halo.corr_bb.norm_g2.(g2peak),corrs.bottom_halo.corr_bb.norm_g2.fitted_g2peak_unc,'type','b');
-bottom_halo_cl = string_value_with_unc(corrs.bottom_halo.corr_cl.norm_g2.(g2peak),corrs.bottom_halo.corr_cl.norm_g2.fitted_g2peak_unc,'type','b');
+% bottom_halo_cl = string_value_with_unc(corrs.bottom_halo.corr_cl.norm_g2.(g2peak),corrs.bottom_halo.corr_cl.norm_g2.fitted_g2peak_unc,'type','b');
+bottom_halo_cl = '0';
 
 between_halo_bb = string_value_with_unc(corrs.between_halos.corr_bb.norm_g2.(g2peak),corrs.between_halos.corr_bb.norm_g2.fitted_g2peak_unc,'type','b');
-between_halo_cl = string_value_with_unc(corrs.between_halos.corr_cl.norm_g2.(g2peak),corrs.between_halos.corr_cl.norm_g2.fitted_g2peak_unc,'type','b');
+% between_halo_cl = string_value_with_unc(corrs.between_halos.corr_cl.norm_g2.(g2peak),corrs.between_halos.corr_cl.norm_g2.fitted_g2peak_unc,'type','b');
+between_halo_cl = '0';
 
 if opts.corr_center_check
     cli_format_text('','c',3)
