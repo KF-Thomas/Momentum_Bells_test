@@ -13,39 +13,34 @@ combined_struct = @(S,T) cell2struct(cellfun(@vertcat,struct2cell(S),struct2cell
 
 %% Import directories
 opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
+% opts.data_root = 'Z:\EXPERIMENT-DATA\2020_Momentum_Bells\';
 data_folder = '';
 log_folder = 'log_Phi.txt';
 data_folders = {
-        '20210204_k=0,-1_norm'
-%     '20210209_k=0,-1_norm_lower_evap'
-    %     '20210126_mach_zender_k=0,-1_scan_v2'
-    %     '20210127_mach_zender_k=0,-1_scan_v3'
-    %     '20210126_rarity_tapster_k=0,-1,-2_scan'
-    %     '20210122_mach_zender_k=0,-1_scan'
-    %     '20210127_rarity_tapster_k=0,-1,-2_scan_v2'
-    %         '20210208_rarity_tapster_k=0,-1,-2_scan_2250_mus'
-%     '20210211_k=0,-1_norm'
-%     '20210211_k=0,-1_norm_v2'
-    ''
-%     '20210212_mach_zender_k=0,-1_total_5100_mus_test_4'
-%     '20210211_mach_zender_k=0,-1_total_1200_mus'
-%     '20210211_mach_zender_k=0,-1_total_1500_mus'
-%     '20210211_mach_zender_k=0,-1_total_3000_mus'
-% '20210211_mach_zender_k=0,-1_total_5100_mus'
-%     '20210210_mach_zender_k=0,-1_lower_evap_long'
-%     '20210209_mach_zender_k=0,-1_lower_evap'
-%         '20210209_rarity_tapster_k=0,-1,-2_scan_2250_mus_overnight'
-    %         '20210208_mach_zender_k=0,-1_distinguishability_dip\20210208_mach_zender_k=0,-1_scan_2250_mus'
-    %         '20210205_CONTRAST_OPT\test_12'
-    %     '20210128_mach_zender_k=0,-1_scan_240_mus'
-    %     '20210128_mach_zender_k=0,-1_scan_270_mus'
-    %     '20210127_mach_zender_k=0,-1_lengthened_v2'
-    %     '20210127_splitter_no_mirror_k=0,-1,-2_scan'
-    %     '20210128_mach_zender_k=0,-1_scan_210_mus'
-    %     '20210128_MZ_SCAN_50MS_AMP_sqrt(18)'
-    %     '20210128_MZ_SCAN_50MS'
-    %     '20210129_mach_zender_k=0,-1_scan_210_mus_sqrt(18)'
-    % '20210129_mach_zender_k=0,-1_scan_210_mus_sqrt(15)'
+            ''
+    % RT attempts
+%     '20210219_rarity_tapster_k=0,-1,-2_scan_1200_mus_overnight'
+%     '20210303_rarity_tapster_k=0,-1,-2_scan_1200_mus_overnight_v4'
+%     '20210302_rarity_tapster_k=0,-1,-2_scan_1200_mus_overnight_v3'
+%     '20210301_rarity_tapster_k=0,-1,-2_scan_1200_mus_overnight_v2'
+%     'full_interferometer\rarity-tapster\20210210_rarity_tapster_k=0,-1,-2_scan_2250_mus_overnight_v2'
+%     'full_interferometer\rarity-tapster\20210209_rarity_tapster_k=0,-1,-2_scan_2250_mus_overnight'
+%     '20210310_rarity_tapster_k=0,-1,-2_scan_1200_mus_evap_0_8543'
+    
+    %MZ attempts
+%     'full_interferometer\mach-zender\20210224_mz_scan_1200_mus_shunt_0_65_attempts\20210224_mz_scan_1200_mus_length_chirped_pulses_shunt_0_65'
+%     'full_interferometer\mach-zender\20210224_mz_scan_1200_mus_shunt_0_65_attempts\20210224_mz_scan_1_2_ms_chirped_pulses_shunt_0_65_attempt_4'
+%     'full_interferometer\mach-zender\20210224_mz_scan_1200_mus_shunt_0_65_attempts\20210224_mz_scan_1_2_ms_chirped_pulses_shunt_0_65_attempt_2'
+%     'full_interferometer\mach-zender\20210225_mz_scan_1200_mus_length_shunt_0_65_tests\20210225_mz_scan_1200_mus_length_shunt_0_65_test_3'
+%     'full_interferometer\mach-zender\20210225_mz_scan_1200_mus_length_shunt_0_65_tests\20210225_mz_scan_1200_mus_length_shunt_0_65_test_4'
+%     'full_interferometer\mach-zender\20210219_mz_scan_1200_mus_length_chirped_pulses'
+%     'full_interferometer\mach-zender\20210208_mach_zender_k=0,-1_distinguishability_dip\20210208_mach_zender_k=0,-1_scan_2250_mus'
+%     'full_interferometer\mach-zender\20210210_mach_zender_k=0,-1_lower_evap_long'
+%     'full_interferometer\mach-zender\20210219_mz_scan_1200_mus_length_chirped_pulses_attempt_2'
+%     'full_interferometer\mach-zender\20210218_mz_scan_1200_mus_length_opt_pulses'
+%     'full_interferometer\mach-zender\20210218_mz_scan_900_mus_length'
+%     'full_interferometer\mach-zender\20210223_mz_scan_1200_mus_length_chirped_pulses_after_coil_fail'
+%     '20210310_mz_scan_1300_mus_length'
     };
 
 force_reimport = true;
@@ -57,19 +52,30 @@ tmp_ylim=[-35e-3, 35e-3];
 tlim=[0,4];
 opts.import.txylim=[tlim;tmp_xlim;tmp_ylim];
 
-opts.num_lim = 2.5e3;%2.1e3;%0.5e3;% %minimum atom number 1.5e3
+opts.num_lim = 2.5e3;%9e3;%2.1e3;%0.5e3;% %minimum atom number 1.5e3
 opts.halo_N_lim = -1;%2;%10;%0;% %minimum allowed number in halo 10
-opts.halo_N_lim_upper = Inf;%2;%10;%0;% %minimum allowed number in halo 10
+opts.halo_N_lim_upper = Inf;%2;%10;%0;% %max allowed number in halo 10
+
+opts.halo_N_lim_norm = -1;%2;%10;%0;% %minimum allowed number in halo 10
+opts.halo_N_lim_upper_norm = Inf;%2;%10;%0;% %max allowed number in halo 10
+
 opts.halo_N_lim_both = -1;
 
+y_cut = 11e-3;
+
+% opts.import.shot_num = 1:16; %can select which shots you want to import
+
 %% Calibration settings
-L = [-0.05,0.05];%[-0.618,-0.385];%[-0.5,-0.1];%
-norm_folders = [1];%[];%
+L = [-0.1,0.1];%[-0.1,0.1];%[-0.618,-0.385];%[-0.5,-0.1];%
+norm_folders = [];%[];%
 plot_fit = true;
 do_g2=true;
 do_g2_err=false;
+do_range_cut=true;
 out_data = {};
 phi_vec = [];
+
+num_shots_norm = 0;
 
 %% Run over each folder
 for folder_indx = 1:length(data_folders)
@@ -82,6 +88,7 @@ for folder_indx = 1:length(data_folders)
         opts.cent.nan_cull = true;
         opts.import.force_reimport = force_reimport;
         opts.import.force_cache_load = ~opts.import.force_reimport;
+        %         opts.import.shot_num = 1:24; %can select which shots you want to import
     else
         opts.cent.nan_cull = false;
         opts.import.force_reimport = force_reimport_norm;
@@ -94,10 +101,13 @@ for folder_indx = 1:length(data_folders)
     opts.do_btm_halo = 1;% analyse the bottom halo?
     
     %% Chose if you want to look at a narrow or wide slice of the halo
-    slice_type = 'wide';
+    slice_type = 'narrow';
     if strcmp(slice_type,'narrow')
         opts.vel_conv.top.z_mask = [-0.4,0.4];%
         opts.vel_conv.btm.z_mask = [-0.4,0.4];%in units of radius ([-0.68,0.68])
+    elseif strcmp(slice_type,'medium')
+        opts.vel_conv.top.z_mask = [-0.6,0.6];%
+        opts.vel_conv.btm.z_mask = [-0.6,0.6];%in units of radius ([-0.68,0.68])
     elseif strcmp(slice_type,'extra wide')
         opts.vel_conv.top.z_mask = [-0.87,0.87];%
         opts.vel_conv.btm.z_mask = [-0.87,0.87];%in units of radius ([-0.68,0.68])
@@ -161,27 +171,27 @@ for folder_indx = 1:length(data_folders)
     %% find centers
     opts.cent.visual = 0; %from 0 to 2
     opts.cent.savefigs = 0;
-    opts.cent.correction = 1;
+    opts.cent.correction = 0;
     opts.cent.correction_opts.plots = 0;
     
     opts.cent.top.visual = 0; %from 0 to 2
     opts.cent.top.savefigs = 0;
-    opts.cent.top.threshold = [130,5000,5000].*1e3;
-    opts.cent.top.min_threshold = [16,3,3].*1e3;%[16,7,10].*1e3;
+    opts.cent.top.threshold = [130,6000,6000].*1e3;
+    opts.cent.top.min_threshold = [0,5,5].*1e3;%[16,7,10].*1e3;
     opts.cent.top.sigma = [6.7e-5,16e-5,16e-5];%[8e-5,25e-5,25e-5];
     opts.cent.top.method = {'margin','average','average'};
     
     opts.cent.mid.visual = 0; %from 0 to 2
     opts.cent.mid.savefigs = 0;
-    opts.cent.mid.threshold = [130,5000,5000].*1e3;
-    opts.cent.mid.min_threshold = [16,3,3].*1e3;%[16,7,10].*1e3;
+    opts.cent.mid.threshold = [130,6000,6000].*1e3;
+    opts.cent.mid.min_threshold = [0,5,5].*1e3;%[16,7,10].*1e3;
     opts.cent.mid.sigma = [6.7e-5,16e-5,16e-5];%[8e-5,25e-5,25e-5];
     opts.cent.mid.method = {'margin','average','average'};
     
     opts.cent.btm.visual = 0; %from 0 to 2
     opts.cent.btm.savefigs = 0;
-    opts.cent.btm.threshold = [130,5000,5000].*1e3;%[130,2000,2000].*1e3;
-    opts.cent.btm.min_threshold = [16,3,3].*1e3;%[0,0,0].*1e3;%[16,13,13].*1e3;%[16,7,10].*1e3;
+    opts.cent.btm.threshold = [130,6000,6000].*1e3;%[130,2000,2000].*1e3;
+    opts.cent.btm.min_threshold = [0,5,5].*1e3;%[0,0,0].*1e3;%[16,13,13].*1e3;%[16,7,10].*1e3;
     opts.cent.btm.sigma = [6.7e-5,16e-5,16e-5];%[8e-5,25e-5,25e-5];
     opts.cent.btm.method = {'margin','average','average'};
     
@@ -197,6 +207,10 @@ for folder_indx = 1:length(data_folders)
     % num_outlier = isoutlier(num_masked);
     % ~num_outlier &
     is_shot_good = num_check & bec.centre_OK_mid';
+    if ~ismember(folder_indx,norm_folders) && do_range_cut
+        slosh_cut = ~(abs(bec.centre_mid(:,3))>y_cut);
+        is_shot_good = slosh_cut' & is_shot_good;
+    end
     if opts.do_top_halo
         is_shot_good = is_shot_good & bec.centre_OK_top';
     end
@@ -215,7 +229,7 @@ for folder_indx = 1:length(data_folders)
     
     %% convert data to velocity
     % zero velocity point
-    t0 = ones(size(bec_masked_halo.centre_top,1),1).*3.8772;%bec_masked_halo.centre_top(:,1);%72;%
+    t0 = bec_masked_halo.centre_top(:,1);%ones(size(bec_masked_halo.centre_top,1),1).*3.8772;%72;%
     x0 = bec_masked_halo.centre_top(:,2);%ones(size(bec_masked_halo.centre_top,1),1).*-0.0041;%%-0.00444892593829574;
     y0 = bec_masked_halo.centre_top(:,3);%ones(size(bec_masked_halo.centre_top,1),1).*0.0078;%0.00645675151404596;
     
@@ -230,7 +244,7 @@ for folder_indx = 1:length(data_folders)
     opts.vel_conv.top.y_mask = [-1.9,1.9]; %in units of radius
     opts.vel_conv.top.center = [t0,x0,y0];%bec_masked_halo.centre_top;%ones(size(bec_masked_halo.centre_top,1),1).*[t0,x0,y0];%%bec_masked_halo.centre_top;%bec_masked_halo.centre_mid; %use the mid BEC as the zero momentum point
     
-    opts.vel_conv.top.centering_correction = [0,0,0]; %correctoin shift to the centering in m/s
+    opts.vel_conv.top.centering_correction = [0,0,0]; %[1.769005720082404e+00     1.058658203190879e-01    -3.319223909672235e-01].*0.5e-3;%correctoin shift to the centering in m/s
     
     opts.vel_conv.top.bec_center.north = bec_masked_halo.centre_top;
     opts.vel_conv.top.bec_center.south = bec_masked_halo.centre_mid;
@@ -274,9 +288,16 @@ for folder_indx = 1:length(data_folders)
     end
     
     %% mask out halos with nums to low
-    halo_N_check_top = top_halo_intial.num_counts>opts.halo_N_lim & top_halo_intial.num_counts<opts.halo_N_lim_upper;
-    halo_N_check_btm = bottom_halo_intial.num_counts>opts.halo_N_lim & bottom_halo_intial.num_counts<opts.halo_N_lim_upper;
-    halo_N_check_both = (top_halo_intial.num_counts+bottom_halo_intial.num_counts)>opts.halo_N_lim_both;
+    if ismember(folder_indx,norm_folders)
+        halo_N_check_top = top_halo_intial.num_counts>opts.halo_N_lim_norm & top_halo_intial.num_counts<opts.halo_N_lim_upper_norm;
+        halo_N_check_btm = bottom_halo_intial.num_counts>opts.halo_N_lim_norm & bottom_halo_intial.num_counts<opts.halo_N_lim_upper_norm;
+        halo_N_check_both = halo_N_check_top & halo_N_check_btm;
+    else
+        halo_N_check_top = top_halo_intial.num_counts>opts.halo_N_lim & top_halo_intial.num_counts<opts.halo_N_lim_upper;
+        halo_N_check_btm = bottom_halo_intial.num_counts>opts.halo_N_lim & bottom_halo_intial.num_counts<opts.halo_N_lim_upper;
+        halo_N_check_both = (top_halo_intial.num_counts+bottom_halo_intial.num_counts)>opts.halo_N_lim_both;
+        
+    end
     if opts.do_top_halo && opts.do_btm_halo
         halo_N_check = halo_N_check_top & halo_N_check_btm &halo_N_check_both;
         top_halo = struct_mask(top_halo_intial,halo_N_check);
@@ -345,6 +366,7 @@ for folder_indx = 1:length(data_folders)
         end
         cal_dens_top = cal_dens_top + v_top_dens(:,2)./size(norm_folders,1);
         cal_dens_btm = cal_dens_btm + v_btm_dens(:,2)./size(norm_folders,1);
+        num_shots_norm = num_shots_norm+size(top_halo.counts_vel_norm,1);
     else
         
         unique_phi = unique(phi_logs_masked(halo_N_check,3)); %unique phases used in this scan
@@ -352,7 +374,7 @@ for folder_indx = 1:length(data_folders)
             current_phi = unique_phi(ii,1);
             phi_mask = (phi_logs_masked(halo_N_check,3)==current_phi);
             masked_top = struct_mask(top_halo,phi_mask');
-            masked_bottom = struct_mask(bottom_halo,phi_mask);
+            masked_bottom = struct_mask(bottom_halo,phi_mask');
             if ~ismember(current_phi,phi_vec)
                 phi_vec = [phi_vec,current_phi];
             end
@@ -367,6 +389,10 @@ for folder_indx = 1:length(data_folders)
             end
         end
     end
+    %% looking at sloshing
+    nanstd(bec.centre_top(:,1))
+    nanstd(bec.centre_top(:,2))
+    nanstd(bec.centre_top(:,3))
     
 end
 %
@@ -383,7 +409,14 @@ opts.plot_opts.const.fall_distance = const.fall_distance;
 % end
 top_dens_vec = [];
 top_dens_ind = [];
-out_conv_dens = zeros(30,76);
+out_conv_dens = zeros(length(phi_vec),76);
+
+if exist('cal_dens_top','var')
+    cal_dens_top = cal_dens_top./num_shots_norm;
+    cal_dens_btm = cal_dens_btm./num_shots_norm;
+end
+
+
 for ii = 1:length(phi_vec)
     d = opts.plot_opts.const.fall_distance;
     g0 = opts.plot_opts.const.g0;
@@ -425,17 +458,17 @@ for ii = 1:length(phi_vec)
         theta_btm = [];
         phi_btm = [];
     end
-    
+    num_shots = size(out_data{ii}.top_halo.counts_vel_norm,1);
     v_btm_dens = [];
     v_top_dens = [];
     v_btm_dens_unc = [];
     v_top_dens_unc = [];
     phi_mask_top = (phi_top<0.154& phi_top>-0.154);
     phi_mask_btm = (phi_btm<0.154& phi_btm>-0.154);
-    r_btm_zxy_masked=smooth_hist(theta_btm(phi_mask_btm),'sigma',0.04,'lims',[-pi,pi],'bin_num',nbins);
-    r_top_zxy_masked=smooth_hist(theta_top(phi_mask_top),'sigma',0.04,'lims',[-pi,pi],'bin_num',nbins);
-    v_btm_dens(:,1) = r_btm_zxy_masked.count_rate.smooth;
-    v_top_dens(:,1) = r_top_zxy_masked.count_rate.smooth;
+    r_btm_zxy_masked=smooth_hist(theta_btm(phi_mask_btm),'sigma',0.08,'lims',[-pi,pi],'bin_num',nbins);
+    r_top_zxy_masked=smooth_hist(theta_top(phi_mask_top),'sigma',0.08,'lims',[-pi,pi],'bin_num',nbins);
+    v_btm_dens(:,1) = r_btm_zxy_masked.count_rate.smooth./num_shots;
+    v_top_dens(:,1) = r_top_zxy_masked.count_rate.smooth./num_shots;
     v_btm_dens_unc(:,1) = sqrt(r_btm_zxy_masked.count_rate.smooth).*sqrt(abs(r_btm_zxy_masked.bin.edge(1:end-1)...
         -r_btm_zxy_masked.bin.edge(2:end)));
     v_top_dens_unc(:,1) = sqrt(r_top_zxy_masked.count_rate.smooth).*sqrt(abs(r_top_zxy_masked.bin.edge(1:end-1)...
@@ -444,8 +477,8 @@ for ii = 1:length(phi_vec)
     
     r_btm_zxy_masked=smooth_hist(phi_btm,'sigma',0.04,'lims',[-pi/2,pi/2],'bin_num',nbins);
     r_top_zxy_masked=smooth_hist(phi_top,'sigma',0.04,'lims',[-pi/2,pi/2],'bin_num',nbins);
-    v_btm_dens(:,2) = r_btm_zxy_masked.count_rate.smooth;
-    v_top_dens(:,2) = r_top_zxy_masked.count_rate.smooth;
+    v_btm_dens(:,2) = r_btm_zxy_masked.count_rate.smooth./num_shots;
+    v_top_dens(:,2) = r_top_zxy_masked.count_rate.smooth./num_shots;
     
     v_top_dens_2d = hist3([theta_top phi_top],'Nbins',[nbins nbins]);
     v_btm_dens_2d = hist3([theta_btm phi_btm],'Nbins',[nbins nbins]);
@@ -466,12 +499,12 @@ for ii = 1:length(phi_vec)
         if isempty(theta_c(phi_mask_c))
             continue
         end
-        theta_dens_c = smooth_hist(theta_c(phi_mask_c),'sigma',0.04,'lims',[-pi,pi],'bin_num',nbins);
+        theta_dens_c = smooth_hist(theta_c(phi_mask_c),'sigma',0.1,'lims',[-pi,pi],'bin_num',nbins);
         
         
         pi_indx = floor(nbins/2);
         conv_theta_dens_c = theta_dens_c.count_rate.smooth(1:end-pi_indx).*theta_dens_c.count_rate.smooth(pi_indx+1:end);
-        out_conv_dens(ii,:) = out_conv_dens(ii) + conv_theta_dens_c./size(out_data{ii}.top_halo.counts_vel,1);
+        out_conv_dens(ii,:) = out_conv_dens(ii,:) + conv_theta_dens_c'./size(out_data{ii}.top_halo.counts_vel,1);
         
         r_btm_zxy_masked=smooth_hist(phi_c_btm,'sigma',0.04,'lims',[-pi/2,pi/2],'bin_num',nbins);
         r_top_zxy_masked=smooth_hist(phi_c,'sigma',0.04,'lims',[-pi/2,pi/2],'bin_num',nbins);
@@ -491,10 +524,10 @@ for ii = 1:length(phi_vec)
     
     
     %% ratio in spherical coordinates
-    top_dens_norm = (v_top_dens(:,2))./(v_btm_dens(:,2)+v_top_dens(:,2));
+    top_dens_norm = (v_top_dens(:,:))./(v_btm_dens(:,:)+v_top_dens(:,:));
     phi_mask = phi<L(2)/2 & phi>L(1)/2;
-    top_dens_avg = trapz(phi(phi_mask),top_dens_norm(phi_mask))./range(phi(phi_mask));
-    top_dens_std = sqrt(trapz(phi(phi_mask),(top_dens_avg-top_dens_norm(phi_mask)).^2)./(range(phi(phi_mask))));
+    top_dens_avg = trapz(phi(phi_mask),top_dens_norm(phi_mask,2))./range(phi(phi_mask));
+    top_dens_std = sqrt(trapz(phi(phi_mask),(top_dens_avg-top_dens_norm(phi_mask,2)).^2)./(range(phi(phi_mask))));
     
     if ~exist('cal_dens_top','var')
         cal_dens_top = zeros(nbins,1);
@@ -513,8 +546,22 @@ for ii = 1:length(phi_vec)
     
     top_dens_vec(ii,:) = [top_dens_avg,top_dens_std];
     btm_ratio_vec(ii,:) = [trans_ratio_btm_avg,trans_ratio_btm_unc];
-    out_data_vec(ii,:) = top_dens_norm;
+    top_ratio_vec(ii,:) = [trans_ratio_top_avg,trans_ratio_top_unc];
+    out_data_vec(ii,:,:) = top_dens_norm;
     out_data_vec_ratio(ii,:) = trans_ratio_btm;
+    
+    
+    %% Separate data into the four ports
+    ports = {};
+    [ports.top_left, ports.top_right] = separate_ports(out_data{ii}.top_halo,0);
+    [ports.bottom_left, ports.bottom_right] = separate_ports(out_data{ii}.bottom_halo,0);
+    
+    %% Quantum correlator E
+    opts_E.calc_err = false;
+    opts_E.plots = true;
+    opts_E.verbose = false;
+    opts_E.fit = true;
+    opts_E.norm = false; %use normalised or unnormalised data
     
     %% BACK TO BACK (in the same halo)
     corr_opts.verbose = false;
@@ -530,7 +577,7 @@ for ii = 1:length(phi_vec)
     
     corr_opts.attenuate_counts=1;
     corr_opts.type='radial_bb';%'1d_cart_bb';%
-    corr_opts.plots = false;
+    corr_opts.plots = true;
     corr_opts.fig=['top halo bb corr ',num2str(phi_vec(ii))];
     corr_opts.fit = false;
     corr_opts.calc_err = do_g2_err;
@@ -555,14 +602,60 @@ for ii = 1:length(phi_vec)
     
     %% TOP HALO BACK TO BACK
     if do_g2
-        out_corrs{ii}.top_halo.corr_bb=calc_any_g2_type(corr_opts,out_data{ii}.top_halo.counts_vel');
-        top_corr_bb_vec(ii) = out_corrs{ii}.top_halo.corr_bb.norm_g2.g2_amp(1);
+%         out_corrs{ii}.top_halo.corr_bb=calc_any_g2_type(corr_opts,out_data{ii}.top_halo.counts_vel');
+%         top_corr_bb_vec(ii) = out_corrs{ii}.top_halo.corr_bb.norm_g2.g2_amp(1);
+%         
+%         out_corrs{ii}.bottom_halo.corr_bb=calc_any_g2_type(corr_opts,out_data{ii}.bottom_halo.counts_vel');
+%         btm_corr_bb_vec(ii) = out_corrs{ii}.bottom_halo.corr_bb.norm_g2.g2_amp(1);
+        
+        [E_val, corrs.ports] = E(ports,opts_E);
+        
+        out_corrs{ii} = corrs.ports;
+        
+        %Expected amplitude
+        g12 = corrs.ports.g12.norm_g2.g2_amp(1);
+        g14 = corrs.ports.g14.norm_g2.g2_amp(1);
+        g23 = corrs.ports.g23.norm_g2.g2_amp(1);
+        g34 = corrs.ports.g34.norm_g2.g2_amp(1);
+        
+        top_corr_bb_vec(ii) = g12;
+        btm_corr_bb_vec(ii) = g34;
+        btw_1_corr_bb_vec(ii) = g23;
+        btw_2_corr_bb_vec(ii) = g14;
+        
         if do_g2_err
             top_corr_bb_unc(ii) = out_corrs{ii}.top_halo.corr_bb.norm_g2.g2_unc(1);
         end
     end
 end
-%
+%%
+if do_g2
+    direction_label = 'r';
+    gs = {'g14','g23','g12','g34'};
+    for ii = 1:4
+    gx=gs{ii};
+    stfig([gx,' comp']);
+    clf
+    for jj = 1:length(out_corrs)
+        subplot(1,3,1)
+        hold on
+        plot(out_corrs{jj}.(gx).in_shot_corr.rad_centers,out_corrs{jj}.(gx).in_shot_corr.rad_corr_density)
+        ylabel(sprintf('$G^{(2)}(\\Delta %s)$ coincedence density',direction_label))
+        xlabel(sprintf('$\\Delta %s$ Seperation',direction_label))
+        subplot(1,3,2)
+        hold on
+        plot(out_corrs{jj}.(gx).between_shot_corr.rad_centers,out_corrs{jj}.(gx).between_shot_corr.rad_corr_density)
+        ylabel(sprintf('$G^{(2)}(\\Delta %s)$ coincedence density',direction_label))
+        xlabel(sprintf('$\\Delta %s$ Seperation',direction_label))
+        subplot(1,3,3)
+        hold on
+        plot(out_corrs{jj}.(gx).norm_g2.rad_centers,out_corrs{jj}.(gx).norm_g2.g2_amp)
+        ylabel(sprintf('$g^{(2)}(\\Delta %s)$',direction_label))
+        xlabel(sprintf('$\\Delta %s$ Seperation',direction_label))
+    end
+    end
+end
+
 
 %%
 x = phi_vec;
@@ -575,7 +668,10 @@ w = top_dens_vec(:,2);
 range(y)
 range(btm_ratio_vec(:,1))
 
-[x_vec, y_vec] = combine_data(phi_vec,out_data_vec);
+% range(btm_ratio_vec(:,1))./(min(1-btm_ratio_vec(:,1))+max(1-btm_ratio_vec(:,1)))
+% range(y)./(min(y)+max(y))
+
+[x_vec, y_vec] = combine_data(phi_vec,out_data_vec(:,:,2));
 % [x_vec, y_vec] = combine_data(phi_vec,1-out_data_vec_ratio);
 
 stfig('dens over sphere');
@@ -593,6 +689,25 @@ shading flat
 box on
 set(gca,'FontSize',19)
 colorbar
+
+[x_vec, y_vec] = combine_data(phi_vec,out_data_vec(:,:,1));
+% [x_vec, y_vec] = combine_data(phi_vec,1-out_data_vec_ratio);
+
+stfig('dens around sphere');
+[a, b] = sort(x_vec);
+surf(a,theta,y_vec(b,:)')
+% pcolor(phi,x_vec,y_vec)
+% caxis([0.28 0.6])
+caxis([0.25 0.9])
+xlim([0 2*pi])
+ylim([-pi pi])
+zlim([0 1])
+ylabel('$\theta$')
+xlabel('phase')
+shading flat
+box on
+set(gca,'FontSize',19)
+colorbar
 % set(gcf,'color','w');
 
 xp = linspace(0,max(phi_vec));
@@ -600,7 +715,7 @@ xp = linspace(0,max(phi_vec));
 % fit = @(b,x)  b(1).*cos(x.*b(2) + b(3)) + b(4);    % Function to fit [1.229,1,0.8088,0.906]
 fit = @(b,x)  b(1).*cos(x + b(2)) + b(3);    % Function to fit
 % [1.229,0.8088,0.906]
-best_fit = fitnlm(x,y,fit,[1.229,0.8088,1.5],'CoefficientNames',{'Amp','Phase','Offset'}) %one cos [1.229,1,0.8088,0.906] two cos [1.829,0.01,0.8088,0.906,1.0,0.406]
+best_fit = fitnlm(x,y,fit,[0.5,0.8088,0.5],'CoefficientNames',{'Amp','Phase','Offset'}) %one cos [1.229,1,0.8088,0.906] two cos [1.829,0.01,0.8088,0.906,1.0,0.406]
 [ysamp_val,ysamp_ci]=predict(best_fit,xp','Prediction','curve','Alpha',1-erf(1/sqrt(2))); %'Prediction','observation'
 
 stfig('normalised density of top halo against phase');
@@ -624,7 +739,7 @@ box on
 set(gca,'FontSize',19)
 xlim([0,max(phi_vec)])
 ylim([0 1])
-    
+
 pred_dens = predict(best_fit,top_dens_ind(:,1));
 fit_res = top_dens_ind(:,2)-pred_dens;
 
@@ -632,31 +747,37 @@ fit_res = top_dens_ind(:,2)-pred_dens;
 if do_g2
     x = phi_vec;
     y = top_corr_bb_vec;%
+    %     y = btm_corr_bb_vec;%
     if do_g2_err
         w = top_corr_bb_unc;
     else
         w=y./20;
     end
-        
+    
     
     
     
     xp = linspace(0,max(phi_vec));
     % fit = @(b,x)  b(1).*cos(x.*b(2) + 2*pi/b(6)).*(cos(x.*b(5) + 2*pi/b(3))) + b(4);    % Function to fit
-    fit = @(b,x)  b(1).*cos(x.*2.0 + b(2)) + b(3);    % Function to fit
+    fit = @(b,x)  b(1).*cos(x.*1.0 + b(2)) + b(3);    % Function to fit
     best_fit = fitnlm(x,y,fit,[2,0,2],'CoefficientNames',{'Amp','Phase','Offset'}); %one cos [1.229,1,0.8088,0.906] two cos [1.829,0.01,0.8088,0.906,1.0,0.406]
     [ysamp_val,ysamp_ci]=predict(best_fit,xp','Prediction','curve','Alpha',1-erf(1/sqrt(2))); %'Prediction','observation'
     
     stfig('g2 bb of top halo against phase');
-%     clf
+    clf
     hold on
     plot(xp,ysamp_val,'r','LineWidth',1.5)
     drawnow
     yl=ylim*1.1;
     plot(xp,ysamp_ci,'color',[1,1,1].*0.5)
     colors_main=[[88,113,219];[60,220,180]./1.75;[88,113,219]./1.7]./255;
-    errorbar(x,y,w,'o','CapSize',0,'MarkerSize',5,'Color',colors_main(3,:),...
-        'MarkerFaceColor',colors_main(2,:),'LineWidth',2.5)
+    %     errorbar(x,y,w,'o','CapSize',0,'MarkerSize',5,'Color',colors_main(3,:),...
+    %         'MarkerFaceColor',colors_main(2,:),'LineWidth',2.5)
+    ht=errorbar(x,y,w,'o','CapSize',0,'MarkerSize',5,'LineWidth',2.5);
+    hb=errorbar(x,btm_corr_bb_vec,w,'o','CapSize',0,'MarkerSize',5,'LineWidth',2.5);
+    hbt1=errorbar(x,btw_1_corr_bb_vec,w,'o','CapSize',0,'MarkerSize',5,'LineWidth',2.5);
+    hbt2=errorbar(x,btw_2_corr_bb_vec,w,'o','CapSize',0,'MarkerSize',5,'LineWidth',2.5);
+    legend([ht hb hbt1 hbt2],{'g12', 'g34', 'g14','g23'})
     %     scatter(x,y,'o')
     xlabel('$\phi$')
     ylabel('$g^{(2)}_{BB}$ top halo')

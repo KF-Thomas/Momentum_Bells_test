@@ -22,8 +22,8 @@ VarSize=[1 nVar];   % Decision Variables Matrix Size
 % ub = [35, 4, 4.0, 0.9, 35, 4, 4.0];%[5, 6, 5, 0.9]; %upperbounds
 
 %% DE Parameters
-MaxIt=10;      % Maximum Number of Iterations
-nPop=20;        % Population Size
+MaxIt=2;      % Maximum Number of Iterations
+nPop=5;        % Population Size
 beta_min=0.1;   % Lower Bound of Scaling Factor
 beta_max=0.9;   % Upper Bound of Scaling Factor
 pCR=0.2;        % Crossover Probability

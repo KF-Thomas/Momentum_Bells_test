@@ -28,9 +28,9 @@ end
 end
 
 function amp = Omega(t,b)
-amp = gaussian_pulse(t,b(1),b(2)).*b(3);
+% amp = gaussian_pulse(t,b(1),b(2)).*b(3);
 % amp = super_gaussian_pulse(t,b(1),b(2),b(4)).*b(3);
-% amp = sinc_pulse(t,b(1),b(2)).*b(3);
+amp = sinc_pulse(t,b(1),b(2)).*b(3);
 % amp = square_pulse(t,b(1),b(2)).*b(3);
 % amp = sinc_pulse(t,b(1),b(2)).*gaussian_pulse(t,b(1),b(6)).*b(3);
 % amp = sinc_pulse(t,b(1),b(2)).*b(3);%.*cos(pi*(t-b(1))/(2*b(1))).^2
@@ -41,7 +41,7 @@ end
 
 function phase = theta(t,b)
 % phase = 0;
-phase = (b(4)*t+b(5)*t^2+pi/3);%b(4)*t;
+phase = (b(4)*t+b(5));%b(4)*t;
 % phase = (b(5)*t+b(6)*t^2);%b(4)*t;
 end
 

@@ -17,14 +17,22 @@ opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
 data_folder = '';
 log_folder = 'log_Phi.txt';
 data_folders = {
-    '20210204_k=0,-1_norm'
-    '20210208_mach_zender_k=0,-1_distinguishability_dip\20210208_mach_zender_k=0,-1_scan_2200_mus'
-    '20210208_mach_zender_k=0,-1_distinguishability_dip\20210208_mach_zender_k=0,-1_scan_2230_mus'
-    '20210208_mach_zender_k=0,-1_distinguishability_dip\20210208_mach_zender_k=0,-1_scan_2240_mus'
+%     '20210204_k=0,-1_norm'
+%     '20210208_mach_zender_k=0,-1_distinguishability_dip\20210208_mach_zender_k=0,-1_scan_2200_mus'
+%     '20210208_mach_zender_k=0,-1_distinguishability_dip\20210208_mach_zender_k=0,-1_scan_2230_mus'
+%     '20210208_mach_zender_k=0,-1_distinguishability_dip\20210208_mach_zender_k=0,-1_scan_2240_mus'
+%     '20210208_mach_zender_k=0,-1_distinguishability_dip\20210208_mach_zender_k=0,-1_scan_2250_mus'
+%     '20210208_mach_zender_k=0,-1_distinguishability_dip\20210208_mach_zender_k=0,-1_scan_2260_mus'
+%     '20210208_mach_zender_k=0,-1_distinguishability_dip\20210208_mach_zender_k=0,-1_scan_2270_mus'
+%     '20210208_mach_zender_k=0,-1_distinguishability_dip\20210208_mach_zender_k=0,-1_scan_2300_mus'
+
+    '20210211_k=0,-1_norm_v2'
+    '20210211_mach_zender_k=0,-1_total_1200_mus'
+    '20210211_mach_zender_k=0,-1_total_1500_mus'
     '20210208_mach_zender_k=0,-1_distinguishability_dip\20210208_mach_zender_k=0,-1_scan_2250_mus'
-    '20210208_mach_zender_k=0,-1_distinguishability_dip\20210208_mach_zender_k=0,-1_scan_2260_mus'
-    '20210208_mach_zender_k=0,-1_distinguishability_dip\20210208_mach_zender_k=0,-1_scan_2270_mus'
-    '20210208_mach_zender_k=0,-1_distinguishability_dip\20210208_mach_zender_k=0,-1_scan_2300_mus'
+    '20210211_mach_zender_k=0,-1_total_3000_mus'
+    '20210211_mach_zender_k=0,-1_total_4200_mus_higher_evap'
+    '20210211_mach_zender_k=0,-1_total_5100_mus'
     };
 
 opts.import.force_reimport = false;
@@ -44,7 +52,8 @@ opts.halo_N_lim_both = -1;
 %% Calibration settings
 L = [-0.05,0.05];%[-0.618,-0.385];%[-0.5,-0.1];%
 norm_folders = [1];
-delay_time = [2200,2230,2240,2250,2260,2270,2300];
+% delay_time = [2200,2230,2240,2250,2260,2270,2300];
+delay_time = [1200,1500,2250,3000,4200,5100]; %interferometer time
 plot_fit = true;
 do_g2=false;
 out_data = {};
@@ -535,7 +544,7 @@ for folder_indx = 1:length(data_folders)
         
         %%
         x = phi_vec;
-        y = 1-btm_ratio_vec(:,1);%top_dens_vec(:,1);%
+        y = top_dens_vec(:,1);%1-btm_ratio_vec(:,1);%
         w = top_dens_vec(:,2);
         
         % y = top_corr_bb_vec;%btm_ratio_vec(:,1);%
@@ -639,31 +648,33 @@ for folder_indx = 1:length(data_folders)
 end
 %%
 x = delay_time;
-y = abs(out.fit_coeff(:,1));%top_dens_vec(:,1);%
+y = abs(out.fit_coeff(:,1))./abs(out.fit_coeff(:,3));%abs(out.fit_coeff(:,1));%top_dens_vec(:,1);%
 w = abs(out.fit_coeff_unc(:,1));
 
-xp = linspace(0,max(phi_vec));
-fit = @(b,x)  b(1).*cos(x + b(2)) + b(3);    % Function to fit
-best_fit = fitnlm(x,y,fit,[1.229,0.8088,1.5],'CoefficientNames',{'Amp','Phase','Offset'}); %one cos [1.229,1,0.8088,0.906] two cos [1.829,0.01,0.8088,0.906,1.0,0.406]
+xp = linspace(0,max(x));
+fit = @(b,x)  b(1).*x + b(2);    % Function to fit
+best_fit = fitnlm(x,y,fit,[-1.229,0.8088]); %one cos [1.229,1,0.8088,0.906] two cos [1.829,0.01,0.8088,0.906,1.0,0.406]
 [ysamp_val,ysamp_ci]=predict(best_fit,xp','Prediction','curve','Alpha',1-erf(1/sqrt(2))); %'Prediction','observation'
 
 stfig('interfernce amplitude');
 clf
 hold on
 %         if plot_fit
-%             plot(xp,ysamp_val,'r','LineWidth',1.5)
-%             drawnow
-%             yl=ylim*1.1;
-%             plot(xp,ysamp_ci,'color',[1,1,1].*0.5)
+            plot(xp,ysamp_val,'r','LineWidth',1.5)
+            drawnow
+            yl=ylim*1.1;
+            plot(xp,ysamp_ci,'color',[1,1,1].*0.5)
 %         end
 colors_main=[[88,113,219];[60,220,180]./1.75;[88,113,219]./1.7]./255;
 errorbar(x,y,w,'o','CapSize',0,'MarkerSize',5,'LineWidth',2.5)
-xlabel('time of final beam splitter')
-ylabel('interfernce amplitude ($a$)')
+% xlabel('time of final beam splitter')
+xlabel('length of interferometer ($\mu$s)')
+% ylabel('interfernce amplitude ($a$)')
+ylabel('Visibility')
 grid
 box on
 set(gca,'FontSize',19)
-%         xlim([min(x),max(x)])
+        xlim([0,max(x)])
 %         ylim([0 1])
 %%
 x = delay_time;

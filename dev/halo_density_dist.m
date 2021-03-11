@@ -9,24 +9,12 @@ set(groot, 'DefaultTextInterpreter', 'latex')
 %% Import directory
 opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
 % opts.data_root = 'Z:\EXPERIMENT-DATA\2020_Momentum_Bells\';
-% data_folder = '20210121_testing_mirror\test_3';
-% data_folder = 'single_halo_data\20200820_k=0,-1_extra_halo_data';
-% data_folder = '202101_second_Mach_Zender_attempt\20210121_mach_zender_k=0,-1_phi=3pi_2';
-% data_folder = '20201210_k=0,-1,-2_interferometer_phi=0';
-% data_folder = '20201211_k=0,-1,-2_interferometer_phi=pi_8';
-% data_folder = '20201210_k=0,-1,-2_interferometer_phi=pi_4_v2';
-% data_folder = '20201211_k=0,-1,-2_interferometer_phi=pi';
-%data_folder='20201214_Mach_Zehnder\20201214_mirror_75ms_amp_sqrt_21';
-% data_folder='20201214_Mach_Zehnder\20201214_BS_30ms_sqrt_12.2';
-%data_folder='20201214_Mach_Zehnder\top_halo(k=0,-1)';
-% data_folder='20201204_bragg_pulse_analysis\3_0ms_delay\bragg_pulse_1';
 data_folder='';
-% data_folder='20210209_k=0,-1_norm_lower_evap';
-% data_folder='20210204_k=0,-1_norm';
-% data_folder='20210201_bragg_pulse_testing\scan\amp_0';
-% data_folder='20210201_bragg_pulse_testing\prototyping\sinc_3';
-% data_folder='20210201_bragg_pulse_testing\scan\amp_3_5\alpha_3_5';
-% data_folder='20210201_bragg_pulse_testing\scan\amp_3\alpha_3_5';
+% data_folder='20210224_k=0,-1_halos_full_evap';
+% data_folder='20210223_k=0,-1_norm_evap_848';
+% data_folder='20210217_k=0,-1_norm_evap_755';
+% data_folder='20210218_bragg_pulses_at_1200_mus\splitter_3';
+
 opts.import.dir = fullfile(opts.data_root, data_folder);
 opts.import.force_reimport = true;
 opts.import.force_cache_load = ~opts.import.force_reimport;
@@ -51,7 +39,7 @@ end
 %% Import parameters
 tmp_xlim=[-35e-3, 35e-3];     %tight XY lims to eliminate hot spot from destroying pulse widths
 tmp_ylim=[-35e-3, 35e-3];
-tlim=[0,4];
+tlim=[0,6];
 opts.import.txylim=[tlim;tmp_xlim;tmp_ylim];
 
 opts.num_lim = 0e3;%2.1e3;%0.5e3;% %minimum atom number 1.5e3
@@ -59,7 +47,7 @@ opts.halo_N_lim = 0;%2;%10;%0;% %minimum allowed number in halo 10
 
 opts.plot_dist = false; %do you want to see all the detailed stuff about the halo distributions
 
-opts.cent.nan_cull = true; %do you want to cull nan's
+opts.cent.nan_cull = false; %do you want to cull nan's
 
 %% Background stuff
 cli_header('Setting up for %s', data_folder);
@@ -100,7 +88,7 @@ hebec_constants
 %% find centers
 opts.cent.visual = 0; %from 0 to 2
 opts.cent.savefigs = 0;
-opts.cent.correction = 1;
+opts.cent.correction = 0;
 opts.cent.correction_opts.plots = 0;
 
 opts.cent.top.visual = 0; %from 0 to 2
@@ -125,6 +113,7 @@ opts.cent.btm.sigma = [6.7e-5,16e-5,16e-5];%[8e-5,25e-5,25e-5];
 opts.cent.btm.method = {'margin','average','average'};
 
 opts.cent.t_bounds = {[3.844,3.8598],[3.8598,3.871],[3.871,3.8844],[3.75,4]};%time bounds for the different momentum states
+% opts.cent.t_bounds = {[5.350,5.356],[5.361,5.367],[5.372,5.380],[5.34,5.39]};%time bounds for the different momentum states (for full evap settings)
 bec = halo_cent(data_masked,opts.cent);
 
 %% run some checks
@@ -263,6 +252,7 @@ else
 end
 N_btm = bottom_halo.num_counts;
 
+num_shots = size(top_halo.counts_vel_norm,1);
 %     top_halo = halos.top_halo;
 %     bottom_halo = halos.bottom_halo;
 %     bec_masked = halos.bec;
@@ -319,8 +309,8 @@ phi_mask_top = (phi_top<0.154& phi_top>-0.154);
 phi_mask_btm = (phi_btm<0.154& phi_btm>-0.154);
 r_btm_zxy_masked=smooth_hist(theta_btm(phi_mask_btm),'sigma',0.04,'lims',[-pi,pi],'bin_num',nbins);
 r_top_zxy_masked=smooth_hist(theta_top(phi_mask_top),'sigma',0.04,'lims',[-pi,pi],'bin_num',nbins);
-v_btm_dens(:,1) = r_btm_zxy_masked.count_rate.smooth;
-v_top_dens(:,1) = r_top_zxy_masked.count_rate.smooth;
+v_btm_dens(:,1) = r_btm_zxy_masked.count_rate.smooth./num_shots;
+v_top_dens(:,1) = r_top_zxy_masked.count_rate.smooth./num_shots;
 v_btm_dens_unc(:,1) = sqrt(r_btm_zxy_masked.count_rate.smooth).*sqrt(abs(r_btm_zxy_masked.bin.edge(1:end-1)...
     -r_btm_zxy_masked.bin.edge(2:end)));
 v_top_dens_unc(:,1) = sqrt(r_top_zxy_masked.count_rate.smooth).*sqrt(abs(r_top_zxy_masked.bin.edge(1:end-1)...
@@ -329,8 +319,8 @@ v_top_dens_unc(:,1) = sqrt(r_top_zxy_masked.count_rate.smooth).*sqrt(abs(r_top_z
 
 r_btm_zxy_masked=smooth_hist(phi_btm,'sigma',0.04,'lims',[-pi/2,pi/2],'bin_num',nbins);
 r_top_zxy_masked=smooth_hist(phi_top,'sigma',0.04,'lims',[-pi/2,pi/2],'bin_num',nbins);
-v_btm_dens(:,2) = r_btm_zxy_masked.count_rate.smooth;
-v_top_dens(:,2) = r_top_zxy_masked.count_rate.smooth;
+v_btm_dens(:,2) = r_btm_zxy_masked.count_rate.smooth./num_shots;
+v_top_dens(:,2) = r_top_zxy_masked.count_rate.smooth./num_shots;
 
 v_top_dens_2d = hist3([theta_top phi_top],'Nbins',[nbins nbins]);
 v_btm_dens_2d = hist3([theta_btm phi_btm],'Nbins',[nbins nbins]);

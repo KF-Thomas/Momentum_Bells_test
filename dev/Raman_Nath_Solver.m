@@ -25,7 +25,8 @@ laser_wavelength = 1083.33e-9; %wavelength of the laser in m
 N = diffraction_order+1;
 recoil_freqency = const.hb*(sqrt(2)*2*pi/laser_wavelength)^2/(2*pi*2*const.mhe);% the frequency of the photon momentum
 wr = recoil_freqency*2*pi/4/1e6;% recoil frequency diveded by 4 in rad*MHz
-c0 = [zeros(N-1,1);-1i;zeros(N-1,1)];
+% c0 = [zeros(N-1,1);-1i;zeros(N-1,1)];
+c0 = [zeros(N-2,1);0.5;0.5;zeros(N-1,1)];
 %% SOLVE THE RAMAN-NATH EQUATIONS
 func = @(t,c) Raman_Nath(t,c,N,wr,b,k);
 [t,y] = ode45(func,tspan,c0);

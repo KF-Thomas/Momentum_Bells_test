@@ -7,6 +7,7 @@ opts.timer=0;
 % [17 0.0245 0.29 -0.0849*2*2*pi, 0.00]
 % [17 0.02 0.25 -0.0849*2*2*pi, 0.00] %cost = 4.972
 % [17 0.05 0.405 -0.0849*2*2*pi, 0.00] %cost = 3.452
+% [17 0.05 0.405 -0.115*2*2*pi, 0.00]
 
 %super gaussian pulse
 % [17 0.05^2 0.39 4 -0.0849*2*2*pi 0.000] %cost = 3.0254
@@ -38,7 +39,7 @@ opts.timer=0;
 opts.time_span = 35;
 %
 ks = [linspace(0,2,num_pts).*-4.101078618245948e+06 linspace(2,4,num_pts).*-4.101078618245948e+06];
-ys=transfer_percentage([17 0.05 0.405 -0.115*2*2*pi, 0.00],[9,10,11],opts,ks);
+ys=transfer_percentage([17.5 5.3 0.59 -0.0849*2*2*pi, 0.00],[9,10,11],opts,ks);
 %% cost
 k = linspace(0,4,num_pts).*-4.101078618245948e+06;
 mask_t =  logical(k<0.25.*-4.101078618245948e+06) & ...
@@ -89,9 +90,9 @@ num_pts=220;
 amp_vec=linspace(0.0,4.5,num_pts);
 % linspace(0,4,num_pts).*
 % [17 0.1 0.5 2 -0.0849*2*2*pi 0.000]
-% b_matrix = [17.*ones(num_pts,1) 0.07.*ones(num_pts,1) linspace(0.0,1.4,num_pts)' 2.*ones(num_pts,1) -0.0849*2*2*pi.*ones(num_pts,1) 0.00.*ones(num_pts,1)];
+b_matrix = [17.*ones(num_pts,1) 0.07.*ones(num_pts,1) linspace(0.0,1.4,num_pts)' 2.*ones(num_pts,1) -0.0849*2*2*pi.*ones(num_pts,1) 0.00.*ones(num_pts,1)];
 % b_matrix_gauss = [17.*ones(num_pts,1) 0.05.*ones(num_pts,1) amp_vec' -0.0849*2*2*pi.*ones(num_pts,1) 0.00.*ones(num_pts,1)];
-b_matrix_gauss = [17.0.*ones(num_pts,1) 0.0156.*ones(num_pts,1) amp_vec' -0.0849*2*2*pi.*ones(num_pts,1) 0.00.*ones(num_pts,1)]; %cost = 1.245
+% b_matrix_gauss = [17.0.*ones(num_pts,1) 0.0156.*ones(num_pts,1) amp_vec' -0.0849*2*2*pi.*ones(num_pts,1) 0.00.*ones(num_pts,1)]; %cost = 1.245
 
 ybs=transfer_percentage(b_matrix_gauss,[9,10,11],opts,-4.101078618245948e+06);
 %
@@ -124,6 +125,27 @@ clf
 plot(sqrt(1./alpha_vec),abs(yAs).^2,'linewidth',2)
 
 xlabel('alpha')
+ylabel('transfer percentage')
+legend('n=-1','n=0','n=+1')
+ylim([0 1])
+%%
+opts.control=1;
+num_pts=220;
+phi_vec=linspace(0.0,2*pi,num_pts);
+% linspace(0,4,num_pts).*
+% [17 0.1 0.5 2 -0.0849*2*2*pi 0.000] [17.5 5.3 0.59 -0.0849*2*2*pi, 0.00]
+b_matrix_sinc = [17.*ones(num_pts,1) 5.3.*ones(num_pts,1) 0.59.*ones(num_pts,1)./3 -0.0849*2*2*pi.*ones(num_pts,1) phi_vec'];
+% b_matrix_gauss = [17.*ones(num_pts,1) 0.05.*ones(num_pts,1) amp_vec' -0.0849*2*2*pi.*ones(num_pts,1) 0.00.*ones(num_pts,1)];
+% b_matrix_gauss = [17.0.*ones(num_pts,1) 0.0156.*ones(num_pts,1) 0.226.*ones(num_pts,1)./2 -0.0849*2*2*pi.*ones(num_pts,1) phi_vec']; %cost = 1.245
+
+ybs=transfer_percentage(b_matrix_sinc,[9,10,11],opts,-4.101078618245948e+06);
+%
+stfig('transfer over parameter space')
+clf
+% hold on
+plot(phi_vec,abs(ybs).^2,'linewidth',2)
+grid on
+xlabel('phi')
 ylabel('transfer percentage')
 legend('n=-1','n=0','n=+1')
 ylim([0 1])

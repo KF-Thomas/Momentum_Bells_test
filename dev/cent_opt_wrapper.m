@@ -1,5 +1,10 @@
-temp_func = @(x) -halo_cent_opt(data_masked_halo,bec_masked_halo,x,1,[-0.15,0.15]);
+% temp_func = @(x) -halo_cent_opt(data_masked_halo,bec_masked_halo,x,1,[-0.15,0.15]);
+% BestSolHistory=differential_evolution(temp_func,3,[0          0     0],[-4,-4,-4],[4,4,4])
+
+temp_func = @(x) -halo_cent_opt(data_masked_halo,bec_masked_halo,x,0,[-0.25,0.25]);
 BestSolHistory=differential_evolution(temp_func,3,[0          0     0],[-4,-4,-4],[4,4,4])
+
+
 % 
 % temp_func = @(x) -halo_cent_opt(data_masked_halo,bec_masked_halo,[x 0 0],2,[-0.15,0.15]);
 % BestSolHistory=differential_evolution(temp_func,6,[0 0 0 0 0 0],[-4,-4,-4,-4,-4,-4],[4,4,4,4,4,4])

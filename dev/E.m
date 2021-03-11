@@ -24,7 +24,7 @@ else
 end
 
 
-corr_opts.redges=sqrt(linspace(0^2,one_d_range^2,75));
+corr_opts.redges=sqrt(linspace(0^2,one_d_range^2,75));%75
 corr_opts.one_d_edges=linspace(-one_d_range,one_d_range,100)';
 corr_opts.rad_smoothing=nan;
 
@@ -41,6 +41,7 @@ corr_opts.timer=false;
 corr_opts.print_update = false;
 
 corr_opts.fit = opts_E.fit;
+corr_opts.gaussian_fit = true;
 
 corr_opts.calc_err = opts_E.calc_err;
 corr_opts.samp_frac_lims=[0.25,0.5];
