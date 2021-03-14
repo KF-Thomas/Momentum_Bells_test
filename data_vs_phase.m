@@ -18,7 +18,7 @@ data_folder = '';
 log_folder = 'log_Phi.txt';
 data_folders = {
             ''
-    % RT attempts
+%     % RT attempts
 %     '20210219_rarity_tapster_k=0,-1,-2_scan_1200_mus_overnight'
 %     '20210303_rarity_tapster_k=0,-1,-2_scan_1200_mus_overnight_v4'
 %     '20210302_rarity_tapster_k=0,-1,-2_scan_1200_mus_overnight_v3'
@@ -69,7 +69,7 @@ y_cut = 11e-3;
 L = [-0.1,0.1];%[-0.1,0.1];%[-0.618,-0.385];%[-0.5,-0.1];%
 norm_folders = [];%[];%
 plot_fit = true;
-do_g2=true;
+do_g2=false;
 do_g2_err=false;
 do_range_cut=true;
 out_data = {};
@@ -759,7 +759,7 @@ if do_g2
     
     xp = linspace(0,max(phi_vec));
     % fit = @(b,x)  b(1).*cos(x.*b(2) + 2*pi/b(6)).*(cos(x.*b(5) + 2*pi/b(3))) + b(4);    % Function to fit
-    fit = @(b,x)  b(1).*cos(x.*1.0 + b(2)) + b(3);    % Function to fit
+    fit = @(b,x)  b(1).*cos(x.*2.0 + b(2)) + b(3);    % Function to fit
     best_fit = fitnlm(x,y,fit,[2,0,2],'CoefficientNames',{'Amp','Phase','Offset'}); %one cos [1.229,1,0.8088,0.906] two cos [1.829,0.01,0.8088,0.906,1.0,0.406]
     [ysamp_val,ysamp_ci]=predict(best_fit,xp','Prediction','curve','Alpha',1-erf(1/sqrt(2))); %'Prediction','observation'
     
@@ -774,10 +774,10 @@ if do_g2
     %     errorbar(x,y,w,'o','CapSize',0,'MarkerSize',5,'Color',colors_main(3,:),...
     %         'MarkerFaceColor',colors_main(2,:),'LineWidth',2.5)
     ht=errorbar(x,y,w,'o','CapSize',0,'MarkerSize',5,'LineWidth',2.5);
-    hb=errorbar(x,btm_corr_bb_vec,w,'o','CapSize',0,'MarkerSize',5,'LineWidth',2.5);
-    hbt1=errorbar(x,btw_1_corr_bb_vec,w,'o','CapSize',0,'MarkerSize',5,'LineWidth',2.5);
-    hbt2=errorbar(x,btw_2_corr_bb_vec,w,'o','CapSize',0,'MarkerSize',5,'LineWidth',2.5);
-    legend([ht hb hbt1 hbt2],{'g12', 'g34', 'g14','g23'})
+%     hb=errorbar(x,btm_corr_bb_vec,w,'o','CapSize',0,'MarkerSize',5,'LineWidth',2.5);
+%     hbt1=errorbar(x,btw_1_corr_bb_vec,w,'o','CapSize',0,'MarkerSize',5,'LineWidth',2.5);
+%     hbt2=errorbar(x,btw_2_corr_bb_vec,w,'o','CapSize',0,'MarkerSize',5,'LineWidth',2.5);
+%     legend([ht hb hbt1 hbt2],{'g12', 'g34', 'g14','g23'})
     %     scatter(x,y,'o')
     xlabel('$\phi$')
     ylabel('$g^{(2)}_{BB}$ top halo')

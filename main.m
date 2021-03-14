@@ -10,12 +10,12 @@ opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
 %  opts.data_root = 'Z:\EXPERIMENT-DATA\2020_Momentum_Bells\';
 % opts.data_root = 'C:\Users\kieran\Documents\LOCAL-DATA\';
 
-data_folder = '';
+% data_folder = '';
 
 % data_folder = 'k=0,-1,-2_halos_data\20210301_k=0,-1,-2_halo_data_2';
 % data_folder = 'k=0,-1,-2_halos_data\20200807_k=0,-1,-2_halos_data_2';
 
-% data_folder = '20210303_rarity_tapster_k=0,-1,-2_scan_1200_mus_single_phase';
+data_folder = '20210303_rarity_tapster_k=0,-1,-2_scan_1200_mus_single_phase';
 % data_folder = '20210304_rarity_tapster_k=0,-1,-2_scan_1200_mus_single_phase_no_mirror';
 % data_folder= '20210304_rarity_tapster_k=0,-1,-2_scan_1200_mus_single_phi=4.5_no_mirror';
 % data_folder= '20210304_rarity_tapster_k=0,-1,-2_scan_1200_mus_single_phi=4.5';
@@ -24,7 +24,7 @@ data_folder = '';
 % data_folder = '20210305_rarity_tapster_k=0,-1,-2_scan_1200_mus_evap_0_8543';
 
 opts.import.dir = fullfile(opts.data_root, data_folder);
-opts.import.force_reimport = true;
+opts.import.force_reimport = false;
 opts.import.force_cache_load = ~opts.import.force_reimport;
 %% Import parameters
 tmp_xlim=[-35e-3, 35e-3];     %tight XY lims to eliminate hot spot from destroying pulse widths
@@ -98,10 +98,11 @@ opts.cent.correction_opts.plots = 0;
 
 opts.cent.top.visual = 0; %from 0 to 2
 opts.cent.top.savefigs = 0;
-opts.cent.top.threshold = [150,6000,2000.*3].*1e3;  %set in inverse units (Hz for time 1/m for space)
+opts.cent.top.threshold = [150,6000,2000.*3].*1e3;  %[150,80,80].*1e3;  %set in inverse units (Hz for time 1/m for space)
 opts.cent.top.min_threshold = [0,8,8].*1e3;%[16,7,10].*1e3;
 opts.cent.top.sigma = [6.7e-5,16e-5,16e-5];%[8e-5,25e-5,25e-5];
 opts.cent.top.method = {'margin','average','average'};
+% opts.cent.top.method = {'margin','margin','margin'};
 
 opts.cent.mid.visual = 0; %from 0 to 2
 opts.cent.mid.threshold = [150,2000.*3,2000.*3].*1e3;  %set in inverse units (Hz for time 1/m for space)
@@ -141,9 +142,9 @@ bec_masked_halo = bec_width_txy_to_vel(bec_masked_halo,opts.bec_width);
 
 %% convert data to velocity
 % zero velocity point
-t0 = ones(size(bec_masked_halo.centre_top,1),1).*3.8772;%bec_masked_halo.centre_top(:,1);%72;%
-x0 = bec_masked_halo.centre_top(:,2);%ones(size(bec_masked_halo.centre_top,1),1).*-0.0041;%%-0.00444892593829574;
-y0 = bec_masked_halo.centre_top(:,3);%ones(size(bec_masked_halo.centre_top,1),1).*0.0078;%0.00645675151404596;
+t0 = ones(size(bec_masked_halo.centre_top,1),1).*3.8772;%bec_masked_halo.centre_top(:,1);%72;%3.8772
+x0 = bec_masked_halo.centre_top(:,2);%ones(size(bec_masked_halo.centre_top,1),1).*-0.0041;%ones(size(bec_masked_halo.centre_top,1),1).*-0.0041;%%-0.00444892593829574;
+y0 = bec_masked_halo.centre_top(:,3);%ones(size(bec_masked_halo.centre_top,1),1).*0.0078;%ones(size(bec_masked_halo.centre_top,1),1).*0.0078;%0.00645675151404596;
 
 %% generate top halo
 opts.vel_conv.top.visual = 0;
@@ -170,6 +171,10 @@ opts.vel_conv.top.bec_width.south = bec_masked_halo.width_mid;
 
 %%
 top_halo_intial = halo_vel_conv(data_masked_halo,opts.vel_conv.top);
+
+%%
+% x0 = bec_masked_halo.centre_mid(:,2);%ones(size(bec_masked_halo.centre_top,1),1).*-0.0041;%ones(size(bec_masked_halo.centre_top,1),1).*-0.0041;%%-0.00444892593829574;
+% y0 = bec_masked_halo.centre_mid(:,3);%ones(size(bec_masked_halo.centre_top,1),1).*0.0078;%ones(size(bec_masked_halo.centre_top,1),1).*0.0078;%0.00645675151404596;
 
 %% generate bottom halo
 opts.vel_conv.btm.visual = 0;
@@ -274,13 +279,19 @@ halo_num_top = string_value_with_unc(mean(top_halo.num_counts),std(top_halo.num_
 halo_num_btm = string_value_with_unc(mean(bottom_halo.num_counts),std(bottom_halo.num_counts),'type','b');
 
 top_halo_bb = string_value_with_unc(corrs.top_halo.corr_bb.norm_g2.(g2peak),corrs.top_halo.corr_bb.norm_g2.fitted_g2peak_unc,'type','b');
+top_halo_bb_sig = string_value_with_unc(corrs.top_halo.corr_bb.fit.Coefficients.Estimate(2)...
+    ,corrs.top_halo.corr_bb.fit.Coefficients.SE(2),'type','b');
 % top_halo_cl = string_value_with_unc(corrs.top_halo.corr_cl.norm_g2.(g2peak),corrs.top_halo.corr_cl.norm_g2.fitted_g2peak_unc,'type','b');
 top_halo_cl = '0';
 bottom_halo_bb = string_value_with_unc(corrs.bottom_halo.corr_bb.norm_g2.(g2peak),corrs.bottom_halo.corr_bb.norm_g2.fitted_g2peak_unc,'type','b');
+bottom_halo_bb_sig = string_value_with_unc(corrs.bottom_halo.corr_bb.fit.Coefficients.Estimate(2)...
+    ,corrs.bottom_halo.corr_bb.fit.Coefficients.SE(2),'type','b');
 % bottom_halo_cl = string_value_with_unc(corrs.bottom_halo.corr_cl.norm_g2.(g2peak),corrs.bottom_halo.corr_cl.norm_g2.fitted_g2peak_unc,'type','b');
 bottom_halo_cl = '0';
 
 between_halo_bb = string_value_with_unc(corrs.between_halos.corr_bb.norm_g2.(g2peak),corrs.between_halos.corr_bb.norm_g2.fitted_g2peak_unc,'type','b');
+between_halo_bb_sig = string_value_with_unc(corrs.between_halos.corr_bb.fit.Coefficients.Estimate(2)...
+    ,corrs.between_halos.corr_bb.fit.Coefficients.SE(2),'type','b');
 % between_halo_cl = string_value_with_unc(corrs.between_halos.corr_cl.norm_g2.(g2peak),corrs.between_halos.corr_cl.norm_g2.fitted_g2peak_unc,'type','b');
 between_halo_cl = '0';
 
@@ -302,9 +313,9 @@ fprintf('\n Good shots = %s\n\n',num2str(sum(is_shot_good)))
 
 fprintf('\n Top Halo avg num = %s,    Bottom Halo avg num = %s\n\n',halo_num_top,halo_num_btm)
 
-fprintf('\n Top Halo:       g^{(2)}_{BB} = %s,    g^{(2)}_{CL} = %s\n',top_halo_bb,top_halo_cl)
-fprintf('\n Bottom Halo:    g^{(2)}_{BB} = %s,    g^{(2)}_{CL} = %s\n',bottom_halo_bb,bottom_halo_cl)
-fprintf('\n Between Halos:  g^{(2)}_{BB} = %s,    g^{(2)}_{CL} = %s\n',between_halo_bb,between_halo_cl)
+fprintf('\n Top Halo:       g^{(2)}_{BB} = %s,    g^{(2)}_{CL} = %s,    sigma_{BB} = %s\n',top_halo_bb,top_halo_cl,top_halo_bb_sig)
+fprintf('\n Bottom Halo:    g^{(2)}_{BB} = %s,    g^{(2)}_{CL} = %s,    sigma_{BB} = %s\n',bottom_halo_bb,bottom_halo_cl,bottom_halo_bb_sig)
+fprintf('\n Between Halos:  g^{(2)}_{BB} = %s,    g^{(2)}_{CL} = %s,    sigma_{BB} = %s\n',between_halo_bb,between_halo_cl,between_halo_bb_sig)
 
 fprintf('\n\n g12(0) = %.3f,    g14(0) = %.3f,    g23(0) = %.3f,    g34(0) = %.3f \n',g12,g14,g23,g34)
 fprintf('\n E = %g,   Expected Amplitude = %g\n',E_val,E_amp)

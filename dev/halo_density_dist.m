@@ -9,14 +9,15 @@ set(groot, 'DefaultTextInterpreter', 'latex')
 %% Import directory
 opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
 % opts.data_root = 'Z:\EXPERIMENT-DATA\2020_Momentum_Bells\';
-data_folder='';
-% data_folder='20210224_k=0,-1_halos_full_evap';
+% data_folder='';
+% data_folder='20210312_bragg_scan\9_115_kHz';
+data_folder='20210303_rarity_tapster_k=0,-1,-2_scan_1200_mus_single_phase';
 % data_folder='20210223_k=0,-1_norm_evap_848';
 % data_folder='20210217_k=0,-1_norm_evap_755';
 % data_folder='20210218_bragg_pulses_at_1200_mus\splitter_3';
-
+%data_folder='20210312_bragg_scan\9_111_kHz';
 opts.import.dir = fullfile(opts.data_root, data_folder);
-opts.import.force_reimport = true;
+opts.import.force_reimport = false;
 opts.import.force_cache_load = ~opts.import.force_reimport;
 
 %% Chose which halo(s) to analyse

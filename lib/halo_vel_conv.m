@@ -64,8 +64,8 @@ for this_idx = 1:num_shots % Loop over all shots
     
     % Convert raw counts to velocity space
     v_zxy = txy_to_vel(centred_counts, this_outtime, g0, d)-vel_shift;
-    v_zxy = v_zxy*rotz(-phix)'*roty(-phiy)';%rotate the BEC to the north and south poles
-    v_zxy(:,1) = v_zxy(:,1) - z_sign*v_radius; %shift into center of mass frame
+    v_zxy = v_zxy;%*rotz(-phix)'*roty(-phiy)';%rotate the BEC to the north and south poles
+    v_zxy = v_zxy - [z_sign*v_radius,0,0]*rotz(phix)'*roty(phiy)'; %shift into center of mass frame
     phix_correction = opts_vel_conv.phi_correction(1);
     phiy_correction = opts_vel_conv.phi_correction(2);
     v_zxy = (v_zxy - opts_vel_conv.centering_correction)*rotz(-phix_correction)'*roty(-phiy_correction)';
