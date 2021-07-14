@@ -8,14 +8,21 @@ addpath(genpath(core_folder));
 set(groot, 'DefaultTextInterpreter', 'latex')
 %% Import directory
 opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
-% opts.data_root = 'Z:\EXPERIMENT-DATA\2020_Momentum_Bells\';
+%  opts.data_root = 'Z:\EXPERIMENT-DATA\2020_Momentum_Bells\pulse_characterisation\';
 % data_folder='';
-% data_folder='20210312_bragg_scan\9_115_kHz';
-data_folder='20210303_rarity_tapster_k=0,-1,-2_scan_1200_mus_single_phase';
+data_folder = '20210712_k=0,-1,-2_halos_new_trap';
+% data_folder = '20210713_k=0,-1,-2_halos_new_trap_2';
+% data_folder='20210325_k=0,-1,-2_halos_8';
+% data_folder='20210325_k=0,-1_mirror_test_tight_trap\gaussian_test';
+%data_folder='20210219_mirror_800_mus_chirped';
+% data_folder='20210330_mz_scan_tighter_trap_5_mus_amp_12.9';
+%data_folder='20210325_k=0,-1_mirror_test_tight_trap\13_111_kHz';
+% data_folder='k=0,-1,-2_halos_data\20210301_k=0,-1,-2_halo_data_3';
 % data_folder='20210223_k=0,-1_norm_evap_848';
 % data_folder='20210217_k=0,-1_norm_evap_755';
 % data_folder='20210218_bragg_pulses_at_1200_mus\splitter_3';
-%data_folder='20210312_bragg_scan\9_111_kHz';
+% data_folder='20210312_bragg_scan\1200_mus_delay\8_111_kHz';
+% data_folder='20210310_bragg_pulse_test\800mus_mirror_v5';
 opts.import.dir = fullfile(opts.data_root, data_folder);
 opts.import.force_reimport = false;
 opts.import.force_cache_load = ~opts.import.force_reimport;
@@ -25,17 +32,31 @@ opts.do_top_halo = 1;% analyse the top halo?
 opts.do_btm_halo = 1;% analyse the bottom halo?
 
 %% Chose if you want to look at a narrow or wide slice of the halo
-slice_type = 'wide';
+slice_type = 'medium';
 if strcmp(slice_type,'narrow')
     opts.vel_conv.top.z_mask = [-0.4,0.4];%
     opts.vel_conv.btm.z_mask = [-0.4,0.4];%in units of radius ([-0.68,0.68])
 elseif strcmp(slice_type,'extra wide')
     opts.vel_conv.top.z_mask = [-0.87,0.87];%
     opts.vel_conv.btm.z_mask = [-0.87,0.87];%in units of radius ([-0.68,0.68])
+elseif strcmp(slice_type,'medium')
+    opts.vel_conv.top.z_mask = [-0.6,0.6];%
+    opts.vel_conv.btm.z_mask = [-0.6,0.6];%in units of radius ([-0.68,0.68])
+elseif strcmp(slice_type,'extra narrow')
+    opts.vel_conv.top.z_mask = [-0.2,0.2];%
+    opts.vel_conv.btm.z_mask = [-0.2,0.2];%in units of radius ([-0.68,0.68])
+elseif strcmp(slice_type,'super narrow')
+    opts.vel_conv.top.z_mask = [-0.1,0.1];%
+    opts.vel_conv.btm.z_mask = [-0.1,0.1];%in units of radius ([-0.68,0.68])
 else
     opts.vel_conv.top.z_mask = [-0.82,0.82];
     opts.vel_conv.btm.z_mask = [-0.82,0.82];%in units of radius ([-0.68,0.68])
 end
+
+    opts.vel_conv.top.z_mask = [-0.7,0.7];
+    opts.vel_conv.btm.z_mask = [-0.7,0.7];%in units of radius ([-0.68,0.68])
+
+radius_lim = [0.01.*0.065,0.08];%[0.05,0.07];%[0.3,1.61].*0.065;%[0.61,1.26].*0.065;%[0.9,1.05];%[0.89,1.11];
 
 %% Import parameters
 tmp_xlim=[-35e-3, 35e-3];     %tight XY lims to eliminate hot spot from destroying pulse widths
@@ -113,7 +134,10 @@ opts.cent.btm.min_threshold = [16,3,3].*1e3;%[0,0,0].*1e3;%[16,13,13].*1e3;%[16,
 opts.cent.btm.sigma = [6.7e-5,16e-5,16e-5];%[8e-5,25e-5,25e-5];
 opts.cent.btm.method = {'margin','average','average'};
 
-opts.cent.t_bounds = {[3.844,3.8598],[3.8598,3.871],[3.871,3.8844],[3.75,4]};%time bounds for the different momentum states
+% opts.cent.t_bounds = {[1.735,1.75],[1.75,1.763],[1.763,1.776],[1.73,1.779]};
+opts.cent.t_bounds = {[1.741,1.75],[1.75,1.763],[1.763,1.776],[1.73,1.779]};
+% opts.cent.t_bounds = {[2.134,2.148],[2.148,2.161],[2.161,2.18],[2.13,2.2]};
+%  opts.cent.t_bounds = {[3.844,3.8598],[3.8598,3.871],[3.871,3.8844],[3.75,4]};%time bounds for the different momentum states
 % opts.cent.t_bounds = {[5.350,5.356],[5.361,5.367],[5.372,5.380],[5.34,5.39]};%time bounds for the different momentum states (for full evap settings)
 bec = halo_cent(data_masked,opts.cent);
 
@@ -142,7 +166,7 @@ bec_masked_halo = bec_width_txy_to_vel(bec_masked_halo,opts.bec_width);
 
 %% convert data to velocity
 % zero velocity point
-t0 = ones(size(bec_masked_halo.centre_top,1),1).*3.8772;%bec_masked_halo.centre_top(:,1);%72;%
+t0 = bec_masked_halo.centre_top(:,1);%ones(size(bec_masked_halo.centre_top,1),1).*2.1699;%.*2.1749;%.*3.8772;%72;%
 x0 = bec_masked_halo.centre_top(:,2);%ones(size(bec_masked_halo.centre_top,1),1).*-0.0041;%%-0.00444892593829574;
 y0 = bec_masked_halo.centre_top(:,3);%ones(size(bec_masked_halo.centre_top,1),1).*0.0078;%0.00645675151404596;
 
@@ -153,7 +177,8 @@ opts.vel_conv.top.title = 'top halo';
 opts.vel_conv.top.const.g0 = const.g0;
 opts.vel_conv.top.const.fall_distance = const.fall_distance;
 opts.vel_conv.top.v_thresh = 0.15; %maximum velocity radius
-opts.vel_conv.top.v_mask=[0.89,1.11]; %bounds on radisu as multiple of radius value
+opts.vel_conv.top.v_mask=radius_lim; %bounds on radisu in units of m/s
+opts.vel_conv.top.ang_lim = 40; %angular limits of the azimuthal angle
 opts.vel_conv.top.y_mask = [-1.9,1.9]; %in units of radius
 opts.vel_conv.top.center = [t0,x0,y0];%bec_masked_halo.centre_top;%ones(size(bec_masked_halo.centre_top,1),1).*[t0,x0,y0];%%bec_masked_halo.centre_top;%bec_masked_halo.centre_mid; %use the mid BEC as the zero momentum point
 
@@ -175,12 +200,13 @@ end
 
 %% generate bottom halo
 opts.vel_conv.btm.visual = 0;
-opts.vel_conv.btm.plot_percentage = 0.95;
+opts.vel_conv.btm.plot_percentage = 0.5;
 opts.vel_conv.btm.title = 'bottom halo';
 opts.vel_conv.btm.const.g0 = const.g0;
 opts.vel_conv.btm.const.fall_distance = const.fall_distance;
 opts.vel_conv.btm.v_thresh = 0.15; %maximum velocity radius
-opts.vel_conv.btm.v_mask=[0.89,1.11]; %bounds on radisu as multiple of radius value
+opts.vel_conv.btm.v_mask=radius_lim;%[0.61,1.26];%[0.3,1.61];%[0.61,1.26];%[0.89,1.11]; %bounds on radisu as multiple of radius value
+opts.vel_conv.btm.ang_lim = 40; %angular limits of the azimuthal angle
 opts.vel_conv.btm.y_mask = [-1.9,1.9]; %in units of radius
 opts.vel_conv.btm.center = [t0,x0,y0];%bec_masked_halo.centre_top;%ones(size(bec_masked_halo.centre_top,1),1).*[t0,x0,y0];%,bec_masked_halo.centre_top; %use the mid BEC as the zero momentum point
 
@@ -318,8 +344,8 @@ v_top_dens_unc(:,1) = sqrt(r_top_zxy_masked.count_rate.smooth).*sqrt(abs(r_top_z
     -r_top_zxy_masked.bin.edge(2:end)));
 
 
-r_btm_zxy_masked=smooth_hist(phi_btm,'sigma',0.04,'lims',[-pi/2,pi/2],'bin_num',nbins);
-r_top_zxy_masked=smooth_hist(phi_top,'sigma',0.04,'lims',[-pi/2,pi/2],'bin_num',nbins);
+r_btm_zxy_masked=smooth_hist(phi_btm,'sigma',0.01,'lims',[-pi/2,pi/2],'bin_num',nbins);
+r_top_zxy_masked=smooth_hist(phi_top,'sigma',0.01,'lims',[-pi/2,pi/2],'bin_num',nbins);
 v_btm_dens(:,2) = r_btm_zxy_masked.count_rate.smooth./num_shots;
 v_top_dens(:,2) = r_top_zxy_masked.count_rate.smooth./num_shots;
 
@@ -611,3 +637,46 @@ xlabel('$v_z$')
 ylabel('$v_y$')
 zlabel('$v_z$')
 axis equal
+%%
+stfig('radial distribution');
+clf
+r_hist_top=smooth_hist(r_dist_top,'sigma',0.0001);
+r_hist_btm=smooth_hist(r_dist_btm,'sigma',0.0001);
+r_hist_top_un=smooth_hist(r_dist_top_unnorm,'sigma',0.0001);
+r_hist_btm_un=smooth_hist(r_dist_btm_unnorm,'sigma',0.0001);
+subplot(2,1,1)
+plot(r_hist_top.bin.centers,r_hist_top.counts.smooth,'linewidth',1.5)
+hold on
+plot(r_hist_btm.bin.centers,r_hist_btm.counts.smooth,'linewidth',1.5)
+xlabel('r')
+ylabel('Freq')
+xlim([min([r_hist_top.bin.centers;r_hist_btm.bin.centers]),...
+    max([r_hist_top.bin.centers;r_hist_btm.bin.centers])])
+legend('top','btm')
+subplot(2,1,2)
+plot(r_hist_top_un.bin.centers,r_hist_top_un.counts.smooth,'linewidth',1.5)
+hold on
+plot(r_hist_btm_un.bin.centers,r_hist_btm_un.counts.smooth,'linewidth',1.5)
+ylimit = max([r_hist_top_un.counts.smooth;r_hist_btm_un.counts.smooth]);
+plot([0.130159/2 0.130159/2],[-0.1,ylimit.*2],'k-','linewidth',1.5)
+ylim([0 ylimit.*1.1])
+xlabel('r')
+ylabel('Freq')
+xlim([min([r_hist_top_un.bin.centers;r_hist_btm_un.bin.centers]),...
+    max([r_hist_top_un.bin.centers;r_hist_btm_un.bin.centers])])
+legend('top','btm','expected radius')
+%     if plot_opts.only_dists
+%         error('breaking out')
+%     end
+%
+%%
+stfig('distribution of halo radius');
+clf
+vr_hist_top=smooth_hist(top_halo.rad,'sigma',0.00003);
+vr_hist_btm=smooth_hist(bottom_halo.rad,'sigma',0.00003);
+plot(vr_hist_top.bin.centers,vr_hist_top.counts.smooth,'linewidth',1.5)
+hold on
+plot(vr_hist_btm.bin.centers,vr_hist_btm.counts.smooth,'linewidth',1.5)
+xlabel('radius of halo')
+ylabel('Freq')
+legend('top','btm')

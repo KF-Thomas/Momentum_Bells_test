@@ -12,26 +12,30 @@ else
 end
 
 corr_opts.type='radial_bb';
-corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]].*0.05;
+corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]].*0.005;
 corr_opts.one_d_dimension=2;
 
 if opts_E.norm
     one_d_range=0.16;
     data_type = 'norm';
 else
-    one_d_range=0.017;
+    one_d_range=0.022;%0.017;%0.06;%
     data_type = 'unnorm';
 end
 
 
-corr_opts.redges=sqrt(linspace(0^2,one_d_range^2,75));%75
+corr_opts.redges=sqrt(linspace(0^2,one_d_range^2,75));%75%20
 corr_opts.one_d_edges=linspace(-one_d_range,one_d_range,100)';
 corr_opts.rad_smoothing=nan;
 
 corr_opts.low_mem=true;
 
 corr_opts.sampling_method='complete';
-corr_opts.sample_proportion=1.0; %proportion of uncorolated pairs to calculate 
+if isfield(opts_E,'sample_proportion')
+    corr_opts.sample_proportion=opts_E.sample_proportion; %proportion of uncorolated pairs to calculate 
+else
+    corr_opts.sample_proportion=1.0; %proportion of uncorolated pairs to calculate 
+end
 corr_opts.attenuate_counts=1; %artifical qe
 corr_opts.do_pre_mask=false;
 corr_opts.sorted_dir=1;

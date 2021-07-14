@@ -16,6 +16,12 @@ if ~isfield(opts_vel_conv,'phi_correction')
     opts_vel_conv.phi_correction = [0 0];
 end
 
+if isfield(opts_vel_conv,'ang_lim')
+    ang_lim = opts_vel_conv.ang_lim;
+else
+    ang_lim = 60;
+end
+
 num_shots = length(data.shot_num);
 for this_idx = 1:num_shots % Loop over all shots
     
@@ -62,19 +68,26 @@ for this_idx = 1:num_shots % Loop over all shots
     v_north_rot = v_north*rotz(-phix)'*roty(-phiy)'- v_radius.*[z_sign,0,0];
     v_south_rot = v_south*rotz(-phix)'*roty(-phiy)'- v_radius.*[z_sign,0,0];
     
+    time_mask = centred_counts(:,1)>this_outtime;
+    centred_counts_masked = centred_counts(time_mask,:);
     % Convert raw counts to velocity space
-    v_zxy = txy_to_vel(centred_counts, this_outtime, g0, d)-vel_shift;
-    v_zxy = v_zxy;%*rotz(-phix)'*roty(-phiy)';%rotate the BEC to the north and south poles
-    v_zxy = v_zxy - [z_sign*v_radius,0,0]*rotz(phix)'*roty(phiy)'; %shift into center of mass frame
+    v_zxy = txy_to_vel(centred_counts_masked, this_outtime, g0, d)-vel_shift;
+    v_zxy = v_zxy*rotz(-phix)'*roty(-phiy)';%rotate the BEC to the north and south poles
+    v_zxy = v_zxy - [z_sign*v_radius,0,0];%*rotz(phix)'*roty(phiy)'; %shift into center of mass frame
     phix_correction = opts_vel_conv.phi_correction(1);
     phiy_correction = opts_vel_conv.phi_correction(2);
     v_zxy = (v_zxy - opts_vel_conv.centering_correction)*rotz(-phix_correction)'*roty(-phiy_correction)';
     
+    v_zxy_unmasked = v_zxy;
+    
     %% MASKING
     % mask radial
-    radius_mask = (v_zxy(:,1).^2+v_zxy(:,2).^2+v_zxy(:,3).^2)<(v_radius.*opts_vel_conv.v_mask(2)).^2 ...
-        & (v_zxy(:,1).^2+v_zxy(:,2).^2+v_zxy(:,3).^2)>(v_radius.*opts_vel_conv.v_mask(1)).^2;
+    radius_mask = (v_zxy(:,1).^2+v_zxy(:,2).^2+v_zxy(:,3).^2)<(opts_vel_conv.v_mask(2)).^2 ...
+        & (v_zxy(:,1).^2+v_zxy(:,2).^2+v_zxy(:,3).^2)>(opts_vel_conv.v_mask(1)).^2;
     v_zxy = v_zxy(radius_mask,:);
+    
+    ang_mask = abs(180/pi*atan(v_zxy(:,1)./sqrt(v_zxy(:,2).^2+v_zxy(:,3).^2)))<ang_lim;
+    v_zxy = v_zxy(ang_mask,:);
     
     %mask out the BEC's
     %     v_masked = mask_square(v_zxy,v_bec_top',1);
@@ -88,6 +101,9 @@ for this_idx = 1:num_shots % Loop over all shots
     
     %do some angular masking
     
+    %% some data for post checking
+    num_check = sum(this_txy(:,1)>1.5 & this_txy(:,1)<1.689898);  
+    
     %% add the data to the structure
     out_halo.counts_txy{this_idx} = this_txy;
     out_halo.num_counts(this_idx) = size(v_masked,1);%size(this_txy,1);
@@ -98,6 +114,8 @@ for this_idx = 1:num_shots % Loop over all shots
     out_halo.bec_pos(this_idx,:) = [v_north,v_south];
     out_halo.bec_pos_adj(this_idx,:) = [v_north_rot,v_south_rot];
     out_halo.counts_vel_norm{this_idx} = v_masked./v_radius;
+    out_halo.v_zxy_unmasked{this_idx} = v_zxy_unmasked;
+    out_halo.num_check(this_idx) = num_check;
     
     if opts_vel_conv.visual && rand(1)<opts_vel_conv.plot_percentage
         scatter3(v_masked(:,2),v_masked(:,3),v_masked(:,1),'k.')

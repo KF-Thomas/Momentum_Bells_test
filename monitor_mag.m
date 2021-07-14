@@ -43,7 +43,7 @@ anal_opts.trig_ai_in=20;
 % anal_opts.osc_fit.tlim=[0.86,1.08];
 % anal_opts.osc_fit.dimesion=2; %Sel ect coordinate to bin. 1=X, 2=Y.
 
-anal_opts.history.shots=50;
+anal_opts.history.shots=25;
 
 hebec_constants
 const.fall_distance = 8.52925545e-01;
@@ -115,8 +115,8 @@ while true
             batch_data.mcp_tdc=import_mcp_tdc_data(anal_opts.tdc_import);
             %just to give me a logical vector
             batch_data.mcp_tdc.all_ok=batch_data.mcp_tdc.num_counts>1e3;
-            batch_data.mcp_tdc.all_ok(batch_data.mcp_tdc.all_ok)=...
-                cellfun(@(x) x(end,1),batch_data.mcp_tdc.counts_txy(batch_data.mcp_tdc.all_ok))>anal_opts.dld_aquire*0.8;
+%             batch_data.mcp_tdc.all_ok(batch_data.mcp_tdc.all_ok)=...
+%                 cellfun(@(x) x(end,1),batch_data.mcp_tdc.counts_txy(batch_data.mcp_tdc.all_ok))>anal_opts.dld_aquire*0.8;
             if sum(batch_data.mcp_tdc.all_ok)==0
                 fprintf('waiting for file to be writen\n')
                 pause(1.0)

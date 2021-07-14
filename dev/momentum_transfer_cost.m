@@ -35,15 +35,20 @@ out_frac = fraction_calc(batch_data.mcp_tdc,frac_opts);
 % cost.val = abs(out_frac.Ns(:,1)-out_frac.Ns(:,2))./(out_frac.Ns(:,1)+out_frac.Ns(:,2))...
 %     + abs(out_frac.Ns(:,3)-out_frac.Ns(:,2))./(out_frac.Ns(:,3)+out_frac.Ns(:,2))...
 %     + abs(out_frac.Ns(:,1)-out_frac.Ns(:,3))./(out_frac.Ns(:,1)+out_frac.Ns(:,3));%...
-%     %+ abs(out_frac.Ns(:,4)-(out_frac.Ns(:,1)+out_frac.Ns(:,2)+out_frac.Ns(:,3)))./out_frac.Ns(:,4);
+    %+ abs(out_frac.Ns(:,4)-(out_frac.Ns(:,1)+out_frac.Ns(:,2)+out_frac.Ns(:,3)))./out_frac.Ns(:,4);
 
 %k=-1,-2 cost
-cost.val = abs(out_frac.Ns(:,1)-out_frac.Ns(:,2))./(out_frac.Ns(:,1)+out_frac.Ns(:,2))...
-    + abs(out_frac.Ns(:,4)-(out_frac.Ns(:,1)+out_frac.Ns(:,2)))./out_frac.Ns(:,4);
+% cost.val = abs(out_frac.Ns(:,1)-out_frac.Ns(:,2))./(out_frac.Ns(:,1)+out_frac.Ns(:,2))...
+%     + abs(out_frac.Ns(:,4)-(out_frac.Ns(:,1)+out_frac.Ns(:,2)))./out_frac.Ns(:,4);
 % 
 % %k=0,-1 cost
 % cost.val = abs(out_frac.Ns(:,3)-out_frac.Ns(:,2))./(out_frac.Ns(:,3)+out_frac.Ns(:,2))...
 %     + abs(out_frac.Ns(:,4)-(out_frac.Ns(:,3)+out_frac.Ns(:,2)))./out_frac.Ns(:,4);
+
+%k=0,-2 cost
+cost.val = abs(out_frac.Ns(:,1)-out_frac.Ns(:,3))./(out_frac.Ns(:,1)+out_frac.Ns(:,3))...
+    + abs(out_frac.Ns(:,4)-(out_frac.Ns(:,1)+out_frac.Ns(:,3)))./out_frac.Ns(:,4);
+
 
 %cost.unc = sqrt((1+out_frac.fracs(:,2))./out_frac.Ns(:,2));
 

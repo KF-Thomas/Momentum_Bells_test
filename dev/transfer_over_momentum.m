@@ -36,10 +36,10 @@ opts.timer=0;
 %hamming sinc pulse
 % [17.5 6.0 0.5151 -0.0849*2*2*pi 0.00]
 
-opts.time_span = 35;
+opts.time_span = 25;
 %
 ks = [linspace(0,2,num_pts).*-4.101078618245948e+06 linspace(2,4,num_pts).*-4.101078618245948e+06];
-ys=transfer_percentage([17.5 5.3 0.59 -0.0849*2*2*pi, 0.00],[9,10,11],opts,ks);
+ys=transfer_percentage([17 0.05 0.405 -0.0849*2*pi, 0.00],[9,10,11],opts,ks);
 %% cost
 k = linspace(0,4,num_pts).*-4.101078618245948e+06;
 mask_t =  logical(k<0.25.*-4.101078618245948e+06) & ...

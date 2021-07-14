@@ -8,7 +8,7 @@ corr_opts.plots = global_opts.plots;
 corr_opts.fit = global_opts.fit;
 corr_opts.calc_err = global_opts.calc_err;
 
-global_sample_portion = 1.0;
+global_sample_portion = 1.0;%0.05;%0.08;%0.5;%1.0;%0.001;%
 
 % variables for calculating the error
 corr_opts.samp_frac_lims=[0.65,0.9];
@@ -18,14 +18,15 @@ corr_opts.num_samp_rep=5;
 corr_opts.attenuate_counts=1;
 
 %% BACK TO BACK (in the same halo)
-corr_opts.type='radial_bb';%'1d_cart_bb';%
+corr_opts.type='1d_cart_bb';%'radial_bb';%
 corr_opts.one_d_dimension = 2;
-corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*7e-3;
-one_d_range=0.017;%0.02
+corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*40e-3;
+one_d_range=0.01;%0.017;%0.09;%0.075;%0.02%0.03
 % one_d_range=0.16;
 corr_opts.redges=sqrt(linspace(0^2,one_d_range^2,75));%100 or 80 or 85 or 95
 corr_opts.one_d_edges = linspace(-one_d_range,one_d_range,150);
-corr_opts.rad_smoothing=nan;
+corr_opts.edges=linspace(-1,1)';%corr_opts.edges=linspace(-1,-0.8)';
+corr_opts.rad_smoothing=nan;%0.0003;%
 corr_opts.direction_labels = {'z','x','y'};
 corr_opts.low_mem=true;
 
@@ -119,13 +120,13 @@ corr_opts.one_d_dimension=3;
 corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*0.05;
 % one_d_range=0.16;
 % corr_opts.one_d_window=[[-1,1];[-1,1];[-1,1]]*5e-2;
-one_d_range=0.017;
+one_d_range=0.017;%0.09;%
 corr_opts.one_d_edges=linspace(-one_d_range,one_d_range,100)';
 corr_opts.redges=sqrt(linspace(0,one_d_range^2,75));%(5e-3)^2
 corr_opts.rad_smoothing=nan;
 corr_opts.direction_labels = {'z','x','y'};
 corr_opts.low_mem=true;
-corr_opts.sampling_method='complete';%
+corr_opts.sampling_method='complete';%'basic';%'complete';%
 corr_opts.norm_samp_factor=1500;%1500;
 corr_opts.sample_proportion=global_sample_portion;%1500;
 corr_opts.norm_samp_factor=1;

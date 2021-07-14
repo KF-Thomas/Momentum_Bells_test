@@ -1,0 +1,45 @@
+start mag transfer
+
+%%% MAGNETIC TRANSFER pulse
+%--------------------------------------------------------------------------
+B_trap_bottom=1.096e6;%1.025e6;%1.0603782e6; 1.0851e6;%
+B_trap_bottom_intrap=4.2e6;%1.025e6;%1.0603782e6;
+del = -50e3;%-45e3;%-41.03543351e3; %detuning for second beam 3e3
+T_pulse_del = +0.0e-6;%delay between pulses
+dF_Raman=-(B_trap_bottom);     %[Hz]    Raman detuning
+dF_Raman_in_trap=-(B_trap_bottom_intrap);     %[Hz]    Raman detuning
+T_Raman_mix=24e-6;%23e-6;%19.20368817e-6;
+Gs_mod_R_mix=0.015;%0.8;%1.8;%2.69400894;
+phi1_mix=pi;
+phi2=0;
+K_R_mix=0.37;%0.338;%0.338;%0.34063277;%0.31
+
+f1_Raman_mix=f0_AOM-dF_Raman/2-del;     %[Hz]    45(P) RAMAN   "top"                          45(S) RAMAN   "top"
+f2_Raman_mix=f0_AOM+dF_Raman/2;     %[Hz]   -45(S) RAMAN   "horizontal"                 -45(P) RAMAN   "horizonatal"
+
+f1_Raman_mix_in_trap=f0_AOM-dF_Raman_in_trap/2-del;     %[Hz]    45(P) RAMAN   "top"                          45(S) RAMAN   "top"
+f2_Raman_mix_in_trap=f0_AOM+dF_Raman_in_trap/2;     %[Hz]   -45(S) RAMAN   "horizontal"                 -45(P) RAMAN   "horizonatal"
+
+
+after optimisation (85%+ maybe 95%+)
+
+%%% MAGNETIC TRANSFER pulse
+%--------------------------------------------------------------------------
+B_trap_bottom=1.096e6+60e3;%1.025e6;%1.0603782e6; 1.0851e6;%
+B_trap_bottom_intrap=4.2e6;%1.025e6;%1.0603782e6;
+del = 0.25e3;%15e3;%-45e3;%-41.03543351e3; %detuning for second beam 3e3
+T_pulse_del = 0.0e-6;%delay between pulses
+dF_Raman=-(B_trap_bottom);     %[Hz]    Raman detuning
+dF_Raman_in_trap=-(B_trap_bottom_intrap);     %[Hz]    Raman detuning
+T_Raman_mix=25.5e-6;%24e-6;%23e-6;%19.20368817e-6;
+Gs_mod_R_mix=1.3;%0.015;%0.8;%1.8;%2.69400894;
+phi1_mix=pi;
+phi2=0;
+K_R_mix=0.4;%0.338;%0.338;%0.34063277;%0.31
+
+f1_Raman_mix=f0_AOM-dF_Raman/2-del;     %[Hz]    45(P) RAMAN   "top"                          45(S) RAMAN   "top"
+f2_Raman_mix=f0_AOM+dF_Raman/2;     %[Hz]   -45(S) RAMAN   "horizontal"                 -45(P) RAMAN   "horizonatal"
+
+f1_Raman_mix_in_trap=f0_AOM-dF_Raman_in_trap/2-del;     %[Hz]    45(P) RAMAN   "top"                          45(S) RAMAN   "top"
+f2_Raman_mix_in_trap=f0_AOM+dF_Raman_in_trap/2;     %[Hz]   -45(S) RAMAN   "horizontal"                 -45(P) RAMAN   "horizonatal"
+
