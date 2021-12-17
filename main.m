@@ -6,17 +6,29 @@ core_folder = fullfile(fileparts(this_folder), 'Core_BEC_Analysis\');
 addpath(genpath(core_folder));
 set(groot, 'DefaultTextInterpreter', 'latex')
 %% Import directory
-opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
+% opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
 % opts.data_root = 'Z:\EXPERIMENT-DATA\2020_Momentum_Bells\';
 % opts.data_root = 'C:\Users\kieran\Documents\LOCAL-DATA\';
+opts.data_root = 'C:\Users\BEC Machine\Documents\DATA_BACKUP\';
+
 
 % data_folder = 'full_interferometer\rarity-tapster\tighter_trap\20210412_k=0,-1,-2_rt_scan_4';
 % data_folder = 'k=0,-1,-2_halos_data\tighter_trap\20210323_k=0,-1,-2_halos_4';
 % data_folder = 'k=0,-1,-2_halos_data\20201120_k=0,-1,-2_halos_data_4';
-% 'k=0,-1,-2_halos_data\20200807_k=0,-1,-2_halos_data_2';
+% data_folder = '20210803_k=0,-1,-2_rt_scan_mid_trap_equal_delay_1';
+data_folder = {'20210803_k=0,-1,-2_rt_scan_mid_trap_equal_delay_1'
+    '20210804_k=0,-1,-2_rt_scan_mid_trap_equal_delay_2'%g34 not biased downward, good E
+%     '20210805_k=0,-1,-2_rt_scan_mid_trap_equal_delay_3'% g34 phi=pi baised downward very strongly (not good E)
+    '20210806_k=0,-1,-2_rt_scan_mid_trap_equal_delay_4'% g34 phi=pi baised downward
+    '20210807_k=0,-1,-2_rt_scan_mid_trap_equal_delay_5'% g34 phi=pi baised downward but only slightly
+    '20210808_k=0,-1,-2_rt_scan_mid_trap_equal_delay_6'% g34 phi=pi baised downward
+    };
 % 'k=0,-1,-2_halos_data\20201126_k=0,-1,-2_halos_data_5';
-% data_folder = '';
-data_folder = '20210713_k=0,-1,-2_halos_new_trap_2';
+% data_folder = '20210804_k=0,-1,-2_rt_scan_mid_trap_equal_delay_2';
+% data_folder = {'20210722_k=0,-1,-2_quad_3_shunt_0_9_trap_halos_1','20210723_k=0,-1,-2_quad_3_shunt_0_9_trap_halos_2'};
+% data_folder = {    '20210803_k=0,-1,-2_rt_scan_mid_trap_equal_delay_1',
+%     '20210804_k=0,-1,-2_rt_scan_mid_trap_equal_delay_2',
+%     '20210805_k=0,-1,-2_rt_scan_mid_trap_equal_delay_3'}
 % data_folder = '20210712_trials';
 % data_folder = '20210712_k=0,-1,-2_halos_new_trap';
 % 
@@ -53,42 +65,67 @@ opts.import.txylim=[tlim;tmp_xlim;tmp_ylim];
 
 opts.num_lim = 1e3;%0.5e3;% %minimum atom number 1.5e3
 opts.halo_N_lim = -1;%2;%10;%0;% %minimum allowed number in halo 10
-opts.halo_N_lim_upper = 20;%2;%10;%0;% %minimum allowed number in halo 10
+opts.halo_N_lim_upper = Inf;%2;%10;%0;% %minimum allowed number in halo 10
 y_cut = 11e-3;
-z_limits = [-0.7,0.7];%[-0.3,0.3];%[-0.4,0.4];%[-0.68,0.68];%[-0.15,0.15];%[-0.15,0.15];%[-0.36,0.36];%
-radius_lim = [0.05,0.07];%[0.,1.17].*0.065;%[0.79,1.17].*0.065;%[0.61,1.26];%[0.89,1.11];%[0.89,1.16];%[0.9,1.05];%
+z_limits = [-0.9,0.9];%[-0.3,0.3];%[-0.3,0.3];%[-0.4,0.4];%[-0.68,0.68];%[-0.15,0.15];%[-0.15,0.15];%[-0.36,0.36];%
+radius_lim = [0.03,0.08];%[0.05,0.07];%[0.,1.17].*0.065;%[0.79,1.17].*0.065;%[0.61,1.26];%[0.89,1.11];%[0.89,1.16];%[0.9,1.05];%
 
-opts.plot_dist = true; %do you want to see all the detailed stuff about the halo distributions
+ang_lim = 35;%angular limit in degrees
+
+opts.plot_dist = false; %do you want to see all the detailed stuff about the halo distributions
 opts.corr_center_check = false; %do you want a sceond check
 
 %% Background stuff
-cli_header('Setting up for %s', data_folder);
+if iscell(data_folder)
+    cli_header('Setting up for %s and', data_folder{1});
+    for ii = 2:length(data_folder)
+        cli_header(' %s ', data_folder{ii});
+    end
+else
+    cli_header('Setting up for %s', data_folder);
+end
 opts.fig_dir = fullfile(this_folder, 'figs', data_folder);
 opts.data_src = fullfile(opts.data_root, data_folder);
 opts.data_dir = data_folder;
 opts.import.cache_save_dir = fullfile(opts.data_root, data_folder, 'cache', 'import\');
 opts.logfile = fullfile(opts.import.dir, 'log_LabviewMatlab.txt');
-opts.index.filename = sprintf('index__%s__%.0f', opts.data_dir);
+% opts.index.filename = sprintf('index__%s__%.0f', opts.data_dir);
 opts.label = data_folder;
 opts.tag = 0;
 opts.full_out = false;
 opts.bounds = [-0.03, 0.03; -0.03, 0.03];%spacecial bounds
 opts.shot_bounds = [];
-if ~exist(opts.fig_dir, 'dir')
-    mkdir(opts.fig_dir);
-end
+% if ~exist(opts.fig_dir, 'dir')
+%     mkdir(opts.fig_dir);
+% end
+combined_struct = @(S,T) cell2struct(cellfun(@vert_or_horz_cat,struct2cell(S),struct2cell(T),'uni',0),fieldnames(S),1);
 % Run the function!
 
 %% Set up out dir
 %set up an output dir %https://gist.github.com/ferryzhou/2269380
-if (exist([opts.data_src, '\out'], 'dir') == 0), mkdir(fullfile(opts.data_src, '\out')); end
-%make a subfolder with the ISO timestamp for that date
-anal_out.dir = sprintf('%sout\\%s\\', ...
-    [opts.data_src, '\'], datestr(datetime('now'), 'yyyymmddTHHMMSS'));
-if (exist(anal_out.dir, 'dir') == 0), mkdir(anal_out.dir); end
+% if (exist([opts.data_src, '\out'], 'dir') == 0), mkdir(fullfile(opts.data_src, '\out')); end
+% %make a subfolder with the ISO timestamp for that date
+% anal_out.dir = sprintf('%sout\\%s\\', ...
+%     [opts.data_src, '\'], datestr(datetime('now'), 'yyyymmddTHHMMSS'));
+% if (exist(anal_out.dir, 'dir') == 0), mkdir(anal_out.dir); end
 
 %% import raw data
-[data, ~] = import_mcp_tdc_data(opts.import);
+dirs_list = fullfile(opts.data_root, data_folder);
+if iscell(dirs_list)
+    for ii = 1:length(dirs_list)
+        opts.import.dir = dirs_list{ii};
+        opts.import.cache_save_dir = fullfile(dirs_list{ii}, 'cache', 'import\');
+        
+        if ii == 1
+            [data, ~] = import_mcp_tdc_data(opts.import);
+        else
+            [data_temp, ~] = import_mcp_tdc_data(opts.import);
+            data = combined_struct(data,data_temp);
+        end
+    end
+else
+    [data, ~] = import_mcp_tdc_data(opts.import);
+end
 %% remove any ringing or hotspots
 data_ht_spot=hotspot_mask(data);
 data.counts_txy=data_ht_spot.masked.counts_txy;
@@ -98,15 +135,46 @@ data_masked = ring_removal(data,opts.ring_lim);
 
 %% add labview import
 if opts.tag
-    logs = readtable(opts.logfile);
-    tags = logs{:,5};
-    %% select a specific shot type if you wish
-    shot_type = 'double_halo';
-    tag_mask = cellfun(@(x) strcmp(x, shot_type), tags');
-    tag_mask = [tag_mask,zeros(1,length(data_masked.num_counts)-length(tags))];
-else
-    tag_mask = ones(1,length(data_masked.num_counts));
+    shot_type = 'main';
+    if iscell(dirs_list)
+        tag_mask = [];
+        for ii = 1:length(dirs_list)
+            opts.import.dir = dirs_list{ii};
+            opts.logfile = fullfile(opts.import.dir, 'log_LabviewMatlab.txt');
+            opts_tab = detectImportOptions(opts.logfile);
+            opts_tab.Delimiter = {','};
+            logs = readtable(opts.logfile,opts_tab);
+            tags = logs{:,6};
+            %% select a specific shot type if you wish
+            tag_mask = [tag_mask,cellfun(@(x) strcmp(x, shot_type), tags')];
+            %     tag_mask = [tag_mask,zeros(1,length(data_masked.num_counts)-length(tags))];
+        end
+        data_masked = struct_mask(data_masked,logical(tag_mask),1);
+        
+    else
+        opts_tab = detectImportOptions(opts.logfile);
+        opts_tab.Delimiter = {','};
+        logs = readtable(opts.logfile,opts_tab);
+        tags = logs{:,6};
+        %% select a specific shot type if you wish
+        tag_mask = cellfun(@(x) strcmp(x, shot_type), tags');
+        tag_mask = [tag_mask,zeros(1,length(data_masked.num_counts)-length(tags))];
+        data_masked = struct_mask(data_masked,logical(tag_mask),1);
+    end
 end
+% if opts.tag 
+%         opts_tab = detectImportOptions(opts.loglabfile);
+%         opts_tab.Delimiter = {','};
+%         logs = readtable(opts.loglabfile,opts_tab);
+%         tags = logs{:,6};
+%         %% select a specific shot type if you wish
+%         shot_type = 'main';
+%         tag_mask = cellfun(@(x) strcmp(x, shot_type), tags');
+%         tag_mask = [tag_mask,zeros(1,length(data_masked.num_counts)-length(tags))];
+%         data_masked = struct_mask(data_masked,logical(tag_mask),1);
+% else
+%     tag_mask = ones(1,length(data_masked.num_counts));
+%     end
 
 %% set up relevant constants
 hebec_constants
@@ -120,20 +188,20 @@ opts.cent.correction_opts.plots = 0;
 opts.cent.top.visual = 0; %from 0 to 2
 opts.cent.top.savefigs = 0;
 opts.cent.top.threshold = [130,6000,2000.*3].*1e3;  %[150,80,80].*1e3;  %set in inverse units (Hz for time 1/m for space)
-opts.cent.top.min_threshold = [0,3,3].*1e3;%[16,7,10].*1e3;
+opts.cent.top.min_threshold = [0,8,8].*1e3;%[16,7,10].*1e3;
 opts.cent.top.sigma = [6.7e-5,16e-5,16e-5];%[8e-5,25e-5,25e-5];
 opts.cent.top.method = {'margin','average','average'};
 % opts.cent.top.method = {'margin','margin','margin'};
 
 opts.cent.mid.visual = 0; %from 0 to 2
 opts.cent.mid.threshold = [130,2000.*3,2000.*3].*1e3;  %set in inverse units (Hz for time 1/m for space)
-opts.cent.mid.min_threshold = [0,3,3].*1e3;%[16,7,10].*1e3;
+opts.cent.mid.min_threshold = [0,8,8].*1e3;%[16,7,10].*1e3;
 opts.cent.mid.sigma = [6.7e-5,16e-5,16e-5];%[8e-5,25e-5,25e-5];
 opts.cent.mid.method = {'margin','average','average'};
 
 opts.cent.btm.visual = 0; %from 0 to 2
 opts.cent.btm.threshold = [130,2000.*3,2000.*3].*1e3;  %set in inverse units (Hz for time 1/m for space)
-opts.cent.btm.min_threshold = [0,3,3].*1e3;%[16,7,10].*1e3;
+opts.cent.btm.min_threshold = [0,8,8].*1e3;%[16,7,10].*1e3;
 opts.cent.btm.sigma = [6.7e-5,16e-5,16e-5];%[8e-5,25e-5,25e-5];
 opts.cent.btm.method = {'margin','average','average'};
 
@@ -158,7 +226,7 @@ slosh_cut = ~(abs(bec.centre_mid(:,3))>y_cut);
 % num_masked(~num_check) = NaN;
 % num_outlier = isoutlier(num_masked);
 % ~num_outlier &
-is_shot_good = num_check & slosh_cut' & bec.centre_OK_top' & bec.centre_OK_mid' & bec.centre_OK_btm' & tag_mask;
+is_shot_good = num_check & slosh_cut' & bec.centre_OK_top' & bec.centre_OK_mid' & bec.centre_OK_btm';
 data_masked_halo = struct_mask(data_masked,is_shot_good);
 bec_masked_halo = struct_mask(bec,is_shot_good);
 
@@ -182,7 +250,7 @@ opts.vel_conv.top.const.fall_distance = const.fall_distance;
 opts.vel_conv.top.v_thresh = 0.15; %maximum velocity radius
 opts.vel_conv.top.v_mask=radius_lim;%[0.61,1.26];%[0.31,1.56];%[0.89,1.11]; %[0.61,1.26];%bounds on radisu as multiple of radius value
 opts.vel_conv.top.z_mask = z_limits;%[-0.36,0.36];%[-0.65,0.65];%[-0.55,0.55];%[-0.68,0.68]; %[-0.68,0.68]; %in units of radius (standard [-0.76,0.76])
-opts.vel_conv.top.ang_lim = 40; %angular limits of the azimuthal angle
+opts.vel_conv.top.ang_lim = ang_lim; %angular limits of the azimuthal angle
 opts.vel_conv.top.y_mask = [-1.9,1.9];%[-0.8,0.8]; %in units of radius
 opts.vel_conv.top.center = [t0,x0,y0];%bec_masked_halo.centre_top;%ones(size(bec_masked_halo.centre_top,1),1).*[t0,x0,y0];%%bec_masked_halo.centre_top;%bec_masked_halo.centre_mid; %use the mid BEC as the zero momentum point
 
@@ -213,7 +281,7 @@ opts.vel_conv.btm.const.fall_distance = const.fall_distance;
 opts.vel_conv.btm.v_thresh = 0.15; %maximum velocity radius
 opts.vel_conv.btm.v_mask=radius_lim;%[0.61,1.26];%[0.31,1.56];%[0.89,1.11]; %[0.89,1.11]; %bounds on radisu as multiple of radius value
 opts.vel_conv.btm.z_mask = z_limits;%[-0.36,0.36];%[-0.65,0.65];%[-0.55,0.55];%[-0.68,0.68]; %[-0.68,0.68]; %in units of radius
-opts.vel_conv.btm.ang_lim = 40; %angular limits of the azimuthal angle
+opts.vel_conv.btm.ang_lim = ang_lim; %angular limits of the azimuthal angle
 opts.vel_conv.btm.y_mask = [-1.9,1.9];%[-0.8,0.8]; %in units of radius
 opts.vel_conv.btm.center = [t0,x0,y0];%bec_masked_halo.centre_top;%ones(size(bec_masked_halo.centre_top,1),1).*[t0,x0,y0];%,bec_masked_halo.centre_top; %use the mid BEC as the zero momentum point
 
@@ -269,6 +337,8 @@ global_corrs_opts.plots = true;
 global_corrs_opts.fit = true;
 global_corrs_opts.calc_err = false;
 
+global_corrs_opts.delta_kd = [5e-3,3e-3,3e-3];%[5e-3,2.*3e-3,10.*3e-3];%[1e-3,1e-3,1e-3];% volume widths in dimensions z x y used to calculate correlations
+
 corrs = global_corrs(top_halo,bottom_halo,global_corrs_opts);
 
 %% Quantum correlator E
@@ -277,6 +347,9 @@ opts_E.plots = true;
 opts_E.verbose = false;
 opts_E.fit = false;
 opts_E.norm = false; %use normalised or unnormalised data
+
+opts_E.delta_kd = [3e-3,1e-3,3e-3];% volume widths in dimensions z x y used to calculate correlations
+opts_E.sample_proportion = 1.0;
 
 [E_val, corrs.ports] = E(ports,opts_E);
 
@@ -295,31 +368,35 @@ opts_nice_plots.fit = true;
 % nice_g2_plots(opts_nice_plots,corrs.ports)
 
 %% Write out results
-g2_type = 'fitted';
+g2_type = '';%'fitted';
 if strcmp(g2_type,'fitted')
     g2peak = 'fitted_g2peak';
     g2peak_unc = 'fitted_g2peak_unc';
+    mpt = 1;
 else
-    g2peak = 'g2_amp(1)';
-    g2peak_unc = 'fitted_g2peak_unc';
+%     g2peak = 'g2_amp(1)';
+    g2peak = 'g2_amp';
+    g2peak_unc = 'g2_unc';%'fitted_g2peak_unc';
+    mpt = 10;
+    mptb = 13;
 end
 
 halo_num_top = string_value_with_unc(mean(top_halo.num_counts),std(top_halo.num_counts),'type','b');
 halo_num_btm = string_value_with_unc(mean(bottom_halo.num_counts),std(bottom_halo.num_counts),'type','b');
 
-top_halo_bb = string_value_with_unc(corrs.top_halo.corr_bb.norm_g2.(g2peak),corrs.top_halo.corr_bb.norm_g2.fitted_g2peak_unc,'type','b');
+top_halo_bb = string_value_with_unc(corrs.top_halo.corr_bb.norm_g2.(g2peak)(mpt),corrs.top_halo.corr_bb.norm_g2.(g2peak_unc)(mpt),'type','b');
 top_halo_bb_sig = string_value_with_unc(corrs.top_halo.corr_bb.fit.Coefficients.Estimate(2)...
     ,corrs.top_halo.corr_bb.fit.Coefficients.SE(2),'type','b');
 % top_halo_cl = string_value_with_unc(corrs.top_halo.corr_cl.norm_g2.(g2peak),corrs.top_halo.corr_cl.norm_g2.fitted_g2peak_unc,'type','b');
 top_halo_cl = '0';
-bottom_halo_bb = string_value_with_unc(corrs.bottom_halo.corr_bb.norm_g2.(g2peak),corrs.bottom_halo.corr_bb.norm_g2.fitted_g2peak_unc,'type','b');
+bottom_halo_bb = string_value_with_unc(corrs.bottom_halo.corr_bb.norm_g2.(g2peak)(mpt),corrs.bottom_halo.corr_bb.norm_g2.(g2peak_unc)(mpt),'type','b');
 bottom_halo_bb_sig = string_value_with_unc(corrs.bottom_halo.corr_bb.fit.Coefficients.Estimate(2)...
     ,corrs.bottom_halo.corr_bb.fit.Coefficients.SE(2),'type','b');
 % bottom_halo_cl = string_value_with_unc(corrs.bottom_halo.corr_cl.norm_g2.(g2peak),corrs.bottom_halo.corr_cl.norm_g2.fitted_g2peak_unc,'type','b');
 bottom_halo_cl = '0';
 
-between_halo_bb = string_value_with_unc(corrs.between_halos.corr_bb.norm_g2.(g2peak),corrs.between_halos.corr_bb.norm_g2.fitted_g2peak_unc,'type','b');
-between_halo_bb_sig = 'x'%string_value_with_unc(corrs.between_halos.corr_bb.fit.Coefficients.Estimate(2)...
+between_halo_bb = string_value_with_unc(corrs.between_halos.corr_bb.norm_g2.(g2peak)(mptb),corrs.between_halos.corr_bb.norm_g2.(g2peak_unc)(mptb),'type','b');
+between_halo_bb_sig = 'x';%string_value_with_unc(corrs.between_halos.corr_bb.fit.Coefficients.Estimate(2)...
 %     ,corrs.between_halos.corr_bb.fit.Coefficients.SE(2),'type','b');
 % between_halo_cl = string_value_with_unc(corrs.between_halos.corr_cl.norm_g2.(g2peak),corrs.between_halos.corr_cl.norm_g2.fitted_g2peak_unc,'type','b');
 between_halo_cl = '0';

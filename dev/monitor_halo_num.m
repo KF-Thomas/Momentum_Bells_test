@@ -42,7 +42,7 @@ anal_opts.trig_ai_in=20;
 % anal_opts.osc_fit.tlim=[0.86,1.08];
 % anal_opts.osc_fit.dimesion=2; %Sel ect coordinate to bin. 1=X, 2=Y.
 
-anal_opts.history.shots=50;
+anal_opts.history.shots=200;
 
 hebec_constants
 const.fall_distance = 8.52925545e-01;
@@ -51,7 +51,7 @@ opts.cent.visual = 2;
 opts.cent.threshold = [100,30,30].*1e3; %set in inverse units (Hz for time 1/m for space)
 opts.cent.sigma = [8e-5,25e-5,25e-5];
 % opts.cent.t_bounds = {[3.8598,3.871],[3.871,3.8844],[3.8844,3.8972],[3.8,3.95]}; %time bounds for the different momentum states k=+1,0,-1 respectively
-opts.cent.t_bounds  = {[3.848,3.8598],[3.8598,3.871],[3.871,3.8844],[3.75,4]};
+opts.cent.t_bounds = {[1.741,1.75],[1.75,1.763],[1.763,1.776],[1.73,1.779]};;
 
 opts.vel_conv.plot_percentage = 0.2;
 opts.vel_conv.visual = 0;
@@ -148,8 +148,8 @@ while true
             batch_data.mcp_tdc=import_mcp_tdc_data(anal_opts.tdc_import);
             %just to give me a logical vector
             batch_data.mcp_tdc.all_ok=batch_data.mcp_tdc.num_counts>1e3;
-            batch_data.mcp_tdc.all_ok(batch_data.mcp_tdc.all_ok)=...
-                cellfun(@(x) x(end,1),batch_data.mcp_tdc.counts_txy(batch_data.mcp_tdc.all_ok))>anal_opts.dld_aquire*0.8;
+%             batch_data.mcp_tdc.all_ok(batch_data.mcp_tdc.all_ok)=...
+%                 cellfun(@(x) x(end,1),batch_data.mcp_tdc.counts_txy(batch_data.mcp_tdc.all_ok))>anal_opts.dld_aquire*0.8;
             if sum(batch_data.mcp_tdc.all_ok)==0
                 fprintf('waiting for file to be writen\n')
                 pause(1.0)
@@ -161,8 +161,11 @@ while true
                 btm_halo_num_counts = zeros(1,num_shots);
                 for ii = 1:num_shots
                     this_shot = masked_data.counts_txy{ii};
-                    top_halo_num_counts(ii) = size(masktxy_square(this_shot, [3.866, 3.874; -0.03, 0.03; -0.03, 0.03]),1);
-                    btm_halo_num_counts(ii) = size(masktxy_square(this_shot, [3.854, 3.861; -0.03, 0.03; -0.03, 0.03]),1);
+%                     top_halo_num_counts(ii) = size(masktxy_square(this_shot, [3.866, 3.874; -0.03, 0.03; -0.03, 0.03]),1);
+%                     btm_halo_num_counts(ii) = size(masktxy_square(this_shot, [3.854, 3.861; -0.03, 0.03; -0.03, 0.03]),1);
+                    
+                    top_halo_num_counts(ii) = size(masktxy_square(this_shot, [1.76, 1.7665; -0.03, 0.03; -0.03, 0.03]),1);
+                    btm_halo_num_counts(ii) = size(masktxy_square(this_shot, [1.747, 1.754; -0.03, 0.03; -0.03, 0.03]),1);
                 end
                 
                 halo_history.shot_num=[halo_history.shot_num,anal_opts.tdc_import.shot_num];

@@ -1,11 +1,15 @@
 %cost function
-function cost = momentum_transfer_cost(shot_num)
+function cost = momentum_transfer_cost(shot_num,data_dir)
 
 frac_opts.num_lim = 0.05e3;
 frac_opts.transfer_state = 'momentum';
 frac_opts.bounds = [-0.03, 0.03; -0.03, 0.03];%spacecial bounds
 
-anal_opts.tdc_import.dir='Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
+if nargin<2
+    anal_opts.tdc_import.dir='Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
+else
+   anal_opts.tdc_import.dir=data_dir; 
+end
 anal_opts.tdc_import.file_name='d';
 anal_opts.tdc_import.force_load_save=false;   %takes precidence over force_reimport
 anal_opts.tdc_import.force_reimport=true;

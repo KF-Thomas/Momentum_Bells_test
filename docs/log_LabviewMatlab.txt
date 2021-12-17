@@ -1,3 +1,0 @@
-1,1573652502.040,2019-11-13T13:41:42.040,interfacev8,double_halo,c:\remote\settings201929Oct153336.xml
-2,1573652534.547,2019-11-13T13:42:14.547,interfacev8,double_halo,c:\remote\settings201929Oct153336.xml
-3,1573652566.757,2019-11-13T13:42:46.757,interfacev8,double_halo,c:\remote\settings201929Oct153336.xml

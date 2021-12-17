@@ -1,0 +1,387 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%interface between labview and matlab
+
+%INPUT FROM LABVIEW
+%   i          - integer,itteration number
+%   auto_enable- boolean
+%   file       - string : tells program where to look for setting files
+%   file_exact - string
+%   mloop      - boolean(legacy) do you want to interface with mloop or use matlab to scan over variables
+%   control    - boolean(legacy)
+
+%return
+%exact_line- double (legacy just return a zero)
+%new_path 
+
+%% USER SETTINGS
+
+update_keysight = 1;
+
+num_points = 8;
+shots_per_point = 2;
+phi_lim = 2*pi;
+
+marker = mod(floor((i-1)/shots_per_point),num_points)+1; %Counts from 1 to num shots before setpt update
+
+new_path= 'c:\remote\settings202110Mar115740.xml';% evap: ~0.852 MHz
+
+% 'c:\remote\settings202110Mar094224.xml';
+
+%new settings, shunt at 0.75, evap changed
+% 'c:\remote\settings202104Mar151427.xml';% evap: ~0.8543 MHz
+% 'c:\remote\settings202125Feb122233.xml';% evap: ~0.854 MHz
+% 'c:\remote\settings202101Mar092322.xml';% evap: ~0.853 MHz
+% 'c:\remote\settings202110Mar115740.xml';% evap: ~0.852 MHz
+% 'c:\remote\settings202101Mar171658.xml';% evap: ~0.851 MHz
+% 'c:\remote\settings202101Mar094045.xml';% evap: ~0.847 MHz
+
+%new settings, shunt at 0.65
+% 'c:\remote\settings202124Feb104936.xml';% evap: ~0.850 MHz
+
+%old settings, shut at 0.75
+% 'c:\remote\settings202108Feb155943.xml';% evap: ~0.701 MHz
+% 'c:\remote\settings202110Feb153456.xml';% evap: ~0.695 MHz
+% 'c:\remote\settings202110Feb095446.xml';% evap: ~0.697 MHz
+% 'c:\remote\settings202109Feb100011.xml';% evap: ~0.699 MHz
+% 'c:\remote\settings202126Jan200413.xml';% evap: ~0.713 MHz
+% 'c:\remote\settings202116Feb165359.xml';% evap: ~0.749 MHz
+% 'c:\remote\settings202117Feb085103.xml';% evap: ~0.751 MHz
+% 'c:\remote\settings202117Feb085946.xml';% evap: ~0.753 MHz
+% 'c:\remote\settings202117Feb112818.xml';% evap: ~0.755 MHz
+% 'c:\remote\settings202123Feb153407.xml';% evap: ~0.8482 MHz
+
+sequence = {'mag_transfer','k=0,-1','splitter','mirror','splitter_MZ'}; %Construct desired experimental sequenc from sequences above
+
+%% START user settings
+doNormalization     =   false;
+useVoltageScaling   =   true;
+if_plot             =   true;
+Trigg_Delay         =   0.0e-3;
+
+%% END user settings
+mat_fname='mat_wf/Raman_Bragg.mat';
+global max_points srate_max points_min repeats_max
+max_points=double(4e6);
+srate_max=1e9;              % [S/s] max is 1e9
+points_min=double(32);
+repeats_max=1e6;
+
+%% General configs
+f0_AOM=80e6;            % [Hz]     Central AOMs frequency
+Ek=84.9e3;              % beam geometry (90 deg)
+ampfun = @(b,x) b(1).*x(:,1).^b(2);
+ampfun_sin = @(b,x) asin(sqrt(x(:,1)./b(1)))./b(2);
+
+%% PULSE SETTINGS
+
+%%% MAGNETIC TRANSFER pulse
+%--------------------------------------------------------------------------
+B_trap_bottom=1.0751e6;%1.025e6;%1.0603782e6;
+del = -45e3;%-41.03543351e3; %detuning for second beam 3e3
+T_pulse_del = +0.0e-6;%delay between pulses
+dF_Raman=-(B_trap_bottom);     %[Hz]    Raman detuning
+T_Raman_mix=23e-6;%19.20368817e-6;
+Gs_mod_R_mix=1.8;%2.69400894;
+phi1_mix=pi;
+phi2=0;
+K_R_mix=0.338;%0.34063277;%0.31
+
+f1_Raman_mix=f0_AOM-dF_Raman/2-del;     %[Hz]    45(P) RAMAN   "top"                          45(S) RAMAN   "top"
+f2_Raman_mix=f0_AOM+dF_Raman/2;     %[Hz]   -45(S) RAMAN   "horizontal"                 -45(P) RAMAN   "horizonatal"
+
+%%% DELAYs between pulses
+%--------------------------------------------------------------------------
+T_delay_mix=3e-6;      % Delay between the MAG and Bragg pulse
+T_delay_mirror=400e-6;%750e-6; %1125e-6;%750e-6; % Delay between the Bragg pulse and Mirror pulse
+T_delay_splitter=400e-6;%750e-6; % % Delay between the Bragg pulse and Mirror pulse
+T_delay_splitter_MZ=400e-6;%750e-6; %
+
+
+%%% phases
+%--------------------------------------------------------------------------
+% NOTE: separated out since we find zero gives fine results
+phi1_Bragg=0;
+phi2_Bragg=0;
+
+phi1_mirror=0;
+phi2_mirror=0;
+
+phi1_splitter=0;
+phi2_splitter=0;
+
+phi1_splitter_MZ=3*pi/4;
+phi2_splitter_MZ=0;
+
+%%% MIRROR pulse
+%--------------------------------------------------------------------------
+dF_Bragg_1=0.112e6;
+dF_Bragg_2=0.112e6;
+f1_Bragg_mirror=f0_AOM-dF_Bragg_1;
+f2_Bragg_mirror=f0_AOM+dF_Bragg_2;
+
+T_Bragg_mirror=10E-6;
+t0_Bragg_mirror=nan;
+
+sinc_scale_Bragg_mirror=6.1e-6;
+Amp_sinc_Bragg_mirror=sqrt(18.0);
+
+Chirp_grad_mirror = 7.6e6;%
+
+wf_mirror_pulse = @(b,t) sinc((t-b(1)/2)./b(4)).*b(3);%.*cos(pi*(t-b(1)/2)/(b(1))).^2;
+
+wf_mirror_pulse_1 = @(b,t) ampfun([136.5, 0.5234],abs(wf_mirror_pulse(b,t)).^2)/2e3.*sin(2*pi.*(b(2)-b(6).*t).*t+b(5)).*sign(wf_mirror_pulse(b,t));
+wf_mirror_pulse_2 = @(b,t) ampfun([62.91, 0.5534],abs(wf_mirror_pulse(b,t)).^2)/2e3.*sin(2*pi.*(b(2)+b(6).*t).*t+b(5)).*sign(wf_mirror_pulse(b,t));
+
+
+%%% 50:50 Beam Splitter pulse
+%--------------------------------------------------------------------------
+dF_Bragg_1=0.110e6;
+dF_Bragg_2=0.110e6;
+f1_Bragg_splitter=f0_AOM-dF_Bragg_1;
+f2_Bragg_splitter=f0_AOM+dF_Bragg_2;
+
+dF_Bragg_1=0.1135e6;
+dF_Bragg_2=0.1135e6;
+f1_Bragg_splitter_MZ=f0_AOM-dF_Bragg_1;
+f2_Bragg_splitter_MZ=f0_AOM+dF_Bragg_2;
+
+T_Bragg_splitter=35E-6;
+t0_Bragg_splitter=nan;
+
+sinc_scale_Bragg_splitter=6e-6;
+
+Amp_sinc_Bragg_splitter_1=sqrt(6.4);
+Amp_sinc_Bragg_splitter_2=sqrt(6.4);
+
+Amp_sinc_Bragg_splitter_1_MZ=sqrt(6.55);
+Amp_sinc_Bragg_splitter_2_MZ=sqrt(6.55);
+
+Chirp_grad_splitter = 7.6e6;
+
+wf_splitter_pulse = @(b,t) sinc((t-b(1)/2)./b(4)).*b(3);
+
+wf_splitter_pulse_1 = @(b,t) ampfun([136.5, 0.5234],abs(wf_splitter_pulse(b,t)).^2)/2e3.*sin(2*pi.*(b(2)-b(6).*t).*t+b(5)).*sign(wf_splitter_pulse(b,t));
+wf_splitter_pulse_2 = @(b,t) ampfun([62.91, 0.5534],abs(wf_splitter_pulse(b,t)).^2)/2e3.*sin(2*pi.*(b(2)+b(6).*t).*t+b(5)).*sign(wf_splitter_pulse(b,t));
+
+
+%%% Momentum splitting
+%--------------------------------------------------------------------------
+
+%%% Bragg splitting: |k=0> |--> |k=0> + |k=-1K> + |k=-2K>
+dF_Bragg_1=0.09e6;%0.099e6;%~0.093;% %%
+dF_Bragg_2=0.09e6;%0.099e6; %%
+f1_Bragg_src_f=f0_AOM-dF_Bragg_1;
+f2_Bragg_src_f=f0_AOM+dF_Bragg_2;
+
+T_Bragg_src_f=31.5E-6; %%
+P_Bragg_f = 15.5;%7.2;%20.5;%~7.8 %%
+K_Bragg_src_f_1=ampfun([136.5, 0.5234],P_Bragg_f)/2e3;
+K_Bragg_src_f_2=1.23*ampfun([62.91, 0.5534],P_Bragg_f)/2e3;
+
+Gs_mod_Bragg_src_f_1=7;
+Gs_mod_Bragg_src_f_2=7;
+t0_Bragg_src_f=nan;
+
+%%% Bragg splitting: |k=0> |--> |k=0> + |k=-1K>
+dF_Bragg_1=0.06e6;
+dF_Bragg_2=0.06e6;
+f1_Bragg_src_t=f0_AOM-dF_Bragg_1;
+f2_Bragg_src_t=f0_AOM+dF_Bragg_2;
+
+T_Bragg_src_t=34e-6; %32
+P_Bragg_src = 4.7; %power in mW 7 to 9 works well 4.93
+K_Bragg_src_1=ampfun([60.117, 0.5638],P_Bragg_src)/2e3;
+K_Bragg_src_2=ampfun([132.62, 0.5283],P_Bragg_src)/2e3;
+Gs_mod_Bragg_src_1=1.5*T_Bragg_src_t/16.7e-6*sqrt(2)*sqrt(5.63806937736142e-01); %1.82
+Gs_mod_Bragg_src_2=1.5*T_Bragg_src_t/16.7e-6*sqrt(2)*sqrt(5.28341254744861e-01); %1.81
+
+t0_Bragg_src_t=nan;
+
+%%% Bragg splitting: |k=0> |--> |k=-1K> + |k=-2K>
+dF_Bragg_1=0.0685e6;%0.085e6;%0.089e6;
+dF_Bragg_2=0.0685e6;%0.085e6;%0.089e6;
+f1_Bragg_src_b=f0_AOM-dF_Bragg_1;
+f2_Bragg_src_b=f0_AOM+dF_Bragg_2;
+
+T_Bragg_src_b=3.9e-6;%4.949e-6;%10.2e-6;
+P_Bragg_src = 25;%4.0; %9
+K_Bragg_src_b_1=ampfun([133.4, 0.5325],P_Bragg_src)/2e3;%0.21;%0.21;%0.21;%ampfun([60.117, 0.5638],P_Bragg_src)/2e3;%
+K_Bragg_src_b_2=0.8*ampfun([50.197, 0.6073],P_Bragg_src)/2e3;%0.24;%0.26;%0.26;%ampfun([132.62, 0.5283],P_Bragg_src)/2e3;%
+%[60.117, 0.5638]
+%[132.62, 0.5283]
+P_Bragg_src = 12; %9
+K_Bragg_src_b_3=0;%ampfun([60.117, 0.5638],P_Bragg_src)/2e3;%0.0;%
+K_Bragg_src_b_4=0;%ampfun([132.62, 0.5283],P_Bragg_src)/2e3;%0.0;%
+
+Gs_mod_Bragg_src_b_1=0.8*sqrt(2);%3.2*T_Bragg_src_b/10.2e-6;%1.5*T_Bragg_src_b/11.5e-6*sqrt(2)*sqrt(5.63806937736142e-01);
+Gs_mod_Bragg_src_b_2=0.6*sqrt(2);%3.5*T_Bragg_src_b/10.2e-6;%1.5*T_Bragg_src_b/11.5e-6*sqrt(2)*sqrt(5.28341254744861e-01);
+
+Gs_mod_Bragg_src_b_3=2.4*T_Bragg_src_b/11.5e-6;%1.5*T_Bragg_src_b/11.5e-6*sqrt(2)*sqrt(5.63806937736142e-01);
+Gs_mod_Bragg_src_b_4=2.65*T_Bragg_src_b/11.5e-6;%1.5*T_Bragg_src_b/11.5e-6*sqrt(2)*sqrt(5.28341254744861e-01);
+
+t0_Bragg_src_b=nan;%3.82e-6;%nan
+
+%% Iteration through parameters
+% param_vec = [1.33,4.5];%[1.78,4.82,8,11.04];%linspace(0,4*pi,num_points);
+param_vec = linspace(0,phi_lim,num_points);
+phi1_splitter_MZ = param_vec(marker);
+
+%% WAVEFORM BUILDER
+%--------------------------------------------------------------------------
+% Waveform Formats:
+%{'sine',freq(hz),phase(rad),amplitude,Gauss mod,sample rate,duration}
+%{'const',amplitude,sample rate,duration}
+% {'double_sine',freq1(hz),freq2(hz),phase1(rad),phase2(rad),amplitude1,...
+%     amplitude2,Gauss mod1,Gauss mod2,sample rate,duration}
+%--------------------------------------------------------------------------
+srate_all=srate_max;
+ch1_raw={}; %waveform for chanel 1
+ch2_raw={}; %waveform for chanel 2
+for ii = 1:length(sequence) %run through each segment
+    segment = sequence{ii}; %the current segment
+    switch segment %add to the waveforms the desired segment
+        case 'mag_transfer'
+            %%% Magentic transfer
+            ch1_raw=[ch1_raw(:)',...
+                {{'double_sine',f1_Raman_mix,f2_Raman_mix,phi1_mix,phi2,K_R_mix,...
+                K_R_mix,Gs_mod_R_mix,Gs_mod_R_mix,srate_all,T_Raman_mix,T_pulse_del}}
+                ];
+            ch2_raw=[ch2_raw(:)',...
+                {{'const',0, srate_all,T_Raman_mix+abs(T_pulse_del)}}
+                ];
+        case 'k=0,-1,-2'
+            %%% Full Halo
+            ch1_raw=[ch1_raw(:)',...
+                {{'const',0, srate_all,T_delay_mix}},...
+                {{'sine',    f1_Bragg_src_f       ,phi1_Bragg,          K_Bragg_src_f_1,       Gs_mod_Bragg_src_f_1, srate_all,   T_Bragg_src_f,   t0_Bragg_src_f}},...
+                ];
+            
+            ch2_raw=[ch2_raw(:)',...
+                {{'const',0, srate_all,T_delay_mix}},...
+                {{'sine',    f2_Bragg_src_f       ,phi2_Bragg,          K_Bragg_src_f_2,       Gs_mod_Bragg_src_f_2, srate_all,   T_Bragg_src_f,    t0_Bragg_src_f}},...
+                ];
+        case 'k=0,-1'
+            %%% Top Halo
+            ch1_raw=[ch1_raw(:)',...
+                {{'const',0, srate_all,T_delay_mix}},...
+                {{'sine',    f1_Bragg_src_t       ,phi1_Bragg,          K_Bragg_src_1,       Gs_mod_Bragg_src_1, srate_all,   T_Bragg_src_t, t0_Bragg_src_t}},...
+                ];
+            
+            ch2_raw=[ch2_raw(:)',...
+                {{'const',0, srate_all,T_delay_mix}},...
+                {{'sine',    f2_Bragg_src_t       ,phi2_Bragg,          K_Bragg_src_2,       Gs_mod_Bragg_src_2, srate_all,   T_Bragg_src_t, t0_Bragg_src_t}},...
+                ];
+        case 'k=-1,-2'
+            %%% Bottom Halo
+            ch1_raw=[ch1_raw(:)',...
+                {{'const',0, srate_all,T_delay_mix}},...
+                {{'sine',    f1_Bragg_src_b       ,phi1_Bragg,          K_Bragg_src_b_1,       Gs_mod_Bragg_src_b_1, srate_all,   T_Bragg_src_b, t0_Bragg_src_b}},...
+%                 {{'const',0, srate_all,T_delay_mix}},...
+%                 {{'sine',    f1_Bragg_src_b       ,phi1,          K_Bragg_src_b_3,       Gs_mod_Bragg_src_b_3, srate_all,   T_Bragg_src_b}},...
+                ];
+            
+            ch2_raw=[ch2_raw(:)',...
+                {{'const',0, srate_all,T_delay_mix}},...
+                {{'sine',    f2_Bragg_src_b       ,phi2_Bragg,          K_Bragg_src_b_2,       Gs_mod_Bragg_src_b_2, srate_all,   T_Bragg_src_b, t0_Bragg_src_b}},...
+%                 {{'const',0, srate_all,T_delay_mix}},...
+%                 {{'sine',    f2_Bragg_src_b       ,phi2,          K_Bragg_src_b_4,       Gs_mod_Bragg_src_b_4, srate_all,   T_Bragg_src_b}},...
+                ];
+        case 'mirror'
+            %%% Mirror pulse
+            ch1_raw=[ch1_raw(:)',...
+                {{'const',0, srate_all,T_delay_mirror}},...
+                {{'arb',   wf_mirror_pulse_1,  srate_all,  T_Bragg_mirror,  f1_Bragg_mirror,  Amp_sinc_Bragg_mirror,  sinc_scale_Bragg_mirror, phi1_mirror,  Chirp_grad_mirror}}
+                ];
+%             {'sine',    f1_Bragg_mirror       ,phi1,          K_Bragg_mirror_1,       Gs_mod_Bragg_mirror_1, srate_all,   T_Bragg_mirror, t0_Bragg_mirror}
+%             
+%             
+            ch2_raw=[ch2_raw(:)',...
+                {{'const',0, srate_all,T_delay_mirror}},...
+                {{'arb',   wf_mirror_pulse_2,  srate_all,   T_Bragg_mirror, f2_Bragg_mirror,  Amp_sinc_Bragg_mirror,  sinc_scale_Bragg_mirror, phi2_mirror,  Chirp_grad_mirror}}
+                ];
+%             {'sine',    f2_Bragg_mirror       ,phi2,          K_Bragg_mirror_2,       Gs_mod_Bragg_mirror_2, srate_all,   T_Bragg_mirror, t0_Bragg_mirror}
+%             
+%             
+        case 'splitter'
+            %%% 50:50 Beam splitter pulse
+            ch1_raw=[ch1_raw(:)',...
+                {{'const',0, srate_all,T_delay_splitter}},...
+                {{'arb',   wf_splitter_pulse_1,  srate_all,  T_Bragg_splitter,  f1_Bragg_splitter,  Amp_sinc_Bragg_splitter_1,  sinc_scale_Bragg_splitter, phi1_splitter,  Chirp_grad_splitter}}
+                ];
+            
+            ch2_raw=[ch2_raw(:)',...
+                {{'const',0, srate_all,T_delay_splitter}},...
+                {{'arb',   wf_splitter_pulse_2,  srate_all,   T_Bragg_splitter, f2_Bragg_splitter,  Amp_sinc_Bragg_splitter_2,  sinc_scale_Bragg_splitter, phi2_splitter,  Chirp_grad_splitter}}
+                ];
+        case 'splitter_MZ'
+            %%% 50:50 Beam splitter pulse
+            ch1_raw=[ch1_raw(:)',...
+                {{'const',0, srate_all,T_delay_splitter_MZ}},...
+                {{'arb',   wf_splitter_pulse_1,  srate_all,  T_Bragg_splitter,  f1_Bragg_splitter_MZ,  Amp_sinc_Bragg_splitter_1_MZ,  sinc_scale_Bragg_splitter, phi1_splitter_MZ,  Chirp_grad_splitter}}
+                ];
+            
+            ch2_raw=[ch2_raw(:)',...
+                {{'const',0, srate_all,T_delay_splitter_MZ}},...
+                {{'arb',   wf_splitter_pulse_2,  srate_all,   T_Bragg_splitter, f2_Bragg_splitter_MZ,  Amp_sinc_Bragg_splitter_2_MZ,  sinc_scale_Bragg_splitter, phi2_splitter_MZ,  Chirp_grad_splitter}}
+                ];    
+        otherwise
+            error('invalid sequence segment');
+    end
+end
+
+%% Shot sequence settings
+path_log = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\log_LabviewMatlab.txt';
+path_param_log = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\log_KeysightMatlab.txt';
+path_phi = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\log_Phi.txt';
+
+%% convert waveforms to printables for logging
+ch1_waveform_str = '';
+ch2_waveform_str = '';
+addpath('C:\Users\BEC Machine\cloudstor\PROJECTS\Momentum_Bells_test\dev')
+for waveforms = 1:numel(ch1_raw)
+    if waveforms>1
+        ch1_waveform_str = [ch1_waveform_str,', '];
+    end
+    ch1_waveform_str = [ch1_waveform_str,cell2str(array2str(ch1_raw{waveforms}))];
+end
+for waveforms = 1:numel(ch2_raw)
+    if waveforms>1
+        ch2_waveform_str = [ch2_waveform_str,', '];
+    end
+    ch2_waveform_str = [ch2_waveform_str,cell2str(array2str(ch2_raw{waveforms}))];
+end
+
+ch1_waveform_str = replace(ch1_waveform_str,"'",'');
+ch2_waveform_str = replace(ch2_waveform_str,"'",'');
+
+%% Interface
+
+addpath('C:\Users\BEC Machine\cloudstor\PROJECTS\keysight-33600a')
+% shot_info = shots.(shot_sequence{marker});
+% new_path=shot_info.LVfile;
+% Send waveforms
+chanels_dev1={ch_to_waveforms(ch1_raw),ch_to_waveforms(ch2_raw)};
+if update_keysight && mod((i-1),shots_per_point) == 0
+    send_segments(chanels_dev1,1);
+    plot_segments(chanels_dev1,1);
+end
+%write to log
+%write to log
+f_log=fopen(path_log,'a');  % append to log-file
+nowdt=datetime('now');
+fprintf(f_log,'shot num:%d, posixtime:%.3f, date:%s, matlab:interfacev8, labview settings:%s\n',...
+    i,posixtime(nowdt),datestr(nowdt,'yyyy-mm-ddTHH:MM:SS.FFF'),new_path);
+fclose(f_log);
+
+f_log=fopen(path_param_log,'a');  % append to param-log-file
+fprintf(f_log,'shot num:%d, posixtime:%.3f, ch1 waveform: %s, ch2 waveform: %s\n',...
+    i,posixtime(nowdt),...
+    ch1_waveform_str,ch2_waveform_str);
+fclose(f_log);
+
+f_log=fopen(path_phi,'a');  % append to param-log-file
+fprintf(f_log,'%d, %.3f, %.3f\n',...
+    i,posixtime(nowdt),...
+    phi1_splitter_MZ);
+fclose(f_log);
+pause(0.1)

@@ -10,8 +10,8 @@ w_out = zeros(length(v),1);
         cv = v(ii);
         cv_index = (x==cv);
         x_out(ii) = cv;
-        y_out(ii) = sum(1./abs(w(cv_index)).*y(cv_index,:))./sum(1./abs(w(cv_index)));
-        w_out(ii) = mean(w(cv_index))./sum(cv_index);
+        y_out(ii) = nansum(1./abs(w(cv_index)).*y(cv_index,:))./nansum(1./abs(w(cv_index)));
+        w_out(ii) = nanmean(w(cv_index))./sqrt(sum(cv_index));
     end
 else
     for ii = 1:length(v)

@@ -5,7 +5,14 @@ addpath(genpath(this_folder));
 core_folder = fullfile(fileparts(this_folder), 'Core_BEC_Analysis\');
 addpath(genpath(core_folder));
 % BEGIN USER VAR-------------------------------------------------
+% anal_opts.tdc_import.dir='Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20210727_bragg_amp_scan_new_trap_2';
+% 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20210724_bragg_amp_scan_new_trap';
 anal_opts.tdc_import.dir='Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
+% 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20210726_bragg_width_scan_new_trap_3';
+% 
+
+% 
+% anal_opts.tdc_import.dir='Z:\EXPERIMENT-DATA\2020_Momentum_Bells\pulse_characterisation\20210430_bragg_amp_scans\20210511_bragg_amp_scan_8\';
 anal_opts.tdc_import.file_name='d';
 anal_opts.tdc_import.force_load_save=false;   %takes precidence over force_reimport
 anal_opts.tdc_import.force_reimport=true;
@@ -42,7 +49,7 @@ anal_opts.trig_ai_in=20;
 % anal_opts.osc_fit.tlim=[0.86,1.08];
 % anal_opts.osc_fit.dimesion=2; %Sel ect coordinate to bin. 1=X, 2=Y.
 
-anal_opts.history.shots=600;
+anal_opts.history.shots=200;
 
 hebec_constants
 const.fall_distance = 8.52925545e-01;
@@ -61,8 +68,8 @@ hebec_constants
 anal_opts.tdc_import.mat_save=false;
 anal_opts.global.velocity=const.g0*anal_opts.global.fall_time;
 
-if anal_opts.tdc_import.dir(end) ~= filesep, anal_opts.tdc_import.dir = [anal_opts.tdc_import.dir filesep]; end
-if (exist([anal_opts.tdc_import.dir,'out'], 'dir') == 0), mkdir([anal_opts.tdc_import.dir,'out']); end
+% if anal_opts.tdc_import.dir(end) ~= filesep, anal_opts.tdc_import.dir = [anal_opts.tdc_import.dir filesep]; end
+% if (exist([anal_opts.tdc_import.dir,'out'], 'dir') == 0), mkdir([anal_opts.tdc_import.dir,'out']); end
 
 %anal_out.dir=sprintf('%sout\\monitor\\',...
 %    anal_opts.tdc_import.dir);
@@ -83,6 +90,7 @@ mag_history.cost=[];
 mag_history.Ns=[];
 stfig('Momentum Transfer Fraction History');
 clf;
+% hold on
 stfig('Momentum Transfer Cost History');
 clf;
 stfig('External Fraction');
@@ -127,7 +135,7 @@ while true
                 pause(1.0)
             else
                 out_frac = fraction_calc(batch_data.mcp_tdc,frac_opts);
-                cost = momentum_transfer_cost(out_frac.shot_num');
+                cost = momentum_transfer_cost(out_frac.shot_num',anal_opts.tdc_import.dir);
                 
                 mag_history.all_shots=[mag_history.all_shots,batch_data.mcp_tdc.shot_num];
                 mag_history.shot_num=[mag_history.shot_num,out_frac.shot_num'];

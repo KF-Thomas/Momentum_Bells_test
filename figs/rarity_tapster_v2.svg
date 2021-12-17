@@ -17,9 +17,9 @@
    id="svg9668"
    inkscape:version="1.0.2-2 (e86c870879, 2021-01-15)"
    sodipodi:docname="rarity_tapster_v2.svg"
-   inkscape:export-filename="C:\Users\BEC Machine\cloudstor\PROJECTS\Momentum_Bells_test\figs\rarity_tapster_v3.png"
-   inkscape:export-xdpi="340"
-   inkscape:export-ydpi="340">
+   inkscape:export-filename="C:\Users\BEC Machine\cloudstor\PROJECTS\Momentum_Bells_test\figs\rarity_tapster_v5.png"
+   inkscape:export-xdpi="380"
+   inkscape:export-ydpi="380">
   <defs
      id="defs9662">
     <linearGradient
@@ -233,14 +233,14 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="2.1689335"
-     inkscape:cx="116.77155"
+     inkscape:cx="293.92028"
      inkscape:cy="115.89293"
      inkscape:document-units="mm"
      inkscape:current-layer="layer2"
      showgrid="true"
-     inkscape:window-width="3840"
-     inkscape:window-height="2097"
-     inkscape:window-x="1912"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
      inkscape:document-rotation="0">
@@ -1122,31 +1122,31 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;baseline-shift:baseline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
-       x="64.553352"
-       y="176.13229"
+       x="66.670021"
+       y="175.60313"
        id="text8594"><tspan
          sodipodi:role="line"
          id="tspan8592"
-         x="64.553352"
-         y="176.13229"
+         x="66.670021"
+         y="175.60313"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, ';baseline-shift:baseline;stroke-width:0.264583"><tspan
            style="font-size:8.46667px"
            id="tspan8598">Φ</tspan><tspan
-           style="font-size:65%;baseline-shift:sub"
-           id="tspan8596">-</tspan></tspan></text>
+           style="font-size:5.50333px;baseline-shift:sub"
+           id="tspan8596">L</tspan></tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:12px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;baseline-shift:baseline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
-       x="145.81448"
-       y="176.04726"
+       x="144.96057"
+       y="175.68129"
        id="text8594-8"><tspan
          sodipodi:role="line"
          id="tspan8592-5"
-         x="145.81448"
-         y="176.04726"
+         x="144.96057"
+         y="175.68129"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.46667px;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, ';baseline-shift:baseline;stroke-width:0.264583">Φ<tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan8624">+</tspan></tspan></text>
+   id="tspan8624">R</tspan></tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
@@ -1157,7 +1157,7 @@
          id="tspan972"
          x="183.35625"
          y="178.46666"
-         style="font-size:3.52778px;fill:#ffffff;fill-opacity:1;stroke-width:0.264583">1</tspan></text>
+         style="font-size:3.52778px;fill:#ffffff;fill-opacity:1;stroke-width:0.264583">2</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
@@ -1168,7 +1168,7 @@
          id="tspan972-7"
          x="183.36455"
          y="194.96696"
-         style="font-size:3.52778px;fill:#ffffff;fill-opacity:1;stroke-width:0.264583">2</tspan></text>
+         style="font-size:3.52778px;fill:#ffffff;fill-opacity:1;stroke-width:0.264583">4</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
@@ -1179,7 +1179,7 @@
          id="tspan972-73"
          x="33.080345"
          y="178.71298"
-         style="font-size:3.52778px;fill:#ffffff;fill-opacity:1;stroke-width:0.264583">4</tspan></text>
+         style="font-size:3.52778px;fill:#ffffff;fill-opacity:1;stroke-width:0.264583">1</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"

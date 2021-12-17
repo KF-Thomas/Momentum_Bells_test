@@ -102,7 +102,14 @@ for this_idx = 1:num_shots % Loop over all shots
     %do some angular masking
     
     %% some data for post checking
-    num_check = sum(this_txy(:,1)>1.5 & this_txy(:,1)<1.689898);  
+    num_check = sum(this_txy(:,1)>1.5 & this_txy(:,1)<1.689898);
+    
+    top_halo_num = sum(this_txy(:,1)>1.76 & this_txy(:,1)<1.769);
+    btm_halo_num = sum(this_txy(:,1)>1.747 & this_txy(:,1)<1.753);
+    
+    out_halo.top_halo_num(this_idx) = top_halo_num;
+    out_halo.btm_halo_num(this_idx) = btm_halo_num;
+    
     
     %% add the data to the structure
     out_halo.counts_txy{this_idx} = this_txy;
