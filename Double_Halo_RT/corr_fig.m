@@ -80,65 +80,6 @@ data_folders = {
     '20211207_adj_k=0,-1,-2_RT_run_46'
     '20211208_adj_k=0,-1,-2_RT_run_47'
 %%%
-
-    
-    %first go
-%     '20210803_k=0,-1,-2_rt_scan_mid_trap_equal_delay_1'
-%     '20210804_k=0,-1,-2_rt_scan_mid_trap_equal_delay_2'%g34 not biased downward, good E
-%     %     '20210805_k=0,-1,-2_rt_scan_mid_trap_equal_delay_3'% g34 phi=pi baised downward very strongly (not good E)
-%     '20210806_k=0,-1,-2_rt_scan_mid_trap_equal_delay_4'% g34 phi=pi baised downward
-%     '20210807_k=0,-1,-2_rt_scan_mid_trap_equal_delay_5'% g34 phi=pi baised downward but only slightly
-%     '20210808_k=0,-1,-2_rt_scan_mid_trap_equal_delay_6'% g34 phi=pi baised downward
-    
-
-    %             '20210716_MZ_scan_50_mus_new_trap_14'%Max Vis = 0.54(4), at phi=0.115192
-    %             '20210716_MZ_scan_50_mus_new_trap_13'%Max Vis = 0.58(5), at phi=0.0314159
-    %             '20210716_MZ_scan_50_mus_new_trap_12'%Max Vis = 0.54(2), at phi=0.0314159
-    %             '20210716_MZ_scan_50_mus_new_trap_11'%Max Vis = 0.46(3), at phi=0.115192
-    %             '20210716_MZ_scan_50_mus_new_trap_10'%Max Vis = 0.43(2), at phi=-0.219911
-    %             '20210713_MZ_scan_50_mus_new_trap_9' %Max Vis = 0.60(5), at phi=-0.219911
-    %             '20210713_MZ_scan_50_mus_new_trap_8' %Max Vis = 0.55(5), at phi=-0.136136
-    %             '20210713_MZ_scan_50_mus_new_trap_7' %Max Vis = 0.56(4), at phi=-0.136136
-    %             '20210713_MZ_scan_50_mus_new_trap_6' %Max Vis = 0.58(4), at phi=-0.0523599
-    %             '20210713_MZ_scan_50_mus_new_trap_5' %Max Vis = 0.52(3), at phi=-0.0523599
-    %             '20210713_MZ_scan_50_mus_new_trap_4' %Max Vis = 0.59(4), at phi=-0.219911
-    %             '20210713_MZ_scan_50_mus_new_trap_3' %Max Vis = 0.54(3), at phi=-0.219911
-    %             '20210713_MZ_scan_50_mus_new_trap_2' %Max Vis = 0.592(10), at phi=-0.219911
-    %             '20210713_MZ_scan_50_mus_new_trap'   %Max Vis = 0.57(3), at phi=-0.136136
-
-    % RT attempts
-    %     'full_interferometer\rarity-tapster\tighter_trap\20210525_RT_500_mus_length'
-    %         'full_interferometer\rarity-tapster\20210219_rarity_tapster_k=0,-1,-2_scan_1200_mus_overnight'
-    %         'full_interferometer\rarity-tapster\20210303_rarity_tapster_k=0,-1,-2_scan_1200_mus_overnight_v4'
-    %         'full_interferometer\rarity-tapster\20210302_rarity_tapster_k=0,-1,-2_scan_1200_mus_overnight_v3'
-    %          'full_interferometer\rarity-tapster\20210301_rarity_tapster_k=0,-1,-2_scan_1200_mus_overnight_v2'
-    %         'full_interferometer\rarity-tapster\20210210_rarity_tapster_k=0,-1,-2_scan_2250_mus_overnight_v2'
-    %         'full_interferometer\rarity-tapster\20210209_rarity_tapster_k=0,-1,-2_scan_2250_mus_overnight'
-    %     '20210310_rarity_tapster_k=0,-1,-2_scan_1200_mus_evap_0_8543'
-    %     '20210305_rarity_tapster_k=0,-1,-2_scan_1200_mus_evap_0_8543'
-    
-    
-    %MZ attempts
-    %     'full_interferometer\mach-zender\tighter_trap\20210604_MZ_scan_50_mus_new_pulses'
-    %     'full_interferometer\mach-zender\tighter_trap\20210604_MZ_scan_50_mus_new_pulses_2'
-    %     'full_interferometer\mach-zender\tighter_trap\20210604_MZ_scan_50_mus_new_pulses_3'
-    %     'full_interferometer\mach-zender\tighter_trap\20210607_MZ_scan_50_mus_new_pulses_4'
-    %     'full_interferometer\mach-zender\tighter_trap\20210607_MZ_scan_50_mus_new_pulses_5'
-    %     'full_interferometer\mach-zender\20210224_mz_scan_1200_mus_shunt_0_65_attempts\20210224_mz_scan_1200_mus_length_chirped_pulses_shunt_0_65'
-    %     'full_interferometer\mach-zender\20210224_mz_scan_1200_mus_shunt_0_65_attempts\20210224_mz_scan_1_2_ms_chirped_pulses_shunt_0_65_attempt_4'
-    %     'full_interferometer\mach-zender\20210224_mz_scan_1200_mus_shunt_0_65_attempts\20210224_mz_scan_1_2_ms_chirped_pulses_shunt_0_65_attempt_2'
-    %     'full_interferometer\mach-zender\20210225_mz_scan_1200_mus_length_shunt_0_65_tests\20210225_mz_scan_1200_mus_length_shunt_0_65_test_3'
-    %     'full_interferometer\mach-zender\20210225_mz_scan_1200_mus_length_shunt_0_65_tests\20210225_mz_scan_1200_mus_length_shunt_0_65_test_4'
-    %     'full_interferometer\mach-zender\20210219_mz_scan_1200_mus_length_chirped_pulses'
-    % %     'full_interferometer\mach-zender\20210208_mach_zender_k=0,-1_distinguishability_dip\20210208_mach_zender_k=0,-1_scan_2250_mus'
-    %         'full_interferometer\mach-zender\weak_trap\20210210_mach_zender_k=0,-1_lower_evap_long'
-    %     'full_interferometer\mach-zender\20210219_mz_scan_1200_mus_length_chirped_pulses_attempt_2'
-    %     'full_interferometer\mach-zender\20210218_mz_scan_1200_mus_length_opt_pulses'
-    %     'full_interferometer\mach-zender\20210218_mz_scan_900_mus_length'
-    %     'full_interferometer\mach-zender\20210223_mz_scan_1200_mus_length_chirped_pulses_after_coil_fail'
-    %     '20210310_mz_scan_1300_mus_length'
-    %     '20210315_mz_scan_k=-1,-2_1200_mus_length_improved_pulses'
-    %     '20210315_mz_scan_k=0,-1_1200_mus_length_improved_pulses'
     };
 
 force_reimport = false;
@@ -162,13 +103,13 @@ opts.import.txylim=[tlim;tmp_xlim;tmp_ylim];
 
 opts.num_lim = 2.5e3;%9e3;%2.1e3;%0.5e3;% %minimum atom number 1.5e3
 opts.halo_N_lim = -1;%2;%10;%0;% %minimum allowed number in halo 10
-opts.halo_N_lim_upper = 15;%6;%8;%15;%10;%17;%12;%30;%5;%10;%20;%3.5;%2;%10;%0;% %max allowed number in halo 10
+opts.halo_N_lim_upper = Inf;%16;%13;%6;%8;%15;%10;%17;%12;%30;%5;%10;%20;%3.5;%2;%10;%0;% %max allowed number in halo 10
 
 opts.halo_N_lim_norm = -1;%2;%10;%0;% %minimum allowed number in halo 10
 opts.halo_N_lim_upper_norm = Inf;%2;%10;%0;% %max allowed number in halo 10
 
 opts.halo_N_lim_both = 1;%1;
-opts.halo_number_limit = 26;%24;%25;%Inf;%26;%30;%21;
+opts.halo_number_limit = 27;%27;%28;%or 29%26;%24;%24;%25;%Inf;%26;%30;%21;
 
 y_cut = 11e-3;
 catch_count = 0;
@@ -238,7 +179,7 @@ for folder_indx = 1:length(data_folders)
     
     opts.vel_conv.top.z_mask = [-0.9,0.9];
     opts.vel_conv.btm.z_mask = [-0.9,0.9];%in units of radius ([-0.68,0.68])
-    radius_lim = [0.0515,0.079];%[0.053,0.073];%[0.062,0.071];%[0.03,0.09];%[0.03,0.09];%[0.06,0.069];%[0.03,0.09];%[0.0585,0.069];%[0.06,0.067];%[0.06,0.07];%[0.045,0.085];%[0.79,1.17].*0.065;%[0.61,1.26];%[0.89,1.11];%[0.89,1.16];%[0.9,1.05];%
+    radius_lim = [0.045,0.085];%[0.0585,0.069];%[0.05,0.08];%[0.0515,0.079];%[0.0535,0.072];%[0.052,0.077];%[0.062,0.071];%[0.03,0.09];%[0.03,0.09];%[0.06,0.069];%[0.03,0.09];%[0.06,0.067];%[0.06,0.07];%[0.79,1.17].*0.065;%[0.61,1.26];%[0.89,1.11];%[0.89,1.16];%[0.9,1.05];%
     %     ang_lim = 20;%40;%%20;%angular limit in degrees
     ang_lim = 20;%25;%11;%15;%20.0;%20;%40;%%20;%angular limit in degrees
     %     ang_lim = 90;%
@@ -327,7 +268,7 @@ for folder_indx = 1:length(data_folders)
     %% find centers
     opts.cent.visual = 0; %from 0 to 2
     opts.cent.savefigs = 0;
-    opts.cent.correction = 1;%1;
+    opts.cent.correction = 0;%1;%1;
     opts.cent.correction_opts.plots = 0;
     
     opts.cent.top.visual = 0; %from 0 to 2
@@ -802,7 +743,7 @@ for ii = 1:length(phi_vec)
     
     %% Quantum correlator E
     opts_E.calc_err = do_g2_err;
-    opts_E.plots = true;
+    opts_E.plots = false;
     opts_E.verbose = false;
     opts_E.fit = false;
     opts_E.norm = false; %use normalised or unnormalised data
@@ -811,8 +752,13 @@ for ii = 1:length(phi_vec)
     %     opts_E.delta_kd = [4.2e-3,1.5e-3,6e-3].*4.*lambda;%[4e-3,1.3e-3,6e-3].*1;%[4e-3,1.3e-3,6e-3].*2;%[5e-3,2.*3e-3,10.*3e-3];%[3e-3,3e-3,3e-3];% volume widths in dimensions z x y used to calculate correlations
     %     opts_E.delta_kd = [4.2e-3,1.5e-3,6e-3].*4.*lambda;%
 %     opts_E.delta_kd = [8e-3,1.5e-3,15e-3].*lambda;% main
-        opts_E.delta_kd =  [8.35e-3,1.6e-3,14e-3].*lambda; %[8.3e-3,1.6e-3,15e-3].*lambda;
-    %     opts_E.delta_kd = [4.2e-3.*lambda,1.5e-3,6e-3].*4;%
+%         opts_E.delta_kd =  [8.35e-3,1.6e-3,14e-3].*lambda; %[8.3e-3,1.6e-3,15e-3].*lambda;
+    opts_E.delta_kd = 0.1.*5.*[8.5e-3,1.6e-3,15e-3];
+    %0.1.*5.*[8.35e-3,1.6e-3,14e-3]; 
+    
+    %[8.3e-3,1.6e-3,15e-3].*lambda;
+
+        %     opts_E.delta_kd = [4.2e-3.*lambda,1.5e-3,6e-3].*4;%
     %     opts_E.delta_kd = [7.3e-3,1.2e-3,12.7e-3].*lambda;%
     opts_E.dim = 1;
     opts_E.sample_proportion = 0.01;%1.0;
@@ -973,30 +919,7 @@ if do_g2
     centers='x_centers';
     for ii = 1:4
         gx=gs{ii};
-        stfig([gx,' comp']);
-        clf
         for jj = 1:length(out_corrs)
-            if ~opts_E.vol_corr
-                subplot(1,3,1)
-            end
-            hold on
-            plot(out_corrs{jj}.(gx).in_shot_corr.(centers),out_corrs{jj}.(gx).in_shot_corr.(corr_density))
-            ylabel(sprintf('$G^{(2)}(\\Delta %s)$ coincedence density',direction_label))
-            xlabel(sprintf('$\\Delta %s$ Seperation',direction_label))
-            if ~opts_E.vol_corr
-                subplot(1,3,2)
-                hold on
-                plot(out_corrs{jj}.(gx).between_shot_corr.(centers),out_corrs{jj}.(gx).between_shot_corr.(corr_density))
-                ylabel(sprintf('$G^{(2)}(\\Delta %s)$ coincedence density',direction_label))
-                xlabel(sprintf('$\\Delta %s$ Seperation',direction_label))
-                subplot(1,3,3)
-                hold on
-                plot(out_corrs{jj}.(gx).norm_g2.(centers),out_corrs{jj}.(gx).norm_g2.g2_amp)
-                ylabel(sprintf('$g^{(2)}(\\Delta %s)$',direction_label))
-                xlabel(sprintf('$\\Delta %s$ Seperation',direction_label))
-                
-                g2_mean.(gx).val(jj)=nanmean(out_corrs{jj}.(gx).norm_g2.g2_amp);
-            end
             if opts_E.vol_corr
                 mid_pt = 1;
             else
@@ -1016,233 +939,12 @@ if do_g2
     end
 end
 
-
-%% Transfer percentage against phase
-x = phi_vec;
-y = top_dens_vec(:,1);%top_ratio_vec(:,1);%1-btm_ratio_vec(:,1);%
-w = top_dens_vec(:,2);
-
-% y = top_corr_bb_vec;%btm_ratio_vec(:,1);%
-% w = top_corr_bb_unc;
-
-% range(y)
-% range(btm_ratio_vec(:,1))
-
-% range(btm_ratio_vec(:,1))./(min(1-btm_ratio_vec(:,1))+max(1-btm_ratio_vec(:,1)))
-% range(y)./(min(y)+max(y))
-
-[x_vec, y_vec] = combine_data(phi_vec,out_data_vec(:,:,2));
-% [x_vec, y_vec] = combine_data(phi_vec,1-out_data_vec_ratio);
-
-stfig('dens over sphere');
-[a, b] = sort(x_vec);
-surf(a,phi,y_vec(b,:)')
-% pcolor(phi,x_vec,y_vec)
-% caxis([0.28 0.6])
-caxis([0.25 0.9])
-xlim([min(phi_vec),max(phi_vec)])
-ylim([-0.2 0.2].*pi)
-zlim([0 1])
-ylabel('$\phi$')
-xlabel('phase')
-shading flat
-box on
-set(gca,'FontSize',19)
-colorbar
-
-[x_vec, y_vec] = combine_data(phi_vec,out_data_vec(:,:,1));
-% [x_vec, y_vec] = combine_data(phi_vec,1-out_data_vec_ratio);
-
-stfig('dens around sphere');
-[a, b] = sort(x_vec);
-surf(a,theta,y_vec(b,:)')
-% pcolor(phi,x_vec,y_vec)
-% caxis([0.28 0.6])
-caxis([0.25 0.9])
-xlim([min(phi_vec),max(phi_vec)])
-ylim([-pi pi])
-zlim([0 1])
-ylabel('$\theta$')
-xlabel('phase')
-shading flat
-box on
-set(gca,'FontSize',19)
-colorbar
-% set(gcf,'color','w');
-
-% xp = linspace(0,max(phi_vec));
-xp = linspace(min(phi_vec),max(phi_vec));
-% fit = @(b,x)  b(1).*cos(x.*b(2) + 2*pi/b(6)).*(cos(x.*b(5) + 2*pi/b(3))) + b(4);    % Function to fit
-% fit = @(b,x)  b(1).*cos(x.*b(2) + b(3)) + b(4);    % Function to fit [1.229,1,0.8088,0.906]
-fit = @(b,x)  b(1).*cos(x + b(2)) + b(3);    % Function to fit
-% [1.229,0.8088,0.906]
-best_fit = fitnlm(x,y,fit,[0.5,0.8088,0.5],'CoefficientNames',{'Amp','Phase','Offset'}); %one cos [1.229,1,0.8088,0.906] two cos [1.829,0.01,0.8088,0.906,1.0,0.406]
-[ysamp_val,ysamp_ci]=predict(best_fit,xp','Prediction','curve','Alpha',1-erf(1/sqrt(2))); %'Prediction','observation'
-
-stfig('normalised density of top halo against phase');
-% clf
-hold on
-if plot_fit
-    plot(xp,ysamp_val,'r','LineWidth',1.5)
-    drawnow
-    yl=ylim*1.1;
-    plot(xp,ysamp_ci,'color',[1,1,1].*0.5)
-end
-colors_main=[[88,113,219];[60,220,180]./1.75;[88,113,219]./1.7]./255;
-% errorbar(x,y,w,'o','CapSize',0,'MarkerSize',5,'Color',colors_main(3,:),...
-%     'MarkerFaceColor',colors_main(2,:),'LineWidth',2.5)
-errorbar(x,y,w,'o','CapSize',0,'MarkerSize',5,'LineWidth',2.5)
-% scatter(top_dens_ind(:,1),top_dens_ind(:,2))
-xlabel('$\phi$')
-ylabel('normalised density top halo')
-grid
-box on
-set(gca,'FontSize',19)
-xlim([min(phi_vec),max(phi_vec)])
-ylim([0 1])
-
-pred_dens = predict(best_fit,top_dens_ind(:,1));
-fit_res = top_dens_ind(:,2)-pred_dens;
-
-vis_str = string_value_with_unc(abs(2.*best_fit.Coefficients.Estimate(1)),2.*best_fit.Coefficients.SE(1),'type','b');
-% vis_str = string_value_with_unc(best_fit.Coefficients.Estimate(1)./best_fit.Coefficients.Estimate(3),best_fit.Coefficients.SE(1)+best_fit.Coefficients.SE(3),'type','b');
-% fprintf('\n Normalised density data\n\n')
-% fprintf('\n Vis = %s\n\n',vis_str)
-
-% %% Parameters over theta
-% 
-% [x_vec, y_vec] = combine_data(phi_vec,out_data_vec(:,:,1));
-% 
-% s_width = 10;
-% m_width = 4;
-% theta_c = 1:s_width;
-% tot_num = floor((151-s_width)/m_width)+1;
-% amp_vec = zeros(tot_num,2);
-% phase_vec = zeros(tot_num,2);
-% offset_vec = zeros(tot_num,2);
-% theta_vec = zeros(tot_num,1);
-% for ii = 1:tot_num
-%     y=nanmean(y_vec(:,theta_c,1),2);
-%     best_fit_c = fitnlm(x_vec,y,fit,[0.5,0.8088,0.5],'CoefficientNames',{'Amp','Phase','Offset'});
-%     theta_vec(ii) = nanmean(theta(theta_c));
-%     theta_c = theta_c+m_width;
-%     amp_vec(ii,1) = best_fit_c.Coefficients.Estimate(1);
-%     amp_vec(ii,2) = best_fit_c.Coefficients.SE(1);
-%     phase_vec(ii,1) = best_fit_c.Coefficients.Estimate(2);
-%     phase_vec(ii,2) = best_fit_c.Coefficients.SE(2);
-%     offset_vec(ii,1) = best_fit_c.Coefficients.Estimate(3);
-%     offset_vec(ii,2) = best_fit_c.Coefficients.SE(3);
-% end
-% %% Theta plot
-% stfig('params around halo');
-% % clf
-% subplot(3,1,1)
-% plot(theta_vec,phase_vec(:,1),'k-','LineWidth',1.5)
-% hold on
-% plot(theta_vec,phase_vec(:,1)-phase_vec(:,2),'r-','LineWidth',1.5)
-% plot(theta_vec,phase_vec(:,1)+phase_vec(:,2),'r-','LineWidth',1.5)
-% xlim([min(theta_vec),max(theta_vec)])
-% xlabel('$\theta$')
-% ylabel('phase')
-% set(gca,'FontSize',14)
-% subplot(3,1,2)
-% plot(theta_vec,amp_vec(:,1),'k-','LineWidth',1.5)
-% hold on
-% plot(theta_vec,amp_vec(:,1)-amp_vec(:,2),'r-','LineWidth',1.5)
-% plot(theta_vec,amp_vec(:,1)+amp_vec(:,2),'r-','LineWidth',1.5)
-% xlim([min(theta_vec),max(theta_vec)])
-% xlabel('$\theta$')
-% ylabel('Amp')
-% set(gca,'FontSize',14)
-% subplot(3,1,3)
-% plot(theta_vec,offset_vec(:,1),'k-','LineWidth',1.5)
-% hold on
-% plot(theta_vec,offset_vec(:,1)-offset_vec(:,2),'r-','LineWidth',1.5)
-% plot(theta_vec,offset_vec(:,1)+offset_vec(:,2),'r-','LineWidth',1.5)
-% xlim([min(theta_vec),max(theta_vec)])
-% xlabel('$\theta$')
-% ylabel('Offset')
-% set(gca,'FontSize',14)
-% 
-% 
-% %% Parameters over azimuthal angle
-% 
-% [x_vec, y_vec] = combine_data(phi_vec,out_data_vec(:,:,2));
-% 
-% s_width = 4;
-% m_width = 1;
-% theta_c = 1:s_width;
-% tot_num = floor((151-s_width)/m_width)+1;
-% amp_vec_2 = zeros(tot_num,2);
-% phase_vec_2 = zeros(tot_num,2);
-% offset_vec_2 = zeros(tot_num,2);
-% theta_vec_2 = zeros(tot_num,1);
-% for ii = 1:tot_num
-%     y=nanmean(y_vec(:,theta_c),2);
-%     if sum(isnan(y),1)>0
-%         amp_vec_2(ii,1) = nan;
-%         amp_vec_2(ii,2) = nan;
-%         phase_vec_2(ii,1) = nan;
-%         phase_vec_2(ii,2) = nan;
-%         offset_vec_2(ii,1) = nan;
-%         offset_vec_2(ii,2) = nan;
-%     else
-%         best_fit_c = fitnlm(x_vec,y,fit,[0.5,0.8088,0.5],'CoefficientNames',{'Amp','Phase','Offset'});
-%         amp_vec_2(ii,1) = abs(best_fit_c.Coefficients.Estimate(1));
-%         amp_vec_2(ii,2) = best_fit_c.Coefficients.SE(1);
-%         phase_vec_2(ii,1) = best_fit_c.Coefficients.Estimate(2);
-%         phase_vec_2(ii,2) = best_fit_c.Coefficients.SE(2);
-%         offset_vec_2(ii,1) = best_fit_c.Coefficients.Estimate(3);
-%         offset_vec_2(ii,2) = best_fit_c.Coefficients.SE(3);
-%     end
-%     az_vec(ii) = nanmean(phi(theta_c));
-%     theta_c = theta_c+m_width;
-% end
-% az_mask = az_vec>-0.5 & az_vec<0.5;
-% amp_vec_2_temp = amp_vec_2(az_mask,2);
-% az_temp = az_vec(az_mask);
-% [val,indx] = max(amp_vec_2(az_mask,1));
-% max_vis_str = string_value_with_unc(val.*2,2.*amp_vec_2_temp(indx),'type','b');
-% % fprintf('\n Max Vis = %s, at phi=%g\n\n',max_vis_str,az_temp(indx))
-% %% Azimuthal plot
-% stfig('params over halo');
-% % clf
-% subplot(3,1,1)
-% plot(az_vec,phase_vec_2(:,1),'k-','LineWidth',1.5)
-% hold on
-% plot(az_vec,phase_vec_2(:,1)-phase_vec_2(:,2),'r-','LineWidth',1.5)
-% plot(az_vec,phase_vec_2(:,1)+phase_vec_2(:,2),'r-','LineWidth',1.5)
-% xlim([min(az_vec),max(az_vec)])
-% xlabel('$\phi$')
-% ylabel('phase')
-% set(gca,'FontSize',14)
-% xlim([-0.5,0.5])
-% subplot(3,1,2)
-% plot(az_vec,amp_vec_2(:,1),'k-','LineWidth',1.5)
-% hold on
-% plot(az_vec,amp_vec_2(:,1)-amp_vec_2(:,2),'r-','LineWidth',1.5)
-% plot(az_vec,amp_vec_2(:,1)+amp_vec_2(:,2),'r-','LineWidth',1.5)
-% xlim([min(az_vec),max(az_vec)])
-% xlabel('$\phi$')
-% ylabel('Amp')
-% set(gca,'FontSize',14)
-% xlim([-0.5,0.5])
-% subplot(3,1,3)
-% plot(az_vec,offset_vec_2(:,1),'k-','LineWidth',1.5)
-% hold on
-% plot(az_vec,offset_vec_2(:,1)-offset_vec_2(:,2),'r-','LineWidth',1.5)
-% plot(az_vec,offset_vec_2(:,1)+offset_vec_2(:,2),'r-','LineWidth',1.5)
-% xlim([min(az_vec),max(az_vec)])
-% xlabel('$\phi$')
-% ylabel('Offset')
-% set(gca,'FontSize',14)
-% xlim([-0.5,0.5])
-
 %% g2 (and E) plots
 if do_g2
     x = phi_vec;
     y = top_corr_bb_vec;%
-    l_indx = 5;%5
+    l_indx = 2;%5
+    colors_main=[[88,113,219];[60,220,180]./1.75;[88,113,219]./1.7]./255;
 %     numerator_E = (top_corr_bb_vec+btm_corr_bb_vec-btw_1_corr_bb_vec-btw_2_corr_bb_vec);
 %     denominator_E = top_corr_bb_vec+btm_corr_bb_vec+btw_1_corr_bb_vec+btw_2_corr_bb_vec;
 
@@ -1309,7 +1011,7 @@ if do_g2
     
     
     
-    xp = linspace(0,max(phi_vec));%linspace(0,pi);%;
+    xp = linspace(0,1.1.*max(phi_vec));%linspace(0,pi);%;
     % fit = @(b,x)  b(1).*cos(x.*b(2) + 2*pi/b(6)).*(cos(x.*b(5) + 2*pi/b(3))) + b(4);    % Function to fit
     fit = @(b,x)  b(1).*cos(x + b(2)) + b(3);    % Function to fit
     best_fit = fitnlm(x,y,fit,[2,0,2],'CoefficientNames',{'Amp','Phase','Offset'}); %one cos [1.229,1,0.8088,0.906] two cos [1.829,0.01,0.8088,0.906,1.0,0.406]
@@ -1377,18 +1079,20 @@ if do_g2
     s_g2 = g2_raw.g34.vec(:,l_indx)+g2_raw.g12.vec(:,l_indx);
     x_g2 = g2_raw.g23.vec(:,l_indx)+g2_raw.g14.vec(:,l_indx);
     if ~do_g2_err
-    ht=errorbar(x,s_g2,sqrt(wt.^2+wb.^2),'o','CapSize',0,'MarkerSize',5,'LineWidth',2.5);
+    ht=errorbar(2.*x,s_g2,sqrt(wt.^2+wb.^2),'o','CapSize',0,'MarkerSize',5,'LineWidth',2.5,'Color',colors_main(3,:),'MarkerFaceColor',colors_main(2,:));
     x_g2_unc = sqrt(wt.^2+wb.^2);
     s_g2_unc = sqrt(wbt1.^2+wbt2.^2);
     hold on
-    hbt1=errorbar(x,x_g2,sqrt(wbt1.^2+wbt2.^2),'o','CapSize',0,'MarkerSize',5,'LineWidth',2.5);
+    hbt1=errorbar(2.*x,x_g2,sqrt(wbt1.^2+wbt2.^2),'s','CapSize',0,'MarkerSize',5,'LineWidth',2.5,'Color',colors_main(1,:),...
+    'MarkerFaceColor',colors_main(3,:),'LineWidth',2.5);
         else
     
-    ht=errorbar(x,s_g2,sqrt(wb_n.^2+wt_n.^2),sqrt(wb_p.^2+wt_p.^2),'o','CapSize',0,'MarkerSize',5,'LineWidth',2.5);
+    ht=errorbar(2.*x,s_g2,sqrt(wb_n.^2+wt_n.^2),sqrt(wb_p.^2+wt_p.^2),'o','CapSize',0,'MarkerSize',5,'LineWidth',2.5,'Color',colors_main(3,:),'MarkerFaceColor',colors_main(2,:));
     x_g2_unc = mean(sqrt(wb_n.^2+wt_n.^2),sqrt(wb_p.^2+wt_p.^2));
     s_g2_unc = mean(sqrt(wbt2_n.^2+wbt1_n.^2),sqrt(wbt1_p.^2+wbt2_p.^2));
     hold on
-    hbt2=errorbar(x,x_g2,sqrt(wbt2_n.^2+wbt1_n.^2),sqrt(wbt1_p.^2+wbt2_p.^2),'o','CapSize',0,'MarkerSize',5,'LineWidth',2.5);
+    hbt2=errorbar(2.*x,x_g2,sqrt(wbt2_n.^2+wbt1_n.^2),sqrt(wbt1_p.^2+wbt2_p.^2),'s','CapSize',0,'MarkerSize',5,'LineWidth',2.5,'Color',colors_main(1,:),...
+    'MarkerFaceColor',colors_main(3,:),'LineWidth',2.5);
     end
     xlabel('Global Phase ($\Phi_L+\Phi_R$)')
     ylabel('Integrated Pair-Correlation')% 'Expected product')
@@ -1398,11 +1102,14 @@ if do_g2
     
     fit_b = fitnlm([x,x+pi./2],[s_g2;x_g2],fit_2,[2e-2,0,2e-2],'CoefficientNames',{'Amp','Phase','Offset'})
     [ysamp_val,ysamp_ci]=predict(fit_b,xp','Prediction','curve','Alpha',1-erf(1/sqrt(2))); %'Prediction','observation'
-    plot(xp,ysamp_val,'r','LineWidth',1.5)
+    plot(2.*xp,ysamp_val,'r','LineWidth',1.5)
     
     [ysamp_val,ysamp_ci]=predict(fit_b,xp'+pi/2,'Prediction','curve','Alpha',1-erf(1/sqrt(2))); %'Prediction','observation'
-    plot(xp,ysamp_val,'k','LineWidth',1.5)
+    plot(2.*xp,ysamp_val,'k--','LineWidth',1.5)
     ylim([0 max(max(x_g2),max(s_g2)).*1.2])
+    xlim([0 max(xp).*2])
+    set(gca,'FontSize',17)
+    legend('$C_{14}=C_{32}$','$C_{12}=C_{34}$')
     
     %visibilities
     [vx,ix] = max(x_g2);
@@ -1433,14 +1140,15 @@ if do_g2
     
     clf
     hold on
-    plot(xp,ysamp_val,'r','LineWidth',1.5)
+    plot(2.*xp,ysamp_val,'r','LineWidth',1.5)
         drawnow
         yl=ylim*1.1;
-    plot(xp,ysamp_ci,'color',[1,1,1].*0.5)
+    plot(2.*xp,ysamp_ci,'color',[1,1,1].*0.5)
     colors_main=[[88,113,219];[60,220,180]./1.75;[88,113,219]./1.7]./255;
     %     errorbar(x,y,w,'o','CapSize',0,'MarkerSize',5,'Color',colors_main(3,:),...
     %         'MarkerFaceColor',colors_main(2,:),'LineWidth',2.5)
-    hE=errorbar(x,E_raw,E_err,'o','CapSize',0,'MarkerSize',5,'LineWidth',2.5);
+    hE=errorbar(2.*x,E_raw,E_err,'o','CapSize',0,'MarkerSize',5,'LineWidth',2.5,'Color',colors_main(3,:),...
+    'MarkerFaceColor',colors_main(2,:));
     %     hb=errorbar(x,btm_corr_bb_vec,wb,'o','CapSize',0,'MarkerSize',5,'LineWidth',2.5);
     %     hbt1=errorbar(x,btw_1_corr_bb_vec,wbt1,'o','CapSize',0,'MarkerSize',5,'LineWidth',2.5);
     %
@@ -1448,20 +1156,21 @@ if do_g2
     %     legend([hbt1],{'g23'})
     %     legend([hE],{'E($\phi$)'})
     %     scatter(x,y,'o')
-    xlabel('$\Phi$')
+    xlabel('Global Phase ($\Phi_L+\Phi_R$)')
     ylabel('E($\Phi$)')
     grid
     box on
     set(gca,'FontSize',19)
     ylim([-1 1])
+    xlim([0 2.*1.1.*max(phi_vec)])
     
     %probability plot
     x_P = x_g2./(s_g2+x_g2);
     s_P = s_g2./(s_g2+x_g2);
     ds_P = s_P.*sqrt((s_g2_unc.^2+x_g2_unc.^2)./(s_g2+x_g2).^2+(s_g2_unc./s_g2).^2);
     dx_P = x_P.*sqrt((s_g2_unc.^2+x_g2_unc.^2)./(s_g2+x_g2).^2+(x_g2_unc./x_g2).^2);
-    fit_sp = fitnlm(x,s_P,fit_2,[2e-2,0,2e-2],'CoefficientNames',{'Amp','Phase','Offset'})
-    fit_xp = fitnlm(x,x_P,fit_2,[2e-2,0,2e-2],'CoefficientNames',{'Amp','Phase','Offset'})
+    fit_sp = fitnlm(x,s_P,fit_2,[2e-2,0,2e-2],'CoefficientNames',{'Amp','Phase','Offset'});
+    fit_xp = fitnlm(x,x_P,fit_2,[2e-2,0,2e-2],'CoefficientNames',{'Amp','Phase','Offset'});
     
     stfig('Probability of ports');
     clf
@@ -1483,39 +1192,73 @@ if do_g2
     ylim([0 1])
     xlim([0.4 3.8])
     
-   
+   E_raw([1 5 9])
     
     %     xlim([0,max(phi_vec)])
     %     ylim([1 4])
 end
-%% Plot of E vs atom number cut off
-l_indx = 5;
-% phi_indx = 6;%1;
-N_lim_vec = 3:20;
-clear g12_vec g14_vec g23_vec g34_vec E_vec_N
-for jj = 1:length(phi_vec)
-    phi_indx = jj;
-    g12_val = out_corrs{phi_indx}.g12.in_shot_corr.shots{l_indx};
-g14_val = out_corrs{phi_indx}.g14.in_shot_corr.shots{l_indx};
-g23_val = out_corrs{phi_indx}.g23.in_shot_corr.shots{l_indx};
-g34_val = out_corrs{phi_indx}.g34.in_shot_corr.shots{l_indx};
+%% E and g vs lambda
 
-for ii = 1:length(N_lim_vec)
-    N_lim_c = N_lim_vec(ii);
-g12_mask = out_data{phi_indx}.top_halo.num_counts(g12_val(:,1))<N_lim_c;
-g34_mask = out_data{phi_indx}.bottom_halo.num_counts(g34_val(:,1))<N_lim_c;
+l_lim = 3.1;
+l_min = 0.3;
+ang_indx = 3;%the angle limit
+phi_indx = 1;%which phase should we use
+phi_indx_2 = 5;
+lambda_vec = (1:opts_E.bin_lim).*lambda;
+l_mask = lambda_vec>l_min;
+lambda_vec = lambda_vec(l_mask);
+wt = g2_raw.g12.vec(:,:).*g2_raw.g12.poisson_unc(:,:);
+        wb = g2_raw.g34.vec(:,:).*g2_raw.g34.poisson_unc(:,:);
+        wbt1 = g2_raw.g23.vec(:,:).*g2_raw.g23.poisson_unc(:,:);
+        wbt2 = g2_raw.g14.vec(:,:).*g2_raw.g14.poisson_unc(:,:);
+        err_tot = sqrt(wt.^2+wb.^2+wbt1.^2+wbt2.^2).';
+        E_unc = abs(E_lambda).*sqrt((err_tot./numerator_E).^2+(err_tot./denominator_E).^2);
+        E_err_deriv = sqrt(wt.^2+wb.^2).'.*(2.*abs(x_E)./denominator_E.^2)+sqrt(wbt1.^2+wbt2.^2).'.*(2.*abs(s_E)./denominator_E.^2);
 
-g14_mask = (out_data{phi_indx}.top_halo.num_counts(g14_val(:,1))+out_data{phi_indx}.bottom_halo.num_counts(g14_val(:,1)))<2.*N_lim_c;
-g23_mask = (out_data{phi_indx}.bottom_halo.num_counts(g23_val(:,1))+out_data{phi_indx}.top_halo.num_counts(g23_val(:,1)))<2.*N_lim_c;
 
-g12_vec(jj,ii) = sum(out_corrs{phi_indx}.g12.in_shot_corr.shots{l_indx}(g12_mask,3));
-g14_vec(jj,ii) = sum(out_corrs{phi_indx}.g14.in_shot_corr.shots{l_indx}(g14_mask,3));
-g23_vec(jj,ii) = sum(out_corrs{phi_indx}.g23.in_shot_corr.shots{l_indx}(g23_mask,3));
-g34_vec(jj,ii) = sum(out_corrs{phi_indx}.g34.in_shot_corr.shots{l_indx}(g34_mask,3));
+% mdl = @(b,x) rob_E(6.42912831449739e-01.*[x,x,x]',b(1),0)' + b(3);
+mdl = @(b,x) rob_E(b(2).*[x,x,x]',b(1),pi)';
+strt_pt = [10,1];
+% w = 1./E_unc(:,ii).^2;
+mdl_fit=fitnlm(lambda_vec,E_lambda(l_mask,phi_indx),mdl,strt_pt,'Weight',1./E_unc(l_mask,phi_indx))
+xp=linspace(0,l_lim,1000);
+[ysamp_val,ysamp_ci]=predict(mdl_fit,xp','Prediction','curve','Alpha',1-erf(1/sqrt(2)));
 
-E_vec_N(jj,ii) = (g12_vec(jj,ii)+g34_vec(jj,ii)-g23_vec(jj,ii)-g14_vec(jj,ii))./(g12_vec(jj,ii)+g34_vec(jj,ii)+g23_vec(jj,ii)+g14_vec(jj,ii));
-end
-end
+mdl_fit_2=fitnlm(lambda_vec,E_lambda(l_mask,phi_indx_2),mdl,strt_pt,'Weight',1./E_unc(l_mask,phi_indx_2))
+[ysamp_val_2,ysamp_ci_2]=predict(mdl_fit_2,xp','Prediction','curve','Alpha',1-erf(1/sqrt(2)));
+
+scale_l = 1;%0.9625e-1;%
+stfig('E vs lambda');
+clf
+colors_main=[[88,113,219];[60,220,180]./1.75;[88,113,219]./1.7];
+colors_main=colors_main./255;
+errorbar(scale_l.*lambda_vec,E_lambda(l_mask,phi_indx),E_unc(l_mask,phi_indx),'o','CapSize',0,'MarkerSize',5,'Color',colors_main(3,:),...
+    'MarkerFaceColor',colors_main(2,:),'LineWidth',2.5)
+hold on
+errorbar(scale_l.*lambda_vec,E_lambda(l_mask,phi_indx_2),E_unc(l_mask,phi_indx_2),'o','CapSize',0,'MarkerSize',5,'Color',colors_main(1,:),...
+    'MarkerFaceColor',colors_main(3,:),'LineWidth',2.5)
+
+% errorbar(lambda,E_val(:,1),E_unc(:,1),'kx')
+hold on
+plot(scale_l.*xp,ysamp_val,'r','LineWidth',1.5)
+plot(scale_l.*xp,ysamp_val_2,'k--','LineWidth',1.5)
+legend(['$\Phi=',num2str(2.*x(phi_indx)),'$'],['$\Phi=',num2str(2.*x(phi_indx_2)),'$'])
+
+%     drawnow
+%     yl=ylim*1.1;
+% plot(xp,ysamp_ci,'color',[1,1,1].*0.5)
+xlim([0,scale_l.*l_lim])
+ylim([-0.7 0.7])
+xlabel('$\lambda$')
+ylabel(['E($\Phi$)'])
+set(gca,'FontWeight','bold')
+set(gca,'TickLabelInterpreter','latex')
+ax = gca;
+ax.XAxis.TickLabelFormat= '\\textbf{%g}';
+ax.YAxis.TickLabelFormat= '\\textbf{%g}';
+font_size_global = 15;
+set(gca,'fontsize',font_size_global)
+
 %%
 function settings_list = settings_list_func();
 settings_list = {

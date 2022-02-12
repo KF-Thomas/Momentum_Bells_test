@@ -10,8 +10,8 @@ addpath(genpath(core_folder));
 set(groot, 'DefaultTextInterpreter', 'latex')
 
 %% Import directories
-% opts.data_root = 'Z:\EXPERIMENT-DATA\2020_Momentum_Bells\pulse_characterisation\';
-opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
+opts.data_root = 'Z:\EXPERIMENT-DATA\2020_Momentum_Bells\pulse_characterisation\';
+% opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
 data_folder = '';
 data_folders = {
     %original scan
@@ -43,14 +43,14 @@ data_folders = {
 
     %new scan
     '20210201_bragg_pulse_testing\scan\amp_0'
-%     '20210201_bragg_pulse_testing\scan\amp_2'
-%     '20210201_bragg_pulse_testing\scan\amp_2_5'
-%     '20210201_bragg_pulse_testing\scan\amp_3\alpha_3_5'
-%     '20210201_bragg_pulse_testing\scan\amp_3_5\alpha_3_5'
-%     '20210201_bragg_pulse_testing\scan\amp_4'
-%     '20210201_bragg_pulse_testing\scan\amp_4_5\alpha_3_5'
-%     '20210201_bragg_pulse_testing\scan\amp_5'
-%     '20210201_bragg_pulse_testing\scan\amp_5_5'
+    '20210201_bragg_pulse_testing\scan\amp_2'
+    '20210201_bragg_pulse_testing\scan\amp_2_5'
+    '20210201_bragg_pulse_testing\scan\amp_3\alpha_3_5'
+    '20210201_bragg_pulse_testing\scan\amp_3_5\alpha_3_5'
+    '20210201_bragg_pulse_testing\scan\amp_4'
+    '20210201_bragg_pulse_testing\scan\amp_4_5\alpha_3_5'
+    '20210201_bragg_pulse_testing\scan\amp_5'
+    '20210201_bragg_pulse_testing\scan\amp_5_5'
     
     %alpha scan
 %     '20210201_bragg_pulse_testing\scan\amp_3_5\alpha_3'
@@ -58,15 +58,15 @@ data_folders = {
 %     '20210201_bragg_pulse_testing\scan\amp_3_5\alpha_4'
 %     '20210201_bragg_pulse_testing\scan\amp_3_5\alpha_4_5'
 
-    '20210201_bragg_pulse_testing\scan\amp_4_5\alpha_2_5'
-    '20210201_bragg_pulse_testing\scan\amp_4_5\alpha_3'
-    '20210201_bragg_pulse_testing\scan\amp_4_5\alpha_3_25'
-    '20210201_bragg_pulse_testing\scan\amp_4_5\alpha_3_5'
-    '20210201_bragg_pulse_testing\scan\amp_4_5\alpha_3_75'
-    '20210201_bragg_pulse_testing\scan\amp_4_5\alpha_4'
-    '20210201_bragg_pulse_testing\scan\amp_4_5\alpha_4_5'
-    '20210201_bragg_pulse_testing\scan\amp_4_5\alpha_5'
-    '20210201_bragg_pulse_testing\scan\amp_4_5\alpha_6'
+%     '20210201_bragg_pulse_testing\scan\amp_4_5\alpha_2_5'
+%     '20210201_bragg_pulse_testing\scan\amp_4_5\alpha_3'
+%     '20210201_bragg_pulse_testing\scan\amp_4_5\alpha_3_25'
+%     '20210201_bragg_pulse_testing\scan\amp_4_5\alpha_3_5'
+%     '20210201_bragg_pulse_testing\scan\amp_4_5\alpha_3_75'
+%     '20210201_bragg_pulse_testing\scan\amp_4_5\alpha_4'
+%     '20210201_bragg_pulse_testing\scan\amp_4_5\alpha_4_5'
+%     '20210201_bragg_pulse_testing\scan\amp_4_5\alpha_5'
+%     '20210201_bragg_pulse_testing\scan\amp_4_5\alpha_6'
     };
 
 %
@@ -101,9 +101,9 @@ norm_folders = [1]; %folders to be used in calibrating out the effects of BEC bl
 % btm_halo_comp = [22 23 24];%transfering the bottom halo for comparison
 btm_halo_comp = [];
 % Eamp = sqrt([0,0.25,0.5,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,15,16,19,0,5.3,11.5]); %amplitude vector %sqrt([0,5.3,11.5]);%
-% Eamp = [0,2,2.5,3,3.5,4,4.5,5,5.5];
+Eamp = [0,2,2.5,3,3.5,4,4.5,5,5.5];
 % Eamp = sqrt([0,3,3.5,4,4.5]);
-Eamp = sqrt([0,2.5,3,3.25,3.5,3.75,4,4.5,5,6]);
+% Eamp = sqrt([0,2.5,3,3.25,3.5,3.75,4,4.5,5,6]);
 num_norms = length(norm_folders);
 folder_indxs = [norm_folders, 1:numel(data_folders)];
 calibration_density_btm= [];

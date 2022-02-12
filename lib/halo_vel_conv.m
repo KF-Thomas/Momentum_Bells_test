@@ -86,6 +86,12 @@ for this_idx = 1:num_shots % Loop over all shots
         & (v_zxy(:,1).^2+v_zxy(:,2).^2+v_zxy(:,3).^2)>(opts_vel_conv.v_mask(1)).^2;
     v_zxy = v_zxy(radius_mask,:);
     
+    if isfield(opts_vel_conv,'vxy_mask')
+    xy_rad_mask = (v_zxy(:,2).^2+v_zxy(:,3).^2)<(opts_vel_conv.vxy_mask(2)).^2 ...
+        & (v_zxy(:,2).^2+v_zxy(:,3).^2)>(opts_vel_conv.vxy_mask(1)).^2;
+    v_zxy = v_zxy(logical(xy_rad_mask),:);
+    end
+    
     ang_mask = abs(180/pi*atan(v_zxy(:,1)./sqrt(v_zxy(:,2).^2+v_zxy(:,3).^2)))<ang_lim;
     v_zxy = v_zxy(ang_mask,:);
     
