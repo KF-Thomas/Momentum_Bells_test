@@ -49,7 +49,7 @@ anal_opts.trig_ai_in=20;
 % anal_opts.osc_fit.tlim=[0.86,1.08];
 % anal_opts.osc_fit.dimesion=2; %Sel ect coordinate to bin. 1=X, 2=Y.
 
-anal_opts.history.shots=200;
+anal_opts.history.shots=120;
 
 hebec_constants
 const.fall_distance = 8.52925545e-01;
@@ -78,7 +78,7 @@ anal_out.dir=[fullfile(anal_opts.tdc_import.dir,'out','monitor'),filesep];
 if (exist(anal_out.dir, 'dir') == 0), mkdir(anal_out.dir); end
 anal_opts.global.out_dir=anal_out.dir;
 
-frac_opts.num_lim = 1e3;
+frac_opts.num_lim = 3e3;
 frac_opts.transfer_state = 'momentum';
 frac_opts.bounds = [-0.03, 0.03; -0.03, 0.03];%spacecial bounds
 
@@ -135,20 +135,20 @@ while true
                 pause(1.0)
             else
                 out_frac = fraction_calc(batch_data.mcp_tdc,frac_opts);
-                cost = momentum_transfer_cost(out_frac.shot_num',anal_opts.tdc_import.dir);
+%                 cost = momentum_transfer_cost(out_frac.shot_num',anal_opts.tdc_import.dir);
                 
                 mag_history.all_shots=[mag_history.all_shots,batch_data.mcp_tdc.shot_num];
                 mag_history.shot_num=[mag_history.shot_num,out_frac.shot_num'];
                 mag_history.trans_frac=[mag_history.trans_frac;out_frac.fracs];
                 mag_history.Ns=[mag_history.Ns;out_frac.Ns];
-                mag_history.cost =[mag_history.cost;cost.val];
+%                 mag_history.cost =[mag_history.cost;cost.val];
                 
                 %trim the history vectors
                 if numel(mag_history.shot_num)>anal_opts.history.shots
                     %bit sloppy but will assume they are the same length
                     mag_history.shot_num=mag_history.shot_num(end-anal_opts.history.shots:end);
                     mag_history.trans_frac=mag_history.trans_frac(end-anal_opts.history.shots:end,:);
-                    mag_history.cost=mag_history.cost(end-anal_opts.history.shots:end,:);
+%                     mag_history.cost=mag_history.cost(end-anal_opts.history.shots:end,:);
                     mag_history.Ns=mag_history.Ns(end-anal_opts.history.shots:end,:);
                 end
                 
@@ -176,34 +176,34 @@ while true
                 
                 pause(0.1)
                 %             saveas(gcf,fullfile(anal_out.dir,'freq_history.png'))
-                stfig('Momentum Transfer Cost History');
-                plot(mag_history.shot_num,...
-                    mag_history.cost',...
-                    'LineWidth',1.5)
-                hold on
-                scatter(mag_history.shot_num,...
-                    mag_history.cost',...
-                    'LineWidth',1.5)
-                hold off 
-                grid on
-                h=gca;
-                grid on    % turn on major grid lines
-                grid minor % turn on minor grid lines
+%                 stfig('Momentum Transfer Cost History');
+%                 plot(mag_history.shot_num,...
+%                     mag_history.cost',...
+%                     'LineWidth',1.5)
+%                 hold on
+%                 scatter(mag_history.shot_num,...
+%                     mag_history.cost',...
+%                     'LineWidth',1.5)
+%                 hold off 
+%                 grid on
+%                 h=gca;
+%                 grid on    % turn on major grid lines
+%                 grid minor % turn on minor grid lines
                 % Set limits and grid spacing separately for the two directions:
                 % Must set major grid line properties for both directions simultaneously:
-                h.GridLineStyle='-'; % the default is some dotted pattern, I prefer solid
-                h.GridAlpha=1;  % the default is partially transparent
-                h.GridColor=[0,0,0]; % here's the color for the major grid lines
-                % Idem for minor grid line properties:
-                h.MinorGridLineStyle='-';
-                h.MinorGridAlpha=0.1;
-                h.MinorGridColor=[0,0,0]; % here's the color for the minor grid lines
-                xlabel('Shot Number')
-                ylabel('Tranfer Cost Function')
-                legend('cost')
+%                 h.GridLineStyle='-'; % the default is some dotted pattern, I prefer solid
+%                 h.GridAlpha=1;  % the default is partially transparent
+%                 h.GridColor=[0,0,0]; % here's the color for the major grid lines
+%                 % Idem for minor grid line properties:
+%                 h.MinorGridLineStyle='-';
+%                 h.MinorGridAlpha=0.1;
+%                 h.MinorGridColor=[0,0,0]; % here's the color for the minor grid lines
+%                 xlabel('Shot Number')
+%                 ylabel('Tranfer Cost Function')
+%                 legend('cost')
                 
                 stfig('External Fraction');
-                num_mask = ~isnan(mag_history.cost)';
+                num_mask = ~isnan(mag_history.shot_num)';
 % %                 plot(mag_history.shot_num(num_mask),1-1./mag_history.trans_frac(num_mask,4),'LineWidth',1.5)
 % %                 hold on
 % %                 scatter(mag_history.shot_num(num_mask),1-1./mag_history.trans_frac(num_mask,4),'LineWidth',1.5)

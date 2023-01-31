@@ -17,7 +17,7 @@
    id="svg9668"
    inkscape:version="1.0.2-2 (e86c870879, 2021-01-15)"
    sodipodi:docname="rarity_tapster_v3.svg"
-   inkscape:export-filename="C:\Users\BEC Machine\cloudstor\PROJECTS\Momentum_Bells_test\figs\rarity_tapster_optical_2.png"
+   inkscape:export-filename="C:\Users\BEC Machine\cloudstor\PROJECTS\Momentum_Bells_test\figs\rarity_tapster_optical_3.png"
    inkscape:export-xdpi="550.0528"
    inkscape:export-ydpi="550.0528">
   <defs
@@ -427,9 +427,9 @@
      inkscape:document-units="mm"
      inkscape:current-layer="layer2"
      showgrid="true"
-     inkscape:window-width="1440"
-     inkscape:window-height="837"
-     inkscape:window-x="-8"
+     inkscape:window-width="3840"
+     inkscape:window-height="2097"
+     inkscape:window-x="1912"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
      inkscape:document-rotation="0"
@@ -887,7 +887,7 @@
    style="font-size:5.64444px;baseline-shift:sub"
    id="tspan1257">1</tspan></tspan></text>
     <g
-       style="display:inline;opacity:0.5;stroke-width:1.00157;stroke-miterlimit:4;stroke-dasharray:none;enable-background:new"
+       style="display:inline;opacity:0.7;stroke-width:1.00157;stroke-miterlimit:4;stroke-dasharray:none;enable-background:new"
        i:rgbTrio="#4F008000FFFF"
        i:dimmedPercent="50"
        i:layer="yes"
@@ -1388,5 +1388,16 @@
          style="font-size:7.05556px;fill:#000000;fill-opacity:1;stroke-width:0.264583">D<tspan
    style="font-size:5.64444px;baseline-shift:sub"
    id="tspan1257-1-9">4</tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:7.05556px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;inline-size:0;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="26.745955"
+       y="173.88388"
+       id="text974-2-86"
+       transform="translate(31.658248,37.219189)"><tspan
+         id="tspan972-73-9"
+         x="26.745955"
+         y="173.88388"
+         style="font-size:7.05556px;fill:#000000;fill-opacity:1;stroke-width:0.264583">R</tspan></text>
   </g>
 </svg>

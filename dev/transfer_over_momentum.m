@@ -1,6 +1,7 @@
 num_pts=200;
 opts.control=0;
 opts.timer=0;
+opts.diffraction_order=9;
 %gaussian pulse
 % [17 0.0235 0.27 -0.085*2*2*pi, 0.00]
 % [17 0.03 0.31 -0.0849*2*2*pi, 0.00] %cost = 4.299
@@ -36,10 +37,16 @@ opts.timer=0;
 %hamming sinc pulse
 % [17.5 6.0 0.5151 -0.0849*2*2*pi 0.00]
 
-opts.time_span = 25;
-%
-ks = [linspace(0,2,num_pts).*-4.101078618245948e+06 linspace(2,4,num_pts).*-4.101078618245948e+06];
-ys=transfer_percentage([17 0.05 0.405 -0.0849*2*pi, 0.00],[9,10,11],opts,ks);
+opts.time_span = 50;
+%-0.0849*2*pi
+ks = [linspace(-2,2,num_pts).*4.101078618245948e+06];% linspace(2,4,num_pts).*-4.101078618245948e+06];
+ys=transfer_percentage([25 sqrt(1/(2*0.05)) 0.405 0, 0.00],[9,10,11],opts,ks);
+params = [25 2.57576 3.56465 0, 0.00];
+params = [25 1 2.5 0, 0.00];
+ys1=transfer_percentage(params,[9,10,11],opts,ks);
+
+% ys=transfer_percentage([25 0.11 2 0, 0.00],[14 15 16],opts,ks);
+%9,10,11
 %% cost
 k = linspace(0,4,num_pts).*-4.101078618245948e+06;
 mask_t =  logical(k<0.25.*-4.101078618245948e+06) & ...
@@ -55,9 +62,15 @@ num_pts=400;
 stfig('transfer over momentum space')
 clf
 % hold on
-plot(ks./-4.101078618245948e+06,abs(ys(:,:)).^2,'linewidth',2)
-% hold on
-
+style= {[0 0.4470 0.7410],[0.8500 0.3250 0.0980],[0.9290 0.6940 0.1250]};
+hold on
+for k= 1:3
+plot(ks./4.101078618245948e+06,abs(ys(:,k)).^2,'-','Color',style{k},'linewidth',2)
+end
+hold on
+for k= 1:3
+plot(ks./4.101078618245948e+06,abs(ys1(:,k)).^2,'--','Color',style{k},'linewidth',2)
+end
 xlabel('$-k/k_0$')
 ylabel('transfer percentage')
 legend('n=-1','n=0','n=+1')
@@ -86,13 +99,25 @@ xlabel('$-k/k_0$')
 ylabel('$\delta$phase/2$\pi$')
 %%
 opts.control=1;
-num_pts=220;
+num_pts=100;
+opts.diffraction_order=9;
 amp_vec=linspace(0.0,4.5,num_pts);
 % linspace(0,4,num_pts).*
 % [17 0.1 0.5 2 -0.0849*2*2*pi 0.000]
-b_matrix = [17.*ones(num_pts,1) 0.07.*ones(num_pts,1) linspace(0.0,1.4,num_pts)' 2.*ones(num_pts,1) -0.0849*2*2*pi.*ones(num_pts,1) 0.00.*ones(num_pts,1)];
+% b_matrix = [17.*ones(num_pts,1) 0.07.*ones(num_pts,1) linspace(0.0,1.4,num_pts)' 2.*ones(num_pts,1) -0.0849*2*2*pi.*ones(num_pts,1) 0.00.*ones(num_pts,1)];
 % b_matrix_gauss = [17.*ones(num_pts,1) 0.05.*ones(num_pts,1) amp_vec' -0.0849*2*2*pi.*ones(num_pts,1) 0.00.*ones(num_pts,1)];
 % b_matrix_gauss = [17.0.*ones(num_pts,1) 0.0156.*ones(num_pts,1) amp_vec' -0.0849*2*2*pi.*ones(num_pts,1) 0.00.*ones(num_pts,1)]; %cost = 1.245
+opts.time_span = 40;
+opts.wr = 0;
+alpha_vec_core = linspace(0.1,5,num_pts);
+amp_vec_core = linspace(0.0,5,num_pts);
+alpha_vec = repmat(alpha_vec_core,[1,num_pts]);
+amp_vec = repelem(amp_vec_core,num_pts);
+
+%-0.0849*2*2*pi
+
+b_matrix_gauss = [20.*ones(num_pts^2,1) alpha_vec' amp_vec' 0.*ones(num_pts^2,1) 0.00.*ones(num_pts^2,1)];
+
 
 ybs=transfer_percentage(b_matrix_gauss,[9,10,11],opts,-4.101078618245948e+06);
 %
@@ -105,6 +130,62 @@ xlabel('amp')
 ylabel('transfer percentage')
 legend('n=-1','n=0','n=+1')
 ylim([0 1])
+%%
+stfig('param space')
+clf
+ytest=reshape(ybs(:,3),[num_pts,num_pts]);
+pcolor(alpha_vec_core,amp_vec_core,abs(ytest).^2)
+hold on
+scatter([2.42424],[3.66364],80,'kx')
+scatter([0.405],[sqrt(1/(2*0.05))],80,'ko')
+xlabel('$\alpha/\hbar$ (s$^{-1}$)')
+ylabel('$\sigma$ ($\mu$s)')
+title('$|C_{-1}(k_0,t_f)|^2=|C_{+1}(-k_0,t_f)|^2$')
+caxis([0 1])
+colorbar
+shading interp
+set(gca,'FontSize',20)
+
+%%
+opts.control=1;
+num_pts=100;
+opts.diffraction_order=9;
+amp_vec=linspace(0.0,4.5,num_pts);
+% linspace(0,4,num_pts).*
+% [17 0.1 0.5 2 -0.0849*2*2*pi 0.000]
+% b_matrix = [17.*ones(num_pts,1) 0.07.*ones(num_pts,1) linspace(0.0,1.4,num_pts)' 2.*ones(num_pts,1) -0.0849*2*2*pi.*ones(num_pts,1) 0.00.*ones(num_pts,1)];
+% b_matrix_gauss = [17.*ones(num_pts,1) 0.05.*ones(num_pts,1) amp_vec' -0.0849*2*2*pi.*ones(num_pts,1) 0.00.*ones(num_pts,1)];
+% b_matrix_gauss = [17.0.*ones(num_pts,1) 0.0156.*ones(num_pts,1) amp_vec' -0.0849*2*2*pi.*ones(num_pts,1) 0.00.*ones(num_pts,1)]; %cost = 1.245
+opts.time_span = 40;
+opts.wr = 1;
+alpha_vec_core = linspace(0.1,5,num_pts);
+amp_vec_core = linspace(0.0,5,num_pts);
+alpha_vec = repmat(alpha_vec_core,[1,num_pts]);
+amp_vec = repelem(amp_vec_core,num_pts);
+
+%-0.0849*2*2*pi
+
+b_matrix_gauss = [20.*ones(num_pts^2,1) ones(num_pts^2,1) alpha_vec'.*amp_vec' 0.*ones(num_pts^2,1) 0.00.*ones(num_pts^2,1) alpha_vec'];
+
+
+ybs=transfer_percentage(b_matrix_gauss,[9,10,11],opts,-4.101078618245948e+06);
+%
+stfig('transfer over parameter space')
+clf
+% hold on
+plot(amp_vec,abs(ybs).^2,'linewidth',2)
+grid on
+xlabel('amp')
+ylabel('transfer percentage')
+legend('n=-1','n=0','n=+1')
+ylim([0 1])
+%%
+figure
+ytest=reshape(ybs(:,3),[num_pts,num_pts]);
+surf(alpha_vec_core.*wr,amp_vec_core.*alpha_vec_core,abs(ytest).^2)
+colorbar
+shading interp
+xlabel('$')
 %%
 opts.control=1;
 alpha_vec = linspace(0.01,1,num_pts)';

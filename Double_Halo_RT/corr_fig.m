@@ -16,7 +16,8 @@ hebec_constants
 combined_struct = @(S,T) cell2struct(cellfun(@vertcat,struct2cell(S),struct2cell(T),'uni',0),fieldnames(S),1);
 
 %% Import directories
-opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
+% opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
+opts.data_root = 'Z:\EXPERIMENT-DATA\2020_Momentum_Bells\full_interferometer\rarity-tapster\mid_trap\initial_signal\main_data';
 % opts.data_root = 'E:\he_bec_data_recovery\';
 % opts.data_root = 'C:\Users\BEC Machine\Documents\DATA_BACKUP\';
 %  opts.data_root = 'Z:\EXPERIMENT-DATA\2020_Momentum_Bells\';
@@ -1078,6 +1079,31 @@ if do_g2
     clf
     s_g2 = g2_raw.g34.vec(:,l_indx)+g2_raw.g12.vec(:,l_indx);
     x_g2 = g2_raw.g23.vec(:,l_indx)+g2_raw.g14.vec(:,l_indx);
+
+htemp1 = errorbar(nan,nan,1,'-o','CapSize',0,'MarkerSize',5,'LineWidth',2.5,'Color',colors_main(3,:),'MarkerFaceColor',colors_main(2,:));
+hold on
+htemp2 = errorbar(nan,nan,1,'-s','CapSize',0,'MarkerSize',5,'LineWidth',2.5,'Color',colors_main(1,:),...
+    'MarkerFaceColor',colors_main(3,:),'LineWidth',2.5);
+
+
+    
+    xlabel('Global Phase ($\Phi_L+\Phi_R$)')
+    ylabel('Integrated Pair-Correlation')% 'Expected product')
+    fit_2 = @(b,x)  b(1).*cos(2.*x + b(2)) + b(3);
+    fit_s = fitnlm(x,g2_raw.g34.vec(:,l_indx)+g2_raw.g12.vec(:,l_indx),fit_2,[2e-2,0,2e-2],'CoefficientNames',{'Amp','Phase','Offset'})
+    fit_x = fitnlm(x,g2_raw.g14.vec(:,l_indx)+g2_raw.g23.vec(:,l_indx),fit_2,[2e-2,0,2e-2],'CoefficientNames',{'Amp','Phase','Offset'})
+    
+    fit_b = fitnlm([x,x+pi./2],[s_g2;x_g2],fit_2,[2e-2,0,2e-2],'CoefficientNames',{'Amp','Phase','Offset'})
+    [ysamp_val_1,ysamp_ci_1]=predict(fit_b,xp','Prediction','curve','Alpha',1-erf(1/sqrt(2))); %'Prediction','observation'
+    
+    
+    [ysamp_val_2,ysamp_ci_2]=predict(fit_b,xp'+pi/2,'Prediction','curve','Alpha',1-erf(1/sqrt(2))); %'Prediction','observation'
+    
+    fill([2.*xp 2.*fliplr(xp)],[ysamp_ci_1(:,1); fliplr(ysamp_ci_1(:,2))].',[1,0.4,0.4]*0.75,'FaceAlpha',0.6,'EdgeAlpha',0);
+    fill([2.*xp 2.*fliplr(xp)],[ysamp_ci_2(:,1); fliplr(ysamp_ci_2(:,2))].',[1,1,1]*0.75,'FaceAlpha',1,'EdgeAlpha',0);
+    hp1 = plot(2.*xp,ysamp_val_1,'r','LineWidth',1.5);
+    hp2 = plot(2.*xp,ysamp_val_2,'k--','LineWidth',1.5);
+
     if ~do_g2_err
     ht=errorbar(2.*x,s_g2,sqrt(wt.^2+wb.^2),'o','CapSize',0,'MarkerSize',5,'LineWidth',2.5,'Color',colors_main(3,:),'MarkerFaceColor',colors_main(2,:));
     x_g2_unc = sqrt(wt.^2+wb.^2);
@@ -1094,22 +1120,11 @@ if do_g2
     hbt2=errorbar(2.*x,x_g2,sqrt(wbt2_n.^2+wbt1_n.^2),sqrt(wbt1_p.^2+wbt2_p.^2),'s','CapSize',0,'MarkerSize',5,'LineWidth',2.5,'Color',colors_main(1,:),...
     'MarkerFaceColor',colors_main(3,:),'LineWidth',2.5);
     end
-    xlabel('Global Phase ($\Phi_L+\Phi_R$)')
-    ylabel('Integrated Pair-Correlation')% 'Expected product')
-    fit_2 = @(b,x)  b(1).*cos(2.*x + b(2)) + b(3);
-    fit_s = fitnlm(x,g2_raw.g34.vec(:,l_indx)+g2_raw.g12.vec(:,l_indx),fit_2,[2e-2,0,2e-2],'CoefficientNames',{'Amp','Phase','Offset'})
-    fit_x = fitnlm(x,g2_raw.g14.vec(:,l_indx)+g2_raw.g23.vec(:,l_indx),fit_2,[2e-2,0,2e-2],'CoefficientNames',{'Amp','Phase','Offset'})
-    
-    fit_b = fitnlm([x,x+pi./2],[s_g2;x_g2],fit_2,[2e-2,0,2e-2],'CoefficientNames',{'Amp','Phase','Offset'})
-    [ysamp_val,ysamp_ci]=predict(fit_b,xp','Prediction','curve','Alpha',1-erf(1/sqrt(2))); %'Prediction','observation'
-    plot(2.*xp,ysamp_val,'r','LineWidth',1.5)
-    
-    [ysamp_val,ysamp_ci]=predict(fit_b,xp'+pi/2,'Prediction','curve','Alpha',1-erf(1/sqrt(2))); %'Prediction','observation'
-    plot(2.*xp,ysamp_val,'k--','LineWidth',1.5)
+
     ylim([0 max(max(x_g2),max(s_g2)).*1.2])
     xlim([0 max(xp).*2])
     set(gca,'FontSize',17)
-    legend('$C_{14}=C_{32}$','$C_{12}=C_{34}$')
+    legend([htemp1 htemp2],{'$C_{14}=C_{32}$','$C_{12}=C_{34}$'})
     
     %visibilities
     [vx,ix] = max(x_g2);
@@ -1130,6 +1145,7 @@ if do_g2
     string_value_with_unc(V_fit,dV_fit,'type','b')
     
     stfig('E against phase');
+
     fit = @(b,x)  b(1).*cos(2.*x + b(2));    % Function to fit
     if do_g2_err
     best_fit_E = fitnlm(x,E_raw,fit,[1,0.544],'Weight',1./E_err,'CoefficientNames',{'Amp','Phase'}) %one cos [1.229,1,0.8088,0.906] two cos [1.829,0.01,0.8088,0.906,1.0,0.406]
@@ -1140,10 +1156,17 @@ if do_g2
     
     clf
     hold on
-    plot(2.*xp,ysamp_val,'r','LineWidth',1.5)
+        xt = linspace(0,9);
+    x2 = [xt,fliplr(xt)];
+    y2 = [ones(size(xt)).*1./sqrt(2),ones(size(xt))];
+    y3 = [ones(size(xt)).*-1./sqrt(2),-ones(size(xt))];
+    p1 = fill(x2,y2, [1,1,1]*0.82,'FaceAlpha',1,'EdgeAlpha',0);
+    p2 = fill(x2,y3,[1,1,1]*0.82,'FaceAlpha',1,'EdgeAlpha',0);
+    p3 = fill([2.*xp 2.*fliplr(xp)],[ysamp_ci(:,1); fliplr(ysamp_ci(:,2))].',[0.5,0.5,1]*0.7,'FaceAlpha',1,'EdgeAlpha',0);
+    f1 = plot(2.*xp,ysamp_val,'r','LineWidth',1.5);
         drawnow
         yl=ylim*1.1;
-    plot(2.*xp,ysamp_ci,'color',[1,1,1].*0.5)
+%     plot(2.*xp,ysamp_ci,'color',[1,1,1].*0.5)
     colors_main=[[88,113,219];[60,220,180]./1.75;[88,113,219]./1.7]./255;
     %     errorbar(x,y,w,'o','CapSize',0,'MarkerSize',5,'Color',colors_main(3,:),...
     %         'MarkerFaceColor',colors_main(2,:),'LineWidth',2.5)
@@ -1163,6 +1186,10 @@ if do_g2
     set(gca,'FontSize',19)
     ylim([-1 1])
     xlim([0 2.*1.1.*max(phi_vec)])
+    set(gca,'Layer','top')
+    text(0.1,0.8,'Nonlocal','FontSize',17)
+    text(0.1,0.62,'Local','FontSize',17)
+    legend([hE f1 p3],{'Exp','Fit','Unc'})
     
     %probability plot
     x_P = x_g2./(s_g2+x_g2);
@@ -1220,10 +1247,13 @@ wt = g2_raw.g12.vec(:,:).*g2_raw.g12.poisson_unc(:,:);
 mdl = @(b,x) rob_E(b(2).*[x,x,x]',b(1),pi)';
 strt_pt = [10,1];
 % w = 1./E_unc(:,ii).^2;
+
+mdl = @(b,x) rob_E(b(2).*[x,x,x]',b(1),1.052-9.216560663420035e-01)';
 mdl_fit=fitnlm(lambda_vec,E_lambda(l_mask,phi_indx),mdl,strt_pt,'Weight',1./E_unc(l_mask,phi_indx))
 xp=linspace(0,l_lim,1000);
 [ysamp_val,ysamp_ci]=predict(mdl_fit,xp','Prediction','curve','Alpha',1-erf(1/sqrt(2)));
 
+mdl = @(b,x) rob_E(b(2).*[x,x,x]',b(1),4.194-9.216560663420035e-01)';
 mdl_fit_2=fitnlm(lambda_vec,E_lambda(l_mask,phi_indx_2),mdl,strt_pt,'Weight',1./E_unc(l_mask,phi_indx_2))
 [ysamp_val_2,ysamp_ci_2]=predict(mdl_fit_2,xp','Prediction','curve','Alpha',1-erf(1/sqrt(2)));
 
@@ -1232,9 +1262,15 @@ stfig('E vs lambda');
 clf
 colors_main=[[88,113,219];[60,220,180]./1.75;[88,113,219]./1.7];
 colors_main=colors_main./255;
+errorbar(nan.*lambda_vec,nan.*E_lambda(l_mask,phi_indx),E_unc(l_mask,phi_indx),'-ro','CapSize',0,'MarkerSize',5,'Color',colors_main(3,:),...
+    'MarkerFaceColor',colors_main(2,:),'LineWidth',2.5)%
+hold on
+errorbar(nan.*lambda_vec,nan.*E_lambda(l_mask,phi_indx_2),E_unc(l_mask,phi_indx_2),'--ko','CapSize',0,'MarkerSize',5,'Color',colors_main(1,:),...
+    'MarkerFaceColor',colors_main(3,:),'LineWidth',2.5)
+
 errorbar(scale_l.*lambda_vec,E_lambda(l_mask,phi_indx),E_unc(l_mask,phi_indx),'o','CapSize',0,'MarkerSize',5,'Color',colors_main(3,:),...
     'MarkerFaceColor',colors_main(2,:),'LineWidth',2.5)
-hold on
+% hold on
 errorbar(scale_l.*lambda_vec,E_lambda(l_mask,phi_indx_2),E_unc(l_mask,phi_indx_2),'o','CapSize',0,'MarkerSize',5,'Color',colors_main(1,:),...
     'MarkerFaceColor',colors_main(3,:),'LineWidth',2.5)
 
@@ -1242,7 +1278,8 @@ errorbar(scale_l.*lambda_vec,E_lambda(l_mask,phi_indx_2),E_unc(l_mask,phi_indx_2
 hold on
 plot(scale_l.*xp,ysamp_val,'r','LineWidth',1.5)
 plot(scale_l.*xp,ysamp_val_2,'k--','LineWidth',1.5)
-legend(['$\Phi=',num2str(2.*x(phi_indx)),'$'],['$\Phi=',num2str(2.*x(phi_indx_2)),'$'])
+lgd = legend(['$\Phi=',num2str(2.*x(phi_indx)),'$'],['$\Phi=',num2str(2.*x(phi_indx_2)),'$']);
+lgd.FontSize = 18;
 
 %     drawnow
 %     yl=ylim*1.1;

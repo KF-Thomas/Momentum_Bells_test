@@ -11,7 +11,7 @@ anal_opts.tdc_import.file_name='d';
 anal_opts.tdc_import.force_load_save=false;   %takes precidence over force_reimport
 anal_opts.tdc_import.force_reimport=true;
 anal_opts.tdc_import.force_forc=false;
-anal_opts.tdc_import.dld_xy_rot=0.61;
+anal_opts.tdc_import.dld_xy_rot=0.93;%0.61;
 
 tmp_xlim=[-35e-3, 35e-3];     %tight XY lims to eliminate hot spot from destroying pulse widths
 tmp_ylim=[-35e-3, 35e-3];
@@ -43,7 +43,7 @@ anal_opts.trig_ai_in=20;
 % anal_opts.osc_fit.tlim=[0.86,1.08];
 % anal_opts.osc_fit.dimesion=2; %Sel ect coordinate to bin. 1=X, 2=Y.
 
-anal_opts.history.shots=80;
+anal_opts.history.shots=30;
 
 hebec_constants
 const.fall_distance = 8.52925545e-01;
@@ -72,7 +72,7 @@ anal_out.dir=[fullfile(anal_opts.tdc_import.dir,'out','monitor'),filesep];
 if (exist(anal_out.dir, 'dir') == 0), mkdir(anal_out.dir); end
 anal_opts.global.out_dir=anal_out.dir;
 
-frac_opts.num_lim = 1.6e3;
+frac_opts.num_lim = 1.0e3;
 frac_opts.transfer_state = 'mag';
 frac_opts.bounds = [-0.03, 0.03; -0.03, 0.03];%spacecial bounds
 
@@ -113,6 +113,8 @@ while true
     else
         try
             batch_data.mcp_tdc=import_mcp_tdc_data(anal_opts.tdc_import);
+            [masked_data]=hotspot_mask(batch_data);
+            batch_data.mcp_tdc.counts_txy = masked_data.mcp_tdc.masked.counts_txy;
             %just to give me a logical vector
             batch_data.mcp_tdc.all_ok=batch_data.mcp_tdc.num_counts>1e3;
 %             batch_data.mcp_tdc.all_ok(batch_data.mcp_tdc.all_ok)=...

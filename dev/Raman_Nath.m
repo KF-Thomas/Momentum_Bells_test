@@ -54,7 +54,7 @@ end
 end
 
 function amp = gaussian_pulse(t,t0,alpha)
-amp = exp(-alpha*(t-t0)^2);
+amp = exp(-(t-t0)^2./(2.*alpha.^2));
 end
 
 function amp = super_gaussian_pulse(t,t0,alpha,n)

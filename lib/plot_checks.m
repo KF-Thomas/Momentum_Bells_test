@@ -19,14 +19,14 @@ bottom_halo.m = halo_mode_occupancy(bottom_halo,opts.mode_num);
 top_halo.g2 = 2 + 1./top_halo.m;
 bottom_halo.g2 = 2 + 1./bottom_halo.m;
 
-v_top_zxy = cell2mat(top_halo.counts_vel_norm);
-v_top_zxy_unnorm = cell2mat(top_halo.counts_vel);
+v_top_zxy = cell2mat(top_halo.counts_vel_norm.');
+v_top_zxy_unnorm = cell2mat(top_halo.counts_vel.');
 r_dist_top = sqrt(v_top_zxy(:,1).^2+v_top_zxy(:,2).^2+v_top_zxy(:,3).^2);
 r_dist_top_unnorm = sqrt(v_top_zxy_unnorm(:,1).^2+v_top_zxy_unnorm(:,2).^2+v_top_zxy_unnorm(:,3).^2);
 N_top = top_halo.num_counts;
 
-v_btm_zxy = cell2mat(bottom_halo.counts_vel_norm);
-v_btm_zxy_unnorm = cell2mat(bottom_halo.counts_vel);
+v_btm_zxy = cell2mat(bottom_halo.counts_vel_norm.');
+v_btm_zxy_unnorm = cell2mat(bottom_halo.counts_vel.');
 r_dist_btm = sqrt(v_btm_zxy(:,1).^2+v_btm_zxy(:,2).^2+v_btm_zxy(:,3).^2);
 r_dist_btm_unnorm = sqrt(v_btm_zxy_unnorm(:,1).^2+v_btm_zxy_unnorm(:,2).^2+v_btm_zxy_unnorm(:,3).^2);
 N_btm = bottom_halo.num_counts;
@@ -487,5 +487,32 @@ colorbar
 ylabel('\(\theta\)')
 xlabel('\(\phi\)')
 title('density')
+
+%%
+stfig('radial density');
+clf
+rad_shift=0.059;
+z_shift_top = [rad_shift.*ones(size(v_top_zxy_unnorm,1),1),zeros(size(v_top_zxy_unnorm,1),2)];
+z_shift_btm = [rad_shift.*ones(size(v_btm_zxy_unnorm,1),1),zeros(size(v_btm_zxy_unnorm,1),2)];
+
+
+[theta_top,rxy_top] = cart2pol(v_top_zxy_unnorm(:,2),v_top_zxy_unnorm(:,3));
+combined_vzr = [v_top_zxy_unnorm(:,1)+z_shift_top(:,1),rxy_top;...
+        v_top_zxy_unnorm(:,1)+z_shift_top(:,1),-rxy_top].*1e3;
+    
+ndhist(combined_vzr(:,[2,1]),'bins',4,'filter');
+%caxis([0 4])
+    hold on
+    plot(zeros(1,1000),linspace(-0.14,0.14,1000).*1e3,'k-','LineWidth',3.8)
+    xlabel('$v_r$ (mm/s)')
+    %ylabel('$v_z$ (mm/s)')
+    colormap('default')
+    axis equal
+    %caxis([0 9])
+    ylim([-0.13,0.12].*1e3)
+    ax = gca;
+k = 0.02;%
+ax.TickLength = [k, k]; % Make tick marks longer.
+ax.LineWidth = 100*k; % Make tick marks thicker.
 
 end

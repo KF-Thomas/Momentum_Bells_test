@@ -9,23 +9,34 @@ core_folder = fullfile(fileparts(this_folder), 'Core_BEC_Analysis\');
 addpath(genpath(core_folder));
 set(groot, 'DefaultTextInterpreter', 'latex')
 %% Import directory
-% opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
- opts.data_root = 'Z:\EXPERIMENT-DATA\2020_Momentum_Bells\';
+opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
+%  opts.data_root = 'Z:\EXPERIMENT-DATA\2020_Momentum_Bells\';
 % opts.data_root = 'C:\Users\BEC Machine\Documents\DATA_BACKUP\';
+
 %single halo (btm)
 % data_folder='single_halo_data\20210316_k=-1,-2_various_tests\20210316_k=-1,-2_test_5';
+% data_folder = '20220204_k=-1,-2_rough_halo';
+data_folder = '20220207_k=-1,-2_rough_halo_2';
 
-% data_folder='20211206_scaning_across_freq\bs_high_120_kHz_evap_0_844_MHz';
 %double halo
 % data_folder='20211027_validating_bragg_pulses\source pulse';
-% data_folder='20211206_scaning_across_freq\norm_0_839_MHz';
+
 
 %single halo (top)
 % data_folder='20211206_scaning_across_freq\norm_0_844_MHz';
+% % data_folder='20211206_scaning_across_freq\norm_0_839_MHz';
+
+% bs
+% data_folder='20211206_scaning_across_freq\bs_high_120_kHz_evap_0_844_MHz';
+
+%mirror
+% data_folder='k=-1,-2_halo';
 
 opts.import.dir = fullfile(opts.data_root, data_folder);
 opts.import.force_reimport = true;
 opts.import.force_cache_load = ~opts.import.force_reimport;
+
+% opts.import.shot_num=100:278;
 
 
 %% Chose which halo(s) to analyse

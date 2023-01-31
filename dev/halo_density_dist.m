@@ -57,11 +57,11 @@ opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
 % data_folder='20210218_bragg_pulses_at_1200_mus\splitter_3';
 % data_folder='20210312_bragg_scan\1200_mus_delay\8_111_kHz';
 % data_folder='20210310_bragg_pulse_test\800mus_mirror_v5';
-% data_folder='';
-data_folder='20211206_scaning_across_freq\norm_0_844_MHz';
+data_folder='';
+% data_folder='20211206_scaning_across_freq\norm_0_844_MHz';
 % data_folder='20211027_validating_bragg_pulses\bs_2';
 opts.import.dir = fullfile(opts.data_root, data_folder);
-opts.import.force_reimport = false;
+opts.import.force_reimport = true;
 opts.import.force_cache_load = ~opts.import.force_reimport;
 
 %validating first run
@@ -200,7 +200,7 @@ hebec_constants
 %% find centers
 opts.cent.visual = 0; %from 0 to 2
 opts.cent.savefigs = 0;
-opts.cent.correction = 1;
+opts.cent.correction = 0;
 opts.cent.correction_opts.plots = 0;
 
 opts.cent.top.visual = 0; %from 0 to 2

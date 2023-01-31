@@ -5,7 +5,7 @@
 % BestSolHistory=differential_evolution(temp_func,3,[0          0     0],[-4,-4,-4],[4,4,4])
 
 
-temp_func = @(x) -halo_cent_opt(data_masked_halo,bec_masked_halo,x,0,[-0.6,0.6]);
+temp_func = @(x) -halo_cent_opt(data_masked_halo,bec_masked_halo,x,1,[-0.9,0.9]);
 BestSolHistory=differential_evolution(temp_func,3,[0          0     0],[-4,-4,-4],[4,4,4])
 
 % 

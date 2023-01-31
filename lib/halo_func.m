@@ -19,7 +19,7 @@ opts.logfile = fullfile(opts.import.dir, 'log_LabviewMatlab.txt');
 opts.label = data_folder;
 opts.tag = 0;
 opts.full_out = false;
-opts.bounds = [-0.03, 0.03; -0.03, 0.03];%spacecial bounds
+opts.bounds = [-0.038, 0.038; -0.038, 0.038];%spacecial bounds
 opts.shot_bounds = [];
 combined_struct = @(S,T) cell2struct(cellfun(@vert_or_horz_cat,struct2cell(S),struct2cell(T),'uni',0),fieldnames(S),1);
 % if ~exist(opts.fig_dir, 'dir')
