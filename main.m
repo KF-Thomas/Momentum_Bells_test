@@ -11,7 +11,7 @@ opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
 % opts.data_root = 'C:\Users\kieran\Documents\LOCAL-DATA\';
 % opts.data_root = 'C:\Users\BEC Machine\Documents\DATA_BACKUP\';
 
-data_folder = '';%'20221212_new_plates_halo_test_4';
+data_folder = '20221212_new_plates_halo_test_4';
 % data_folder = '';%'20221102_new_plates_halo_test';
 
 % data_folder = 'full_interferometer\rarity-tapster\tighter_trap\20210412_k=0,-1,-2_rt_scan_4';

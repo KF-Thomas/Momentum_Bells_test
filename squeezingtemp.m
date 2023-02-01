@@ -1,4 +1,4 @@
-function out=squeezing(halo_centered_cells,isverbose)
+function out=squeezingtemp(halo_centered_cells,isverbose)
 %======================================90char=============================================
 %+++++++++++++++++++++++++++++++++++++++ABOUT+++++++++++++++++++++++++++++++++++++++++++++
 % new file 1/2/23 - M.W
@@ -6,7 +6,7 @@ function out=squeezing(halo_centered_cells,isverbose)
 %calulates squezing
 %inputs 
     %cell array for eahc file containing Z,X,Y counts
-    %isverbose = 1 displays some info, =0 does not. 
+    %isverbose - ? what is this for ?
 %outputs
     %a cell that contains two matrices, the first contains what is needed
     %for the sqz angle plot (angle,variance,variance_se)
@@ -21,7 +21,7 @@ function out=squeezing(halo_centered_cells,isverbose)
 
 
 % ref system
-% BEC's are at the poles
+% bec's are at the poles
 % azimuthal angle is arround the equator (zero to 2 pi)
 % inclination is angle from the poles (which is zero inclination)(zero to pi)
 % this was chosen to reduce the wrapping problems arround zero/2 pi 
@@ -67,13 +67,12 @@ halo_centered_cells=halo_centered_cells(~cellfun('isempty',halo_centered_cells))
 % create the bins
 %bit hacky to create bins that dont wrap across 0,2pi
 bin_centers_azm=wrapTo2Pi(linspace(range_azm(1),range_azm(2),steps_azm+1)-range(range_azm)/(2*steps_azm));
-bin_centers_azm=bin_centers_azm(2:end); %first and last elements are separated by 2pi and we only need one of them
-
-%pairs containing start and end of each bin
+bin_centers_azm=bin_centers_azm(2:end);
 bin_pairs_azm=transpose([wrapTo2Pi(bin_centers_azm-bin_width_azm/2) ; wrapTo2Pi(bin_centers_azm+bin_width_azm/2)]);
+%bin_centers_azm/pi
+%bin_pairs_azm/pi
 
-
-if mirror_azm % ? not sure what this does ?
+if mirror_azm
     bin_centers_azm=[bin_centers_azm, bin_centers_azm+pi];
     bin_pairs_azm=[bin_pairs_azm;bin_pairs_azm+pi];
 end
@@ -81,38 +80,37 @@ end
 bin_centers_elev=wrapTo2Pi(linspace(range_elev(1),range_elev(2),steps_elev+1)-range(range_elev)/(2*steps_elev));
 bin_centers_elev=bin_centers_elev(2:end);
 bin_pairs_elev=transpose([wrapTo2Pi(bin_centers_elev-bin_width_elev/2) ; wrapTo2Pi(bin_centers_elev+bin_width_elev/2)]);
+%bin_centers_elev/pi
+%bin_pairs_elev/pi
 
 
 % mask=mask_rad & halo_azm>window_azm(1) & halo_azm<window_azm(2);
 % num_origin=sum(mask);
 
 if isverbose
-disp('binning') %indicate that binning is complete
+disp('binning')
 end
-
-% convert halo to spherical coordinates and count atoms in each bin
-% halo_counts=[]; %not used
-% halo_centered_spherical={}; %not used
-
-angle_counts={}; %stores number of counts in each bin for each shot. Each element is an array containing the shot number, azm/elev bin centres and counts
-
+halo_counts=[];
+angle_counts={};
+halo_centered_spherical={};
 for n=1:size(halo_centered_cells,2)
     angle_counts_file={};
     single_halo=halo_centered_cells{n};
     
     [halo_radial,halo_azm,halo_elev]=ConvToSph(single_halo);
     
+%     halo_radial=sqrt(single_halo(:,1).^2+single_halo(:,2).^2+single_halo(:,3).^2);
+%     halo_azm=atan2(single_halo(:,2),single_halo(:,3))+pi;
+%     halo_elev=acos(single_halo(:,1)./halo_radial);
+    
     %halo_centered_spherical{n} =[halo_radial,halo_azm,halo_elev];
     %[halo_radial,halo_azm/pi,halo_elev/pi]
     %mask_rad=halo_radial>radial_min & halo_radial<radial_max;
     %halo_counts(n)=sum(mask_rad);
-    
     %launch into the nested loop of bining
     for m=[1:size(bin_pairs_azm,1)]
         for p=[1:size(bin_pairs_elev,1)]
-            %count the number of atoms in bin m,p
         counts=sum(halo_azm>bin_pairs_azm(m,1) & halo_azm<bin_pairs_azm(m,2)  & halo_elev>bin_pairs_elev(p,1) & halo_elev<bin_pairs_elev(p,2)); %mask_rad
-        %store this number in 
         angle_counts_file{m,p}=[n,bin_centers_azm(m),bin_centers_elev(p),counts];        
         end
     end
@@ -120,93 +118,14 @@ for n=1:size(halo_centered_cells,2)
 end
 
 
-%now we have the bins we can find the normalized number vairance
+%now i have the bins it is time to find the normalized number vairance
 %between them as defined in http://arxiv.org/pdf/1008.0845.pdf
 
-num_bins = size(angle_counts{1},1);
-%all possible combinations of two bins is given by
-index_combs=nchoosek(1:num_bins,2);
+%all possible combinations of bins is given by
+index_combs=nchoosek(1:size(angle_counts{1},1),2);
 if isverbose
     disp(['number of combinations of bins ',int2str(size(index_combs,1))]);
 end
-
-%exclude combinations if the two bins overlap (these will have artificially
-%low variance)
-%index_combs indexes the bins by number, as azm increases then elev (from
-%the for loop that produces angle_counts)
-% if we have m azimuthal sections and p elev sections, then the nth bin is
-% the one with the (n mod m) azm section and the ceiling(n/m) elev section
-
-%slow method
-%to make it faster - use bin_width to tell how many adjacent bins overlap
-
-if bin_width_azm > range(range_azm)/steps_azm || bin_width_elev > range(range_elev)/steps_elev %first check if bins widths are big enough to overlap
-    if isverbose
-        disp('accounting for overlapping bins')
-    end
-    
-    %number of overlapping bins
-    num_overlapping_azm = bin_width_azm/(range(range_azm)/steps_azm) - 1
-    num_overlapping_elev = bin_width_elev/(range(range_elev)/steps_elev) - 1
-    
-    %delete overlapping bins
-    overlapping_bins=[];
-    for n = 1:size(index_combs,1)
-        if index_combs(n,2)-index_combs(n,1)<=num_overlapping_azm && mod(index_combs(n,1),steps_azm)~=0 %make this more sophisticated to account for m and p, and elev
-            %if there are m=steps_azm bins in azm direction, then bin
-            %numbering swaps at multiples of m. So bins 1:m are adjacent in azm direction, m and m+1 are not
-            overlapping_bins(end+1)= n;
-        end
-    end
-    index_combs = removerows(index_combs,'ind',overlapping_bins); %check that this works
-    if isverbose
-        disp(['number of combinations of bins (overlaps removed)',int2str(size(index_combs,1))]);
-    end
-end
-
-%takes forever
-%don't need all 6 in index_combs_coords
-% or: use bin_width to determine how many adjacent ones overlap and go
-% through the list to remove those instead.
-% bin_list = angle_counts{1}(:,[2,3]); %list of centre coordinates of all bins
-% if bin_width_azm > range(range_azm)/steps_azm || bin_width_elev > range(range_elev)/steps_elev %first check if bins widths are big enough to overlap
-%     if isverbose
-%         disp('accounting for overlapping bins')
-%     end
-%     index_combs_coords = zeros(size(index_combs,1),6);
-%     for n = 1:size(index_combs,1)
-%         index_combs_coords(n,:)= [index_combs(n,:) bin_list(index_combs(n,1),:) bin_list(index_combs(n,2),:)];
-%     end
-%     %go through and check if they overlap
-%     overlapping_bins = [];
-%     for n = 1:size(index_combs,1)
-%         i_azm_center = index_combs_coords(n,3);
-%         j_azm_center = index_combs_coords(n,5);
-%         i_elev_center = index_combs_coords(n,4);
-%         j_elev_center = index_combs_coords(n,6);
-% 
-%         i_azm_range = fixed.Interval(i_azm_center-bin_width_azm/2, i_azm_center+bin_width_azm/2,'()');
-%         j_azm_range = fixed.Interval(j_azm_center-bin_width_azm/2, j_azm_center+bin_width_azm/2,'()');
-%         i_elev_range = fixed.Interval(i_elev_center-bin_width_elev/2, i_elev_center+bin_width_elev/2,'()');
-%         j_elev_range = fixed.Interval(j_elev_center-bin_width_elev/2, j_elev_center+bin_width_elev/2,'()');
-%         %open intervals so that they are only flagged as overlapped if
-%         %they share more than the endpoints in common
-% 
-% 
-%         if overlaps(i_azm_range, j_azm_range) && overlaps(i_elev_range, j_elev_range)
-%             % if so, delete the nth entry of index_combs_coords
-%             overlapping_bins(end+1) = n;
-%             % disp(['overlapping bins: ',num2str(index_combs(n,:))]) %check which bins are flagged as overlapping
-%         end    
-%     end
-%     %delete overlapping bins
-%     index_combs = removerows(index_combs,'ind',overlapping_bins); %check that this works
-%     if isverbose
-%         disp(['number of combinations of bins (overlaps removed)',int2str(size(index_combs,1))]);
-%     end
-% end
-
-% number of halos , number of bin combinations, 2
 bin_pairs=zeros(size(halo_centered_cells,1),size(index_combs,1),2);
 
 % old way of rearanging the bins
@@ -225,45 +144,29 @@ bin_pairs=zeros(size(halo_centered_cells,1),size(index_combs,1),2);
 
 %first we rearange the cell output into an array
 %there may be a better way to do this other than a loop but i cant find it
-%predefine array ? is the cell actually used for anything or can we just
-%put stuff straight into angle_counts_mat as they are calculated ?
 if isverbose
-disp('Finding Norm Var ')
+disp('Fiding Norm Var ')
 end
 
-% angle_counts_mat=[];
-% for n=1:size(angle_counts,2) %size(angle-counts,2) is the number of shots
-%     angle_counts_mat(:,:,n)=angle_counts{n};
-% end
-
-%this should be faster
-num_shots = size(angle_counts,2); %check what happens if you have multiple halos
-angle_counts_mat=zeros(num_bins,size(angle_counts{1},2),num_shots);
-for n=1:size(angle_counts,2) %size(angle-counts,2) is the number of shots
+angle_counts_mat=[];
+for n=1:size(angle_counts,2)
     angle_counts_mat(:,:,n)=angle_counts{n};
 end
-%angle_counts_mat [bin number, angle_counts_info, shot]
-%to get counts in bin x, shot n, angle_counts_mat(x,4,n)
+
 
 %this selects the appropriate bins so we have a matix of filex*index in
 %comb list*(bin1,bin2)
-bin_pairs=[angle_counts_mat(index_combs(:,1),4,:), angle_counts_mat(index_combs(:,2),4,:)]; %[counts in bin1, counts in bin2]
-%permute these get desired format: first index = shot, second = bin comb.,
-%third index = which of the two bins in the combination
+bin_pairs=[angle_counts_mat(index_combs(:,1),4,:), angle_counts_mat(index_combs(:,2),4,:)];
+%need to permute these get desired format
 bin_pairs=permute(bin_pairs,[3 1 2]);
 
-
-% %the above is little more that rearangeing values, below is where the norm
-% %var is actualy calculated
-% diffs=(bin_pairs(:,:,1)-bin_pairs(:,:,2));
-% diffs2=(diffs).^2;
-% norm_var=(mean(diffs2,1)-mean(diffs,1).^2)./(mean(bin_pairs(:,:,1))+mean(bin_pairs(:,:,2)));
 
 %the above is little more that rearangeing values, below is where the norm
 %var is actualy calculated
 diffs=(bin_pairs(:,:,1)-bin_pairs(:,:,2));
 diffs2=(diffs).^2;
-norm_var=(mean(diffs2,1,'omitnan')-mean(diffs,1, 'omitnan').^2)./(mean(bin_pairs(:,:,1),'omitnan')+mean(bin_pairs(:,:,2), 'omitnan'));
+norm_var=(mean(diffs2,1)-mean(diffs,1).^2)./(mean(bin_pairs(:,:,1))+mean(bin_pairs(:,:,2)));
+
 
 
 
@@ -280,19 +183,21 @@ for n=[1:size(index_combs,1)]
     elev2=angle_counts{1}(index_combs(n,2),3);
     angle_pairs(n)= acos(sin(elev1)*sin(elev2)*cos(azm1-azm2)+cos(elev1)*cos(elev2));
 end
+norm_mask = norm_var<1.5;
+ang_mask = abs(angle_pairs)/pi>0.02;
+angle_pairs = angle_pairs(norm_mask&ang_mask);
+norm_var = norm_var(norm_mask&ang_mask);
 
-%need to exclude pairs with adjacent bins
-%most efficient way to do this in general? Check if bins overlap, if so don't include them in index_combs 
 
 %now i want to sort through the angle and norm var values, average the
 %norm_var values that have the same angle_pairs
-angle_tol=0.0001;
-uniq_angles=uniquetol(angle_pairs,0.0001);
+angle_tol=0.000001;
+uniq_angles=unique(angle_pairs);%uniquetol(angle_pairs,angle_tol);
 angle_var_sd=zeros(size(uniq_angles,2),3);
 %here i also remove zeros
 for n=1:size(uniq_angles,2)
     matching=norm_var((abs(angle_pairs-uniq_angles(n))<angle_tol) & norm_var~=0);
-    angle_var_sd(n,:)=[uniq_angles(n)/pi, mean(matching),std(matching)/sqrt(size(matching,2))]; %omitnan
+    angle_var_sd(n,:)=[uniq_angles(n)/pi, nanmean(matching),nanstd(matching)/sqrt(size(matching,2))];
 end
 
 if plot_sqz_angle
@@ -320,7 +225,7 @@ norm_var_avg=angle_var_sd(:,1);
 mean_opst_bin=angle_var_sd(angle_var_sd(:,1)==1,2);
 unc_opst_bin=angle_var_sd(angle_var_sd(:,1)==1,3);
 non_opst_bins=angle_var_sd(angle_var_sd(:,1)~=1,2);
-mean_other_bin=mean(non_opst_bins); %omitnan
+mean_other_bin=mean(non_opst_bins);
 min_other_bin=min(non_opst_bins);
 unc_other_bin=std(non_opst_bins)/sqrt(length(mean_other_bin));
 min_opst_bin=min(norm_var(angle_pairs==pi));
