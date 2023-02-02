@@ -1,4 +1,4 @@
-function out=squezing(halo_centered_cells,isverbose)
+function out=squeezing(halo_centered_cells,isverbose)
 %======================================90char=============================================
 %+++++++++++++++++++++++++++++++++++++++ABOUT+++++++++++++++++++++++++++++++++++++++++++++
 %calulates squezing
@@ -33,7 +33,7 @@ function out=squezing(halo_centered_cells,isverbose)
 
 %================================ START USER INPUT=======================================
 
-plot_sqz_bins=0;%plot sqz with bin #
+plot_sqz_bins=1;%plot sqz with bin #
 plot_sqz_angle=1;%plot sqz with angle
 
 
@@ -51,10 +51,10 @@ mirror_azm=0; %use for the mag sensitive halo which you must cut out a region
 range_azm=[0 2]*pi;%whole halo
 %range_azm=[0.25 0.75]*pi;%mag sensitvie halo good bit
 range_elev=[0.0 1]*pi;
-steps_azm=180;
+steps_azm= 10; %180;
 steps_elev=2;
 %defining the width seprately allows for under or over sampling bins
-bin_width_azm=2*range(range_azm)/steps_azm;
+bin_width_azm=range(range_azm)/steps_azm; %2*range(range_azm)/steps_azm;
 bin_width_elev=range(range_elev)/steps_elev;
 
 
@@ -81,7 +81,6 @@ bin_centers_elev=bin_centers_elev(2:end);
 bin_pairs_elev=transpose([wrapTo2Pi(bin_centers_elev-bin_width_elev/2) ; wrapTo2Pi(bin_centers_elev+bin_width_elev/2)]);
 %bin_centers_elev/pi
 %bin_pairs_elev/pi
-
 
 % mask=mask_rad & halo_azm>window_azm(1) & halo_azm<window_azm(2);
 % num_origin=sum(mask);
@@ -187,8 +186,8 @@ end
 
 %now i want to sort through the angle and norm var values, average the
 %norm_var values that have the same angle_pairs
-angle_tol=0.0001;
-uniq_angles=uniquetol(angle_pairs,0.0001);
+angle_tol=0.000001; %angle_tol=0.0001;
+uniq_angles=uniquetol(angle_pairs,angle_tol);
 angle_var_sd=zeros(size(uniq_angles,2),3);
 %here i also remove zeros
 for n=1:size(uniq_angles,2)
@@ -199,14 +198,14 @@ end
 if plot_sqz_angle
     
     figure(10)
-    errorbar(angle_var_sd(:,1),angle_var_sd(:,2),angle_var_sd(:,3),'x')
+    errorbar(angle_var_sd(:,1),angle_var_sd(:,2),angle_var_sd(:,3),'x');
     %title(['Squeezing (',num2str(steps_azm),' azm ',num2str(steps_elev),' elev )']);
     set(gcf,'Color',[1 1 1]);
     xlabel('Angle Between Bins /Pi')
     ylabel('Normalised Variance')
     line([-2 2], [1 1],'Color','red');
-    set(gca,'Xlim',[-0.1 1.1])
-
+    set(gca,'Xlim',[-0.1 1.1]);
+    shg;
 end
 
 %also plot the more traditional type of plot where the x axis is the bin
@@ -237,6 +236,7 @@ if plot_sqz_bins
     xlabel('Bin Pair Number')
     ylabel('Normalised Variance')
     line([0 size(norm_var_rest,2)], [1 1],'Color','red');
+    shg;
 end
 
 out={[angle_var_sd(:,1),angle_var_sd(:,2),angle_var_sd(:,3)],[[mean_opst_bin,unc_opst_bin,min_opst_bin];[mean_other_bin,unc_other_bin,min_other_bin]]};

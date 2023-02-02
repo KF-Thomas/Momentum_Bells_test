@@ -9,3 +9,5 @@ cache/
 *.zip
 *.7z
 scratch_data
+**.DS_Store
+Measuring_Quantum_Effeciency/output_plots

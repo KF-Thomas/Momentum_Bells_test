@@ -6,12 +6,17 @@ core_folder = fullfile(fileparts(this_folder), 'Core_BEC_Analysis\');
 addpath(genpath(core_folder));
 set(groot, 'DefaultTextInterpreter', 'latex')
 %% Import directory
-opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
+% opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
 % opts.data_root = 'Z:\EXPERIMENT-DATA\2020_Momentum_Bells\';
 % opts.data_root = 'C:\Users\kieran\Documents\LOCAL-DATA\';
 % opts.data_root = 'C:\Users\BEC Machine\Documents\DATA_BACKUP\';
+% opts.data_root = '/Users/tonyyan/Documents/_ANU/_He_BEC_Group/data_root_copy_meh';
+opts.data_root = '/Users/tonyyan/Library/CloudStorage/OneDrive-AustralianNationalUniversity/_He_BEC_data_root_copy';
 
-data_folder = '';%'2023130_new_plates_halo_3_halos';%20221212_new_plates_halo_test_4
+
+% data_folder = '';%'2023130_new_plates_halo_3_halos';%20221212_new_plates_halo_test_4
+% data_folder = '20221212_new_plates_halo_test_34_combined_notHe34_just_test_34';
+data_folder = '20221212_new_plates_halo_test_4';
 
 opts.import.dir = fullfile(opts.data_root, data_folder);
 opts.import.force_reimport = false;
@@ -37,7 +42,8 @@ ang_lim = 45;%35;%angular limit in degrees
 plot_dist = true; %do you want to see all the detailed stuff about the halo distributions
 opts.corr_center_check = false; %do you want a sceond check
 
-bec_bounds = {[3.849,3.857],[3.857,3.871],[3.871,3.883],[3.883,3.897]};%{[3.874,3.884],[3.884,3.893]};%{[3.8598,3.871],[3.871,3.8844]};
+% bec_bounds = {[3.849,3.857],[3.857,3.871],[3.871,3.883],[3.883,3.897]};%{[3.874,3.884],[3.884,3.893]};%{[3.8598,3.871],[3.871,3.8844]};
+bec_bounds = {[3.8598,3.871],[3.871,3.8844]};
 t0_factor = 3.8772;
 
 do_bb = 1;%if you want to measure the back to back correlations
@@ -265,7 +271,7 @@ subplot(2,1,2)
 plot(r_hist_un.bin.centers,r_hist_un.counts.smooth,'linewidth',1.5)
 hold on
 %ylimit = max(r_hist_un.counts.smooth);
-plot([0.130159/2 0.130159/2],[-0.1,ylimit.*2],'k-','linewidth',1.5)
+%plot([0.130159/2 0.130159/2],[-0.1,ylimit.*2],'k-','linewidth',1.5)
 %ylim([0 ylimit.*1.1])
 xlabel('r')
 ylabel('Freq')
