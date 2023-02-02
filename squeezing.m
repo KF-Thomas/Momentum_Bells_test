@@ -44,9 +44,9 @@ plot_sqz_angle=1;%plot sqz with angle
 mirror_azm=0; %use for the mag sensitive halo which you must cut out a region ??
 
 range_azm=[0 2]*pi;%azimuthal range for bins. to look at whole halo, [0 2]*pi
-range_elev=[0.0 1]*pi;%Elevation range. whole halo [0.0 1]*pi
+range_elev= [0 1]*pi; %[0.0 1]*pi;%Elevation range. whole halo [0.0 1]*pi
 
-steps_azm=180; %number of bins in azimuthal direction
+steps_azm=4; %number of bins in azimuthal direction
 steps_elev=2; %number of bins in elev direction
 
 %defining the width seprately allows for under or over sampling bins
@@ -132,79 +132,13 @@ end
 
 %exclude combinations if the two bins overlap (these will have artificially
 %low variance)
-%index_combs indexes the bins by number, as azm increases then elev (from
-%the for loop that produces angle_counts)
-% if we have m azimuthal sections and p elev sections, then the nth bin is
-% the one with the (n mod m) azm section and the ceiling(n/m) elev section
-
-%slow method
-%to make it faster - use bin_width to tell how many adjacent bins overlap
-
-if bin_width_azm > range(range_azm)/steps_azm || bin_width_elev > range(range_elev)/steps_elev %first check if bins widths are big enough to overlap
+if bin_width_azm > range(range_azm)/steps_azm || bin_width_elev > range(range_elev)/steps_elev 
     if isverbose
-        disp('accounting for overlapping bins')
+        disp(['deleting overlapping bins'])
     end
-    
-    %number of overlapping bins
-    num_overlapping_azm = bin_width_azm/(range(range_azm)/steps_azm) - 1
-    num_overlapping_elev = bin_width_elev/(range(range_elev)/steps_elev) - 1
-    
-    %delete overlapping bins
-    overlapping_bins=[];
-    for n = 1:size(index_combs,1)
-        if index_combs(n,2)-index_combs(n,1)<=num_overlapping_azm && mod(index_combs(n,1),steps_azm)~=0 %make this more sophisticated to account for m and p, and elev
-            %if there are m=steps_azm bins in azm direction, then bin
-            %numbering swaps at multiples of m. So bins 1:m are adjacent in azm direction, m and m+1 are not
-            overlapping_bins(end+1)= n;
-        end
-    end
-    index_combs = removerows(index_combs,'ind',overlapping_bins); %check that this works
-    if isverbose
-        disp(['number of combinations of bins (overlaps removed)',int2str(size(index_combs,1))]);
-    end
+    index_combs = delete_overlapping_bins(index_combs, steps_azm, steps_elev, bin_width_azm, bin_width_elev, range_azm, range_elev);
+    index_combs
 end
-
-%takes forever
-%don't need all 6 in index_combs_coords
-% or: use bin_width to determine how many adjacent ones overlap and go
-% through the list to remove those instead.
-% bin_list = angle_counts{1}(:,[2,3]); %list of centre coordinates of all bins
-% if bin_width_azm > range(range_azm)/steps_azm || bin_width_elev > range(range_elev)/steps_elev %first check if bins widths are big enough to overlap
-%     if isverbose
-%         disp('accounting for overlapping bins')
-%     end
-%     index_combs_coords = zeros(size(index_combs,1),6);
-%     for n = 1:size(index_combs,1)
-%         index_combs_coords(n,:)= [index_combs(n,:) bin_list(index_combs(n,1),:) bin_list(index_combs(n,2),:)];
-%     end
-%     %go through and check if they overlap
-%     overlapping_bins = [];
-%     for n = 1:size(index_combs,1)
-%         i_azm_center = index_combs_coords(n,3);
-%         j_azm_center = index_combs_coords(n,5);
-%         i_elev_center = index_combs_coords(n,4);
-%         j_elev_center = index_combs_coords(n,6);
-% 
-%         i_azm_range = fixed.Interval(i_azm_center-bin_width_azm/2, i_azm_center+bin_width_azm/2,'()');
-%         j_azm_range = fixed.Interval(j_azm_center-bin_width_azm/2, j_azm_center+bin_width_azm/2,'()');
-%         i_elev_range = fixed.Interval(i_elev_center-bin_width_elev/2, i_elev_center+bin_width_elev/2,'()');
-%         j_elev_range = fixed.Interval(j_elev_center-bin_width_elev/2, j_elev_center+bin_width_elev/2,'()');
-%         %open intervals so that they are only flagged as overlapped if
-%         %they share more than the endpoints in common
-% 
-% 
-%         if overlaps(i_azm_range, j_azm_range) && overlaps(i_elev_range, j_elev_range)
-%             % if so, delete the nth entry of index_combs_coords
-%             overlapping_bins(end+1) = n;
-%             % disp(['overlapping bins: ',num2str(index_combs(n,:))]) %check which bins are flagged as overlapping
-%         end    
-%     end
-%     %delete overlapping bins
-%     index_combs = removerows(index_combs,'ind',overlapping_bins); %check that this works
-%     if isverbose
-%         disp(['number of combinations of bins (overlaps removed)',int2str(size(index_combs,1))]);
-%     end
-% end
 
 % number of halos , number of bin combinations, 2
 bin_pairs=zeros(size(halo_centered_cells,1),size(index_combs,1),2);
@@ -286,8 +220,8 @@ end
 
 %now i want to sort through the angle and norm var values, average the
 %norm_var values that have the same angle_pairs
-angle_tol=0.0001;
-uniq_angles=uniquetol(angle_pairs,0.0001);
+angle_tol= 0.0001;% 0.0001;
+uniq_angles=uniquetol(angle_pairs,angle_tol);
 angle_var_sd=zeros(size(uniq_angles,2),3);
 %here i also remove zeros
 for n=1:size(uniq_angles,2)

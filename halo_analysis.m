@@ -11,11 +11,11 @@ opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
 % opts.data_root = 'C:\Users\kieran\Documents\LOCAL-DATA\';
 % opts.data_root = 'C:\Users\BEC Machine\Documents\DATA_BACKUP\';
 
-data_folder = '20230201_single_helo_new_plate';%'20221212_new_plates_halo_test_4';%'20221102_new_plates_halo_test';%'20221125_new_plates_halo_test_2';%'20221209_new_plates_halo_test_3';%'2023130_new_plates_halo_3_halos';%
+data_folder = '';%'20230201_single_helo_new_plate';%'20221212_new_plates_halo_test_4';%'20221102_new_plates_halo_test';%'20221125_new_plates_halo_test_2';%'20221209_new_plates_halo_test_3';%'2023130_new_plates_halo_3_halos';%
 % data_folder = 'k=0,-1,-2_halos_data\weak trap\20201119_k=0,-1,-2_halos_data_test_3';%20201006_k=0,-1,-2_halos_data_3';%'
 
 opts.import.dir = fullfile(opts.data_root, data_folder);
-opts.import.force_reimport = false;
+opts.import.force_reimport = true;
 opts.import.force_cache_load = ~opts.import.force_reimport;
 
 % opts.import.shot_num = 313:625; %can select specific shots to import
@@ -319,13 +319,16 @@ corr_opts.plots = true;
 corr_opts.fit = false;
 corr_opts.calc_err = false;
 
+%normalisation portion
 global_sample_portion = 0.1;%4e-5;%1.0;%0.05;%0.08;%0.5;%1.0;%
+corr_opts.norm_samp_factor=1500;%1500;
 
 % variables for calculating the error
 corr_opts.samp_frac_lims=[0.65,0.9];
 corr_opts.num_samp_frac=5;
 corr_opts.num_samp_rep=5;
 
+% do you want to get rid of any counts
 corr_opts.attenuate_counts=1;
 
 %volume widths
@@ -339,7 +342,7 @@ dkr = 5e-3;%(dkx.*dky.*dkz).^(1/3);
 %chose method of correlation calculation
 corr_opts.type='1d_cart_bb';%'2d_cart_bb';%'radial_bb';%'1d_vol_bb';%
 corr_opts.bin_lims = 6;
-corr_opts.one_d_dimension = 2;
+corr_opts.one_d_dimension = 2; %[z,x,y]
 corr_opts.two_d_dimensions = [2,3];
 
 corr_opts.one_d_window=[[-1,1].*dkz;[-1,1].*dkx;[-1,1].*dky];
@@ -363,8 +366,8 @@ corr_opts.direction_labels = {'z','x','y'};
 corr_opts.low_mem=true;
 
 %normalisation settings
-corr_opts.norm_samp_factor=1500;%1500;
 corr_opts.sample_proportion=global_sample_portion;%0.65;%1500;
+
 corr_opts.sampling_method='complete';%'basic';%method for sampling uncorrelated pairs (either 'basic' or 'complete')
 
 corr_opts.do_pre_mask=false;
@@ -373,7 +376,6 @@ corr_opts.sort_norm=0;
 
 corr_opts.gaussian_fit = true; %ensure it always uses a gaussian fit
 corr_opts.param_num = 4;
-% TOP HALO BACK TO BACK
 
 corr_opts.fig=['halo bb corr ',num2str(ii)];
 corrs.top_halo.corr_bb=calc_any_g2_type(corr_opts,halo{ii}.counts_vel');
