@@ -15,8 +15,8 @@ opts.data_root = '/Users/tonyyan/Library/CloudStorage/OneDrive-AustralianNationa
 
 
 % data_folder = '';%'2023130_new_plates_halo_3_halos';%20221212_new_plates_halo_test_4
-% data_folder = '20221212_new_plates_halo_test_34_combined_notHe34_just_test_34';
-data_folder = '20221212_new_plates_halo_test_4';
+data_folder = '20221212_new_plates_halo_test_34_combined_notHe34_just_test_34';
+% data_folder = '20221212_new_plates_halo_test_4';
 
 opts.import.dir = fullfile(opts.data_root, data_folder);
 opts.import.force_reimport = false;

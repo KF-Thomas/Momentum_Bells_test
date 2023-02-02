@@ -1,8 +1,8 @@
 
 % Tip: use "Run Section"
-save_figures = true; % this crash my laptop sometimes... I hate matlab 
+save_figures = false; % this crash my laptop sometimes... I hate matlab 
 
-fig_output_path = "Measuring_Quantum_Effeciency/output_plots/";
+fig_output_path = "Momentum_Bells_test/Measuring_Quantum_Effeciency/output_plots/";
 
 
 %% run halo_analysis everytime on data_folder path change
@@ -16,7 +16,7 @@ end
 %%
 squeezing_new(halo{1}.counts_vel',true,10);
 movegui(figure(200), [0,-30]);
-
+movegui(figure(210), [600,-30]);
 
 
 

@@ -2,6 +2,8 @@
 
 
 
+Use `squeezing_new_run_everything.m` 
+
 ## 1. `halo_analysis.m`
 
 File is in `/Momentum_Bells_test/halo_analysis.m`.
