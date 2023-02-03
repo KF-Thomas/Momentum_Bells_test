@@ -29,6 +29,7 @@ Nz_test = [(2:2:50) 60:10:360]'; % default
 Nz_test = [(2:2:50) 60:10:180]'; % faster
 Nz_results = squeezing_zones(halo{1}.counts_vel',true);
 Nz_results = squeezing_zones(halo{1}.counts_vel',true, Nz_test); %%%% 
+Nz_results = squeezing_zones(halo_counts_data,true, [(2:2:50) 60:10:90]'); %%%% 
 ```
 
 ![squeezing_zones_plot (on data 20221212_new_plates_halo_test_34_combined_notHe34_just_test_34)](/Users/tonyyan/Documents/_ANU/_He_BEC_Group/Measuring_Quantum_Effeciency/output_plots/squeezing_zones_plot (on data 20221212_new_plates_halo_test_34_combined_notHe34_just_test_34).png)
@@ -41,7 +42,8 @@ Nz_results = squeezing_zones(halo{1}.counts_vel',true, Nz_test); %%%%
 squeezing_zones_plot(Nz_results) %%%%
 squeezing_zones_plot(squeezing_zones(halo{1}.counts_vel',false))
 squeezing_zones_plot(squeezing_zones(halo{1}.counts_vel',false, Nz_test)) 
-squeezing_zones_plot(squeezing_zones(halo{1}.counts_vel',false, Nz_test)) 
+squeezing_zones_plot(squeezing_zones(halo{1}.counts_vel',false, squeezing_zones(halo_counts_data,true, [(2:2:50) 60:10:90]'))) 
+
 
 ```
 

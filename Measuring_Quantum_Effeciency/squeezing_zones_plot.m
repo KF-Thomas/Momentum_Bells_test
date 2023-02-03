@@ -44,10 +44,12 @@ disp(lin_model);
 nz_lin = linspace(Nz_test(1), Nz_test(end),1000)';
 [y_mod, y_mod_ci] = predict(lin_model, nz_lin);
 plot(nz_lin, y_mod,"Color","r", "DisplayName", "Linear Fit");
-plot(nz_lin, y_mod_ci, '--', "Color", "r", "DisplayName", "Linear Fit CI");
+% plot(nz_lin, y_mod_ci, '--', "Color", "r", "DisplayName", "Linear Fit CI");
 % xfill = [nz_lin, fliplr(nz_lin)];
 % fill(xfill, [y_mod_ci(:,2), fliplr(y_mod_ci(:,1))], 'red');
 % fill(nz_lin, y_mod_ci, 'red');
+fill([nz_lin; flipud(nz_lin)], [y_mod_ci(:,1); flipud(y_mod_ci(:,2))], 'red', ...
+    'FaceAlpha',0.1, 'LineStyle','none','DisplayName',"Linear Fit $2\sigma$ CI")
 
 shg
 

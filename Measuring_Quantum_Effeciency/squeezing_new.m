@@ -1,9 +1,10 @@
-function out=squeezing_new(halo_centered_cells,plot_on,zones_azm, random_throw_away_perc)
+function out=squeezing_new(halo_centered_cells,plot_on,zones_azm, random_throw_away_perc, shift_around)
 % [1] paper Sub-Poissonian Number Diff in 4 wave mixing 
 % debug = true;
 
 
-%  squeezing_new(halo{1}.counts_vel',true,10);
+%   squeezing_new(halo{1}.counts_vel',true,10);
+%   squeezing_new(halo{1}.counts_vel',true,10,0,0);
 
 % print = @(str) if debug fprintf(str) end;
 
@@ -19,6 +20,10 @@ end
 
 if ~exist('random_throw_away_perc', 'var')
     random_throw_away_perc = 0;
+end 
+
+if ~exist('shift_around','var')
+    shift_around = 0;
 end 
 
 % zones_azm = 4;
@@ -65,11 +70,16 @@ map_each_shot_to_bin_ae_id = cell(shots_total,1);
 binned_hits_for_all_shot = cell(zones_total,1);
 for is = 1:shots_total
     this_halo_shot = halo_centered_cells{is};
-    random_throw_away_ind = rand(size(this_halo_shot,1),1) > random_throw_away_perc;
-    this_halo_shot(random_throw_away_ind, :);
+    random_throw_away_ind = rand(size(this_halo_shot,1),1) >= random_throw_away_perc;
+    this_halo_shot = this_halo_shot(random_throw_away_ind, :);
+    
 
-    [halo_radial,halo_azm,halo_elev]=ConvToSph(this_halo_shot);
+    [~,halo_azm,halo_elev]=ConvToSph(this_halo_shot);
 
+    halo_azm = wrapTo2Pi(halo_azm + shift_around);
+%     halo_azm  = [halo_azm; wrapTo2Pi(halo_azm + pi*10/180)];
+%     halo_elev = [halo_elev; halo_elev];
+    
     bin_a_s = fix(halo_azm/bin_width_azm)+1;
     bin_e_s = fix(halo_elev/bin_width_elev);
 
@@ -123,6 +133,8 @@ end
 
 % debug_ij = [index_ij V_ij V_ij_corr];
 
+V_ij(isnan(V_ij)) = 0;
+V_ij_std(isnan(V_ij_std)) = 0;
 
 if plot_on
 
@@ -168,12 +180,14 @@ if plot_on
     for ibin = 1:zones_total
         bhs = binned_hits_for_all_shot{ibin}; % binned hits 
         c = colors(ibin,:);
-        plot3(bhs(:,1), bhs(:,2), bhs(:,3), '.', 'Color',[c 0.1], 'LineStyle','none'); hold on;
-        
+        if isempty(bhs)
+        else 
+            plot3(bhs(:,2), bhs(:,3), bhs(:,1), '.', 'Color',[c 0.1], 'LineStyle','none'); hold on;
+        end 
     end
-    xlabel("x");
-    xlabel("y");
-    xlabel("z");
+    xlabel("$v_x$");
+    ylabel("$v_y$");
+    zlabel("$v_z$");
     title("Correlated zones");
     set(gca, 'Projection','perspective');
     pbaspect([1 1 1]);

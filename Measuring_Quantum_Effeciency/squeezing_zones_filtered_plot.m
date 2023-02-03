@@ -33,14 +33,16 @@ figure(220);
 
 colors = hsv(rtapl_counts);
 
+
+
 for irtapl = 1:rtapl_counts
     rtap = szcf_out{irtapl}{1};
     co = colors(irtapl,:);
-
+    
 %     fprintf("Calculating " + num2str(irtapl) + " of " + num2str(rtapl_counts) ...
 %         + ", throwing away " + num2str(100*(1-rtap), 2) + "% of data " + '\n\n');
 
-    label_prefix = num2str((1-rtap)*100,3) + "% data - " ;
+    label_prefix = num2str((1-rtap)*100,3) + "$\%$ data - ";
     
     squeezing_zones_out = szcf_out{irtapl}{2};
 
@@ -60,9 +62,9 @@ for irtapl = 1:rtapl_counts
 %     errorbar(Nz_test, Nz_mean_unco, Nz_mean_unco_std, '.','CapSize',0,'DisplayName',label_prefix+'uncorrelated'); hold on;
     errorbar(Nz_test, Nz_mean_corr, Nz_mean_corr_std,'o', ...
         'CapSize',0,'Color',[co 1.0],'HandleVisibility','off','MarkerFaceColor',co,'MarkerSize',5); hold on;
-    eb = errorbar(Nz_test, Nz_mean_unco, Nz_mean_unco_std,'.', ...
+    errorbar(Nz_test, Nz_mean_unco, Nz_mean_unco_std,'.', ...
         'CapSize',0,'Color',[co 0.1],'HandleVisibility','off'); hold on;
-    set([eb.Bar, eb.Line], 'ColorType', 'truecoloralpha', 'ColorData', [eb.Line.ColorData(1:3); 255*0.2]);
+%     set([eb.Bar, eb.Line], 'ColorType', 'truecoloralpha', 'ColorData', [eb.Line.ColorData(1:3); 255*0.2]);
 %     set(eb.Marker, 'EdgeColorType', 'truecoloralpha', 'EdgeColorData', [eb.Cap.EdgeColorData(1:3); 0.1]);
 %     set(eb, 'MarkerFa, [co 0.1]);
 %     eb.Color(4) = 0.1;
@@ -84,9 +86,11 @@ for irtapl = 1:rtapl_counts
     % xfill = [nz_lin, fliplr(nz_lin)];
     % fill(xfill, [y_mod_ci(:,2), fliplr(y_mod_ci(:,1))], 'red');
     % fill(nz_lin, y_mod_ci, 'red');
+    fill([nz_lin; flipud(nz_lin)], [y_mod_ci(:,1); flipud(y_mod_ci(:,2))], co, ...
+        'FaceAlpha',0.1, 'LineStyle','none','DisplayName',"Linear Fit $2\sigma$ CI")
 
 end 
-
+hold off;
 % legend('correlated', 'uncorrelated');
 legend();
 
