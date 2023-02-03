@@ -3,7 +3,7 @@ function out=squeezing(halo_centered_cells,isverbose)
 %+++++++++++++++++++++++++++++++++++++++ABOUT+++++++++++++++++++++++++++++++++++++++++++++
 % new file 1/2/23 - M.W
 
-%calulates squezing
+%calulates squeezing
 %inputs 
     %cell array for eahc file containing Z,X,Y counts
     %isverbose = 1 displays some info, =0 does not. 
@@ -31,33 +31,46 @@ function out=squeezing(halo_centered_cells,isverbose)
 %the double loop just after disp('Fiding Norm Var (rearanging)') takes the
 %majority of the time, by doing some smarter matrix stuff it may be sped up
 
-%bins that wrap across 0,2pi lose counts
+%bins that wrap across 0,2pi lose counts -- fixed
 
+%if you make steps_azm small and steps_elev big something gets upset later - think this is fixed
+
+%mean and std doesn't omit NaNs - have changed most of these, check they're
+%doing what we want them to...
+
+%why are the blue ones all low bin pair number? - have made better plot but
+%it's still not evenly spaced, work that out 
+
+%double check how the zones are numbered in halo plots - make sure azm
+%index is bounded
+
+%To add
+%artificial QE to look at how QE affects squeezing
 
 %================================ START USER INPUT=======================================
 
-plot_sqz_bins=1;%plot sqz with bin #
-plot_sqz_angle=1;%plot sqz with angle
+plot_sqz_bins=1; %plot sqz with bin #
+plot_sqz_angle=1; %plot sqz with angle
+
+plot_sqz_num_zones=1; %plot average norm var as number of bins changes
+
+%halo plots require an even number of azm bins
+plot_halo_zones=0; %plot halo with one corresponding zone pair highlighted
+plot_all_halo_zones=0; %plot halo with all zones. If zones overlap, this will only show up for the last zone pair to be plotted.
 
 
 % define bins
-mirror_azm=0; %use for the mag sensitive halo which you must cut out a region ??
+mirror_azm=0; %use for the mag sensitive halo which you must cut out a region
 
 range_azm=[0 2]*pi;%azimuthal range for bins. to look at whole halo, [0 2]*pi
 range_elev= [0 1]*pi; %[0.0 1]*pi;%Elevation range. whole halo [0.0 1]*pi
 
-steps_azm=4; %number of bins in azimuthal direction
+steps_azm=100; %number of bins in azimuthal direction
 steps_elev=2; %number of bins in elev direction
 
 %defining the width seprately allows for under or over sampling bins
-bin_width_azm=2*range(range_azm)/steps_azm; 
+bin_width_azm=range(range_azm)/steps_azm; 
 bin_width_elev=range(range_elev)/steps_elev;
-
-%binning notes to work out:
-%if you make steps_azm small and steps_elev big something gets upset later
-%bin width has a significant effect on results
-%note from to fix: apparently bins wrapping across 0,2pi lose counts
-
 
 %===================================END USER INPUT========================================
 
@@ -65,7 +78,6 @@ bin_width_elev=range(range_elev)/steps_elev;
 halo_centered_cells=halo_centered_cells(~cellfun('isempty',halo_centered_cells));
 
 % create the bins
-%bit hacky to create bins that dont wrap across 0,2pi
 bin_centers_azm=wrapTo2Pi(linspace(range_azm(1),range_azm(2),steps_azm+1)-range(range_azm)/(2*steps_azm));
 bin_centers_azm=bin_centers_azm(2:end); %first and last elements are separated by 2pi and we only need one of them
 
@@ -96,7 +108,7 @@ end
 
 angle_counts={}; %stores number of counts in each bin for each shot. Each element is an array containing the shot number, azm/elev bin centres and counts
 
-for n=1:size(halo_centered_cells,2)
+for n=1:size(halo_centered_cells,2) %n=1:shot_num
     angle_counts_file={};
     single_halo=halo_centered_cells{n};
     
@@ -107,13 +119,26 @@ for n=1:size(halo_centered_cells,2)
     %mask_rad=halo_radial>radial_min & halo_radial<radial_max;
     %halo_counts(n)=sum(mask_rad);
     
-    %launch into the nested loop of bining
+    %launch into the nested loop of binning
     for m=[1:size(bin_pairs_azm,1)]
         for p=[1:size(bin_pairs_elev,1)]
             %count the number of atoms in bin m,p
-        counts=sum(halo_azm>bin_pairs_azm(m,1) & halo_azm<bin_pairs_azm(m,2)  & halo_elev>bin_pairs_elev(p,1) & halo_elev<bin_pairs_elev(p,2)); %mask_rad
-        %store this number in 
-        angle_counts_file{m,p}=[n,bin_centers_azm(m),bin_centers_elev(p),counts];        
+        
+            %separate clause for bins wrapping around 0,2pi to prevent lost counts
+            if bin_pairs_azm(m,1)>bin_pairs_azm(m,2)                
+                %break bin into two parts (x1,2pi) and (0,x2) and count separately
+                counts = sum( halo_azm>bin_pairs_azm(m,1) & halo_azm<2*pi ...
+                    & halo_elev>bin_pairs_elev(p,1) & halo_elev<bin_pairs_elev(p,2))...
+                    + sum( halo_azm>0 & halo_azm<bin_pairs_azm(m,2) ...
+                    & halo_elev>bin_pairs_elev(p,1) & halo_elev<bin_pairs_elev(p,2));           
+            else 
+            
+            counts=sum(halo_azm>bin_pairs_azm(m,1) & halo_azm<bin_pairs_azm(m,2)...
+                & halo_elev>bin_pairs_elev(p,1) & halo_elev<bin_pairs_elev(p,2)); %mask_rad
+            end
+            
+            %store this number in         
+            angle_counts_file{m,p}=[n,bin_centers_azm(m),bin_centers_elev(p),counts];        
         end
     end
     angle_counts{n}=vertcat(angle_counts_file{:});
@@ -130,32 +155,20 @@ if isverbose
     disp(['number of combinations of bins ',int2str(size(index_combs,1))]);
 end
 
-%exclude combinations if the two bins overlap (these will have artificially
-%low variance)
-if bin_width_azm > range(range_azm)/steps_azm || bin_width_elev > range(range_elev)/steps_elev 
-    if isverbose
-        disp(['deleting overlapping bins'])
+%exclude combinations if bins overlap (these will have artificially low variance)
+exclude_overlapping_bins = 1;
+if exclude_overlapping_bins
+    if bin_width_azm > range(range_azm)/steps_azm || bin_width_elev > range(range_elev)/steps_elev 
+        if isverbose
+            disp(['deleting overlapping bins'])
+        end
+        index_combs = delete_overlapping_bins(index_combs, steps_azm, steps_elev, bin_width_azm, bin_width_elev, range_azm, range_elev,isverbose);
     end
-    index_combs = delete_overlapping_bins(index_combs, steps_azm, steps_elev, bin_width_azm, bin_width_elev, range_azm, range_elev);
-    index_combs
 end
 
 % number of halos , number of bin combinations, 2
 bin_pairs=zeros(size(halo_centered_cells,1),size(index_combs,1),2);
 
-% old way of rearanging the bins
-% disp('Fiding Norm Var (rearanging)')
-% tic
-% for n=[1:size(halo_centered,1)]
-%     for m=[1:size(index_combs,1)]
-%         %finds the counds in the bin defined by the index_combs
-%         temp_angle_counts=angle_counts{n};
-%         bin_pairs(n,m,:)=[temp_angle_counts(index_combs(m,1),4),temp_angle_counts(index_combs(m,2),4)];
-%     end
-% end
-% clear temp_angle_counts;
-% toc
-% size(bin_pairs)
 
 %first we rearange the cell output into an array
 %there may be a better way to do this other than a loop but i cant find it
@@ -186,7 +199,7 @@ bin_pairs=[angle_counts_mat(index_combs(:,1),4,:), angle_counts_mat(index_combs(
 %third index = which of the two bins in the combination
 bin_pairs=permute(bin_pairs,[3 1 2]);
 
-
+% %without omitnan
 % %the above is little more that rearangeing values, below is where the norm
 % %var is actualy calculated
 % diffs=(bin_pairs(:,:,1)-bin_pairs(:,:,2));
@@ -212,11 +225,10 @@ for n=[1:size(index_combs,1)]
     elev1=angle_counts{1}(index_combs(n,1),3);
     azm2=angle_counts{1}(index_combs(n,2),2);
     elev2=angle_counts{1}(index_combs(n,2),3);
-    angle_pairs(n)= acos(sin(elev1)*sin(elev2)*cos(azm1-azm2)+cos(elev1)*cos(elev2));
+    
+    angle_pairs(n)= real(acos(sin(elev1)*sin(elev2)*cos(azm1-azm2)+cos(elev1)*cos(elev2)));
+    %only take real part to avoid error where acos returns a tiny imaginary component
 end
-
-%need to exclude pairs with adjacent bins
-%most efficient way to do this in general? Check if bins overlap, if so don't include them in index_combs 
 
 %now i want to sort through the angle and norm var values, average the
 %norm_var values that have the same angle_pairs
@@ -226,7 +238,7 @@ angle_var_sd=zeros(size(uniq_angles,2),3);
 %here i also remove zeros
 for n=1:size(uniq_angles,2)
     matching=norm_var((abs(angle_pairs-uniq_angles(n))<angle_tol) & norm_var~=0);
-    angle_var_sd(n,:)=[uniq_angles(n)/pi, mean(matching),std(matching)/sqrt(size(matching,2))]; %omitnan
+    angle_var_sd(n,:)=[uniq_angles(n)/pi, mean(matching,'omitnan'),std(matching,'omitnan')/sqrt(size(matching,2))]; %omitnan
 end
 
 if plot_sqz_angle
@@ -249,27 +261,211 @@ end
 norm_var_opst=norm_var((abs(angle_pairs-pi)<angle_tol) & norm_var~=0);
 norm_var_rest=norm_var(~(abs(angle_pairs-pi)<angle_tol) & norm_var~=0);
 
+%check the number of diametrically opposed bins is as expected
+num_opst_bins = steps_azm*steps_elev/2;
+if length(norm_var_opst)~= num_opst_bins
+    disp('warning: error categorising diametrically opposed bins')
+end
+
+%sort into opst and rest but preserve bin pair number
+norm_var_pair_num = [(1:length(norm_var))' norm_var'];
+mask_opst = (abs(angle_pairs-pi)<angle_tol) & norm_var~=0;
+
+norm_var_pair_num_opst = norm_var_pair_num(mask_opst,:);
+norm_var_pair_num_rest = norm_var_pair_num(~mask_opst,:);
+
 norm_var_avg=angle_var_sd(:,1);
 
-mean_opst_bin=angle_var_sd(angle_var_sd(:,1)==1,2);
-unc_opst_bin=angle_var_sd(angle_var_sd(:,1)==1,3);
+mean_opst_bin=angle_var_sd(abs(angle_var_sd(:,1)-1)<angle_tol,2);
+% mean_opst_bin=angle_var_sd(angle_var_sd(:,1)==1,2); %I don't think this works 
+unc_opst_bin=angle_var_sd(abs(angle_var_sd(:,1)-1)<angle_tol,3);
+% unc_opst_bin=angle_var_sd(angle_var_sd(:,1)==1,3); %I don't think this works
 non_opst_bins=angle_var_sd(angle_var_sd(:,1)~=1,2);
-mean_other_bin=mean(non_opst_bins); %omitnan
+mean_other_bin=mean(non_opst_bins,'omitnan'); %omitnan
 min_other_bin=min(non_opst_bins);
-unc_other_bin=std(non_opst_bins)/sqrt(length(mean_other_bin));
+unc_other_bin=std(non_opst_bins,'omitnan')/sqrt(length(mean_other_bin)); %omitnan
 min_opst_bin=min(norm_var(angle_pairs==pi));
 
 if  isverbose
-    disp(['mean opst bin' ,num2str(mean_opst_bin),'±',num2str(unc_opst_bin)])
-    disp(['mean other bins',num2str(mean_other_bin),'±',num2str(unc_other_bin)])
+    disp(['mean opst bin ' ,num2str(mean_opst_bin),'±',num2str(unc_opst_bin)])
+    disp(['mean other bins ',num2str(mean_other_bin),'±',num2str(unc_other_bin)])
     disp(['min opst bin ',num2str(min_opst_bin)])
 end
 if plot_sqz_bins
-    figure(11)
-    plot(1:size(norm_var_opst,2),norm_var_opst,'x',1:size(norm_var_rest,2),norm_var_rest,'+')
+%     %the way this is plotted, all the opst ones are bunched up on one side
+%     figure(11)
+%     plot(1:size(norm_var_opst,2),norm_var_opst,'x',1:size(norm_var_rest,2),norm_var_rest,'+')
+%     xlabel('Bin Pair Number')
+%     ylabel('Normalised Variance')
+%     line([0 size(norm_var_rest,2)], [1 1],'Color','red');
+    
+    %this one should look a bit nicer with the opst pairs spread out
+    figure(12)
+    plot(norm_var_pair_num_rest(:,1),norm_var_pair_num_rest(:,2),'+',norm_var_pair_num_opst(:,1),norm_var_pair_num_opst(:,2), 'x')
     xlabel('Bin Pair Number')
     ylabel('Normalised Variance')
-    line([0 size(norm_var_rest,2)], [1 1],'Color','red');
+    line([0 length(norm_var)], [1 1],'Color','red');
+end
+
+if plot_sqz_num_zones
+    %define array with number of zones Nz
+    bin_num_array = 4:10:300;
+    
+    if isverbose
+        disp(['calculating for different numbers of zones'])
+    end 
+    
+    %calculate mean normalised variance for correlated/uncorrelated zones
+    %for each Nz
+    mean_var_output = [];
+    for i=1:length(bin_num_array)
+        n=bin_num_array(i);        
+        output = squeezing_bins(halo_centered_cells,range_azm, range_elev,n, steps_elev, (2*range(range_azm)/n), bin_width_elev,0);
+        output2 = output{2};
+        mean_var_output = [mean_var_output; output2(1,:) output2(2,:)];
+    end
+    
+    stfig('Variance and number of zones');
+    clf
+    errorbar(bin_num_array,mean_var_output(:,1),mean_var_output(:,2),'.')
+    hold on 
+    errorbar(bin_num_array,mean_var_output(:,4),mean_var_output(:,5),'.')
+    xlabel('Number of Zones')
+    ylabel('Normalised Variance')
+    legend('Correlated Zones','Uncorrelated Zones')
+    
+    %define a bunch of bin_arrays 
+    %get data from squeezing_bins
+    %plot it
+end
+
+if plot_halo_zones
+    
+    %halo data to plot
+    v_zxy = cell2mat(halo_centered_cells');
+    plot_mask = rand(size(v_zxy,1),1)<0.65; %controls how sparse the plot is
+    v_x=v_zxy(plot_mask,2);
+    v_y=v_zxy(plot_mask,3);
+    v_z=v_zxy(plot_mask,1);
+    
+    %pick out two corresponding zones (one given by m,p)
+    m=1 ;
+    p=1 ;
+    zone_1_azm = bin_pairs_azm(m,:);
+    zone_1_elev = bin_pairs_elev(p,:);
+    zone_2_azm = bin_pairs_azm(m+steps_azm/2,:); %assume steps_azm even
+    zone_2_elev = bin_pairs_elev(steps_elev-p+1,:);
+    
+    %convert to spherical coordinates - matches ConvToSph.m
+    r = sqrt(v_x.^2+v_y.^2+v_z.^2);
+    halo_azm = atan2(v_y,v_x)+pi;
+    halo_elev = acos(v_z./r);
+    
+    %mask for each zone
+    %wrap1 and wrap2 masks account for bins wrapping over 0,2pi
+    zone_1_mask = zone_1_azm(1)<zone_1_azm(2)...
+        & halo_azm>zone_1_azm(1) & halo_azm<zone_1_azm(2) & halo_elev>zone_1_elev(1) & halo_elev<zone_1_elev(2);
+    zone_1_mask_wrap1 = zone_1_azm(1)>zone_1_azm(2)...
+        & halo_azm>zone_1_azm(1) & halo_azm<2*pi & halo_elev>zone_1_elev(1) & halo_elev<zone_1_elev(2);
+    zone_1_mask_wrap2 = zone_1_azm(1)>zone_1_azm(2)...
+        & halo_azm>0 & halo_azm<zone_1_azm(2) & halo_elev>zone_1_elev(1) & halo_elev<zone_1_elev(2);
+    
+    zone_2_mask = zone_2_azm(1)<zone_2_azm(2)...
+        & halo_azm>zone_2_azm(1) & halo_azm<zone_2_azm(2) & halo_elev>zone_2_elev(1) & halo_elev<zone_2_elev(2);
+    zone_2_mask_wrap1 = zone_2_azm(1)>zone_2_azm(2)...
+        & halo_azm>zone_2_azm(1) & halo_azm<2*pi & halo_elev>zone_2_elev(1) & halo_elev<zone_2_elev(2);
+    zone_2_mask_wrap2 = zone_2_azm(1)>zone_2_azm(2)...
+        & halo_azm>0 & halo_azm<zone_2_azm(2) & halo_elev>zone_2_elev(1) & halo_elev<zone_2_elev(2);
+    
+    %halo data for each zone
+    halo_zone_1_x = [v_x(zone_1_mask); v_x(zone_1_mask_wrap1); v_x(zone_1_mask_wrap2)];
+    halo_zone_1_y = [v_y(zone_1_mask); v_y(zone_1_mask_wrap1); v_y(zone_1_mask_wrap2)];
+    halo_zone_1_z = [v_z(zone_1_mask); v_z(zone_1_mask_wrap1); v_z(zone_1_mask_wrap2)];
+    
+    halo_zone_2_x = [v_x(zone_2_mask); v_x(zone_2_mask_wrap1); v_x(zone_2_mask_wrap2)];
+    halo_zone_2_y = [v_y(zone_2_mask); v_y(zone_2_mask_wrap1); v_y(zone_2_mask_wrap2)];
+    halo_zone_2_z = [v_z(zone_2_mask); v_z(zone_2_mask_wrap1); v_z(zone_2_mask_wrap2)];
+    
+    %plot halo and zones
+    stfig('halo zones (all)');
+    clf
+    
+    scatter3(v_x,v_y,v_z,'.')
+    hold on
+    axis equal
+    xlabel('$v_x$')
+    ylabel('$v_y$')
+    zlabel('$v_z$')
+    scatter3(halo_zone_1_x,halo_zone_1_y,halo_zone_1_z,'.','k')
+    scatter3(halo_zone_2_x,halo_zone_2_y,halo_zone_2_z,'.','k')
+    hold off    
+
+end
+
+if plot_all_halo_zones
+    
+    %halo data to plot
+    v_zxy = cell2mat(halo_centered_cells');
+    plot_mask = rand(size(v_zxy,1),1)<0.65; %controls how sparse the plot is
+    v_x=v_zxy(plot_mask,2);
+    v_y=v_zxy(plot_mask,3);
+    v_z=v_zxy(plot_mask,1);
+    
+    %convert to spherical coordinates - matches ConvToSph.m
+    r = sqrt(v_x.^2+v_y.^2+v_z.^2);
+    halo_azm = atan2(v_y,v_x)+pi;
+    halo_elev = acos(v_z./r);
+    
+    stfig('halo zones');
+    clf
+    
+    hold on
+    axis equal
+    xlabel('$v_x$')
+    ylabel('$v_y$')
+    zlabel('$v_z$')
+    
+    zone_colours = lines(steps_azm*steps_elev/2);   
+    for m=1:steps_azm/2
+        for p=1:steps_elev
+    
+            %pick out two corresponding zones (one given by m,p)
+            zone_1_azm = bin_pairs_azm(m,:);
+            zone_1_elev = bin_pairs_elev(p,:);
+            zone_2_azm = bin_pairs_azm(m+steps_azm/2,:); %assume steps_azm even %FIX THIS BIT
+            zone_2_elev = bin_pairs_elev(steps_elev-p+1,:); %assume steps_elev even 
+
+            %mask for each zone
+            %wrap1 and wrap2 masks account for bins wrapping over 0,2pi
+            zone_1_mask = zone_1_azm(1)<zone_1_azm(2)...
+                & halo_azm>zone_1_azm(1) & halo_azm<zone_1_azm(2) & halo_elev>zone_1_elev(1) & halo_elev<zone_1_elev(2);
+            zone_1_mask_wrap1 = zone_1_azm(1)>zone_1_azm(2)...
+                & halo_azm>zone_1_azm(1) & halo_azm<2*pi & halo_elev>zone_1_elev(1) & halo_elev<zone_1_elev(2);
+            zone_1_mask_wrap2 = zone_1_azm(1)>zone_1_azm(2)...
+                & halo_azm>0 & halo_azm<zone_1_azm(2) & halo_elev>zone_1_elev(1) & halo_elev<zone_1_elev(2);
+
+            zone_2_mask = zone_2_azm(1)<zone_2_azm(2)...
+                & halo_azm>zone_2_azm(1) & halo_azm<zone_2_azm(2) & halo_elev>zone_2_elev(1) & halo_elev<zone_2_elev(2);
+            zone_2_mask_wrap1 = zone_2_azm(1)>zone_2_azm(2)...
+                & halo_azm>zone_2_azm(1) & halo_azm<2*pi & halo_elev>zone_2_elev(1) & halo_elev<zone_2_elev(2);
+            zone_2_mask_wrap2 = zone_2_azm(1)>zone_2_azm(2)...
+                & halo_azm>0 & halo_azm<zone_2_azm(2) & halo_elev>zone_2_elev(1) & halo_elev<zone_2_elev(2);
+
+            %halo data for each zone
+            halo_zone_1_x = [v_x(zone_1_mask); v_x(zone_1_mask_wrap1); v_x(zone_1_mask_wrap2)];
+            halo_zone_1_y = [v_y(zone_1_mask); v_y(zone_1_mask_wrap1); v_y(zone_1_mask_wrap2)];
+            halo_zone_1_z = [v_z(zone_1_mask); v_z(zone_1_mask_wrap1); v_z(zone_1_mask_wrap2)];
+
+            halo_zone_2_x = [v_x(zone_2_mask); v_x(zone_2_mask_wrap1); v_x(zone_2_mask_wrap2)];
+            halo_zone_2_y = [v_y(zone_2_mask); v_y(zone_2_mask_wrap1); v_y(zone_2_mask_wrap2)];
+            halo_zone_2_z = [v_z(zone_2_mask); v_z(zone_2_mask_wrap1); v_z(zone_2_mask_wrap2)];
+                        
+            scatter3([halo_zone_1_x; halo_zone_2_x],[halo_zone_1_y; halo_zone_2_y],[halo_zone_1_z; halo_zone_2_z],'.','MarkerEdgeColor',zone_colours(m*p,:))
+        end
+    end
+    
+    hold off
+
 end
 
 out={[angle_var_sd(:,1),angle_var_sd(:,2),angle_var_sd(:,3)],[[mean_opst_bin,unc_opst_bin,min_opst_bin];[mean_other_bin,unc_other_bin,min_other_bin]]};
