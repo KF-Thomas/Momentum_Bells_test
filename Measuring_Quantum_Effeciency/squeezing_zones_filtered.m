@@ -29,7 +29,10 @@ output = {};
 
 % clf(201);
 % figure(201);
-rtap = 0;
+% rtap = 0;
+% fprintf('\n');
+
+parfor_progress(rtapl_counts); 
 parfor irtapl = 1:rtapl_counts
     rtap = rtapl(irtapl);
 
@@ -37,6 +40,9 @@ parfor irtapl = 1:rtapl_counts
 %         + ", throwing away " + num2str(100*(1-rtap), 2) + "% of data " + '\n\n');
     
     output{irtapl} = {rtap, squeezing_zones(halo_centered_cells,true, Nz_test, rtap, shift_around)};
+    parfor_progress;
 end 
+parfor_progress(0);
+
 
 end

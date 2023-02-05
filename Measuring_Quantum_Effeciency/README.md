@@ -68,6 +68,23 @@ squeezing_zones_filtered_plot(halo{1}.counts_vel', szf_out);
 
 
 
+## TODO
+
+- [ ] co-linear correlations
+- [x] radial distributions 
+- [ ] $g^{(2)}_{k_1,k_2}$ correlator
+- [ ] mode occupancy
+
+
+
+
+
+
+
+
+
+
+
 
 
 

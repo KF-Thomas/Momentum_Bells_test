@@ -51,6 +51,8 @@ for irtapl = 1:rtapl_counts
     Nz_mean_corr_std = squeezing_zones_out(:,3);
     Nz_mean_unco = squeezing_zones_out(:,4);
     Nz_mean_unco_std = squeezing_zones_out(:,5);
+    Nz_mean_coli = squeezing_zones_out(:,6);
+    Nz_mean_coli_std = squeezing_zones_out(:,7);
 
     [Nz_mean_corr_mean, Nz_mean_corr_mean_ind] = min(Nz_mean_corr);
 %     fprintf("Minimum V = "+num2str(Nz_mean_corr_mean) + " at Nz = " + num2str(Nz_test(Nz_mean_corr_mean_ind)));
@@ -63,6 +65,8 @@ for irtapl = 1:rtapl_counts
     errorbar(Nz_test, Nz_mean_corr, Nz_mean_corr_std,'o', ...
         'CapSize',0,'Color',[co 1.0],'HandleVisibility','off','MarkerFaceColor',co,'MarkerSize',5); hold on;
     errorbar(Nz_test, Nz_mean_unco, Nz_mean_unco_std,'.', ...
+        'CapSize',0,'Color',[co 0.1],'HandleVisibility','off'); hold on;
+    errorbar(Nz_test, Nz_mean_coli, Nz_mean_coli_std,'.', ...
         'CapSize',0,'Color',[co 0.1],'HandleVisibility','off'); hold on;
 %     set([eb.Bar, eb.Line], 'ColorType', 'truecoloralpha', 'ColorData', [eb.Line.ColorData(1:3); 255*0.2]);
 %     set(eb.Marker, 'EdgeColorType', 'truecoloralpha', 'EdgeColorData', [eb.Cap.EdgeColorData(1:3); 0.1]);
@@ -79,7 +83,8 @@ for irtapl = 1:rtapl_counts
     % line(Nz_test,yfit-dy,'color','r','linestyle',':');
     % line(Nz_test,yfit+dy,'color','r','linestyle',':');
     
-    nz_lin = linspace(Nz_test(1), Nz_test(end),1000)';
+%     nz_lin = linspace(Nz_test(1), Nz_test(end),1000)';
+    nz_lin = linspace(0, Nz_test(end)*1.02,1000)';
     [y_mod, y_mod_ci] = predict(lin_model, nz_lin);
     plot(nz_lin, y_mod, "DisplayName", label_prefix+"Correlated Linear Fit", 'Color',[co 1.0]); hold on;
 %     plot(nz_lin, y_mod_ci, '--', "Color", "r", "DisplayName", "Linear Fit CI");
@@ -88,11 +93,12 @@ for irtapl = 1:rtapl_counts
     % fill(nz_lin, y_mod_ci, 'red');
     fill([nz_lin; flipud(nz_lin)], [y_mod_ci(:,1); flipud(y_mod_ci(:,2))], co, ...
         'FaceAlpha',0.1, 'LineStyle','none','DisplayName',"Linear Fit $2\sigma$ CI")
+    xlim([0, Nz_test(end)*1.02]);
 
 end 
 hold off;
 % legend('correlated', 'uncorrelated');
-legend();
+legend('Interpreter','latex');
 
 xlabel("number of zones $N_z$",'Interpreter','latex');
 ylabel("mean of normalised variance $\langle V \rangle$",'Interpreter','latex');

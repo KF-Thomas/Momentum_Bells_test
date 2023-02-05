@@ -6,6 +6,7 @@ phase_results = squeezing_phase(halo{1}.counts_vel', true, phase_test,4,0);
 squeezing_phase_plot(phase_results)
 
 squeezing_phase_plot(squeezing_phase(halo{1}.counts_vel', true, (0:0.01:2)'*pi,4,0))
+squeezing_phase_plot(squeezing_phase(halo_counts_data, true, (0:0.01:2)'*pi,4,0))
 %}
 
 phase_test = squeezing_zones_out(:,1);

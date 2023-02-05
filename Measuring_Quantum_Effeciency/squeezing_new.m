@@ -1,10 +1,12 @@
 function out=squeezing_new(halo_centered_cells,plot_on,zones_azm, random_throw_away_perc, shift_around)
 % [1] paper Sub-Poissonian Number Diff in 4 wave mixing 
-% debug = true;
 
+%%
+% debug = true;
 
 %   squeezing_new(halo{1}.counts_vel',true,10);
 %   squeezing_new(halo{1}.counts_vel',true,10,0,0);
+%   squeezing_new(halo_counts_data,true,8,0,0*pi);
 
 % print = @(str) if debug fprintf(str) end;
 
@@ -39,6 +41,8 @@ shots_total = size(halo_centered_cells,2); % Ns in [1]
 bin_width_azm  = range(range_azm)/zones_azm;
 bin_width_elev = range(range_elev)/zones_elev; 
  
+%%
+
 % bin_centers_azm = linspace(0, 2*pi, steps+1) - 0.5*(2*pi)/steps
 % bin_centers_azm=wrapTo2Pi(linspace(range_azm(1),range_azm(2),zones_azm+1)-0.5*range(range_azm)/zones_azm);
 % bin_centers_azm=bin_centers_azm(2:end);
@@ -54,18 +58,21 @@ bin_width_elev = range(range_elev)/zones_elev;
 % bin_boundary_elev=transpose([wrapTo2Pi(bin_centers_elev - 0.5*bin_width_elev) ; wrapTo2Pi(bin_centers_elev + 0.5*bin_width_elev)]);
 
 zones_ae_index = 1:(zones_total); % so that zones_ae_index(j) = j for all j = 1,2,...,zones_total
-zones_ae_index_partner = zeros(1,zones_total);
+zones_ae_index_btb = zeros(1,zones_total);  % back to back
 for iz = 1:zones_total
     elev = fix((iz-1)/zones_azm)+1;      % because matlab start counting from 1  
     azm = mod((iz-1), zones_azm)+1; % because matlab start counting from 1
     azm_partner = mod(azm + zones_azm_half-1, zones_azm)+1; % because matlab start counting from 1
     elev_partner = zones_elev + 1 - elev; % because matlab start counting from 1
-    zones_ae_index_partner(iz) = azm_partner + (elev_partner-1)*zones_azm;  % because matlab start counting from 1
+    zones_ae_index_btb(iz) = azm_partner + (elev_partner-1)*zones_azm;  % because matlab start counting from 1
     % therefore I hate matlab
-end 
+end
+zones_ae_index_col = [2:zones_azm 1, (zones_azm+2):(2*zones_azm), (zones_azm+1)];  % colinear 
 
 
 
+
+%%
 map_each_shot_to_bin_ae_id = cell(shots_total,1);
 binned_hits_for_all_shot = cell(zones_total,1);
 for is = 1:shots_total
@@ -76,7 +83,7 @@ for is = 1:shots_total
 
     [~,halo_azm,halo_elev]=ConvToSph(this_halo_shot);
 
-    halo_azm = wrapTo2Pi(halo_azm + shift_around);
+    halo_azm = wrapTo2Pi(halo_azm + shift_around); % errrr  enmmmmmm this really should be minus, but emmm too many plots are in this convention already... 
 %     halo_azm  = [halo_azm; wrapTo2Pi(halo_azm + pi*10/180)];
 %     halo_elev = [halo_elev; halo_elev];
     
@@ -101,6 +108,7 @@ for is = 1:shots_total
     end 
 end 
 
+%%
 
 index_ij = nchoosek(1:1:zones_total, 2);
 index_ij_total = size(index_ij,1);
@@ -110,18 +118,28 @@ V_ij_std = zeros(index_ij_total,1);
 V_ij_ind = 1:index_ij_total;
 
 V_ij_corr = false(index_ij_total,1);
+V_ij_coli = false(index_ij_total,1);
 
 for ij = 1:index_ij_total
     
     i = index_ij(ij,1);
     j = index_ij(ij,2);
 
-    if j == zones_ae_index_partner(i) 
+    if j == zones_ae_index_btb(i) 
         V_ij_corr(ij) = true;
     end 
-    if i == zones_ae_index_partner(j)
+    if i == zones_ae_index_btb(j)
         V_ij_corr(ij) = true;
     end 
+
+    if j == zones_ae_index_col(i) 
+        V_ij_coli(ij) = true;
+    end 
+    if i == zones_ae_index_col(j)
+        V_ij_coli(ij) = true;
+    end 
+
+
     % assert(i == zones_ae_index_partner(j) & j ~= zones_ae_index_partner(i), "I didn't think is possible to land here?")
     
     Ni = map_each_shot_N(:,i);
@@ -133,39 +151,60 @@ end
 
 % debug_ij = [index_ij V_ij V_ij_corr];
 
-V_ij(isnan(V_ij)) = 0;
+V_ij(isnan(V_ij)) = 1;
 V_ij_std(isnan(V_ij_std)) = 0;
 
+%%
 if plot_on
+    
+    V_ij_both = (V_ij_corr | V_ij_coli);
 
     mean_corr   = mean(V_ij(V_ij_corr));
     mean_corr_var = mean(V_ij_std(V_ij_corr).^2);
     mean_corr_std = sqrt(mean_corr_var);
     
-    mean_uncorr = mean(V_ij(~V_ij_corr));
-    mean_uncorr_var = mean(V_ij_std(~V_ij_corr).^2);
+    mean_uncorr = mean(V_ij(~V_ij_both));
+    mean_uncorr_var = mean(V_ij_std(~V_ij_both).^2);
     mean_uncorr_std = sqrt(mean_uncorr_var);
+
+    mean_coli = mean(V_ij(V_ij_coli));
+    mean_coli_var = mean(V_ij_std(V_ij_coli).^2);
+    mean_coli_std = sqrt(mean_coli_var);
 
     cb = [0 0 1];
     cr = [1 0 0];
+    cg = [0 1 0];
+
     figure(200);clf(200);
     figure(200);
-    errorbar(V_ij_ind(~V_ij_corr), V_ij(~V_ij_corr), V_ij_std(~V_ij_corr), ...
+
+    er = errorbar(V_ij_ind(~V_ij_both), V_ij(~V_ij_both), V_ij_std(~V_ij_both), ...
         '.', 'Color',[cb,.9],'CapSize',0); hold on;
+%     alpha(er, 0.1); % this is not working... I hate matlab
+%     set(er, '')
     errorbar(V_ij_ind( V_ij_corr), V_ij( V_ij_corr), V_ij_std( V_ij_corr), ...
         '.', 'Color',[cr,.9],'CapSize',0); hold on;
+    errorbar(V_ij_ind( V_ij_coli), V_ij( V_ij_coli), V_ij_std( V_ij_coli), ...
+        '.', 'Color',[cg,.9],'CapSize',0); hold on;
+
     yline(mean_uncorr, '-',num2str(mean_uncorr,4)+"$\pm$"+num2str(mean_uncorr_std,4), ...
         'LineWidth',0.5,'Color',[cb,.9],'Interpreter','latex'); hold on; 
     yline(mean_corr,   '-',num2str(mean_corr,  4)+"$\pm$"+num2str(mean_corr_std,  4), ...
         'LineWidth',0.5,'Color',[cr,.9], 'Interpreter','latex'); hold on; 
+    yline(mean_coli,   '-',num2str(mean_coli,  4)+"$\pm$"+num2str(mean_coli_std,  4), ...
+        'LineWidth',0.5,'Color',[cg,.9], 'Interpreter','latex'); hold on; 
+
     rectangle('Position',[0,mean_uncorr-mean_uncorr_std index_ij_total*1.05 2*mean_uncorr_std], ...
         'LineStyle','none','FaceColor',[cb,.1]); hold on;
     rectangle('Position',[0,mean_corr-mean_corr_std   index_ij_total*1.05 2*mean_corr_std], ...
         'LineStyle','none','FaceColor',[cr,.1]); hold on;
+    rectangle('Position',[0,mean_coli-mean_coli_std   index_ij_total*1.05 2*mean_coli_std], ...
+        'LineStyle','none','FaceColor',[cg,.1]); hold on;
+
     xlabel('Zone pair $ij$');
     ylabel('Normalised variance $V_{ij}$');
     xlim([0, index_ij_total*1.02]);
-    legend('uncorrelated', 'correlated');
+    legend('uncorrelated', 'back to back', 'colinear');
     hold off;
     shg;
 
@@ -174,7 +213,7 @@ if plot_on
     assert(zones_elev==2, "below code only works with two elev zones! ");
     colors = [hsv(zones_total/2); zeros(zones_azm, 3)];
     for ie = zones_azm:zones_total
-        colors(ie,:) = colors(zones_ae_index_partner(ie),:);
+        colors(ie,:) = colors(zones_ae_index_btb(ie),:);
     end 
     
     for ibin = 1:zones_total
@@ -191,14 +230,16 @@ if plot_on
     title("Correlated zones");
     set(gca, 'Projection','perspective');
     pbaspect([1 1 1]);
-    view(300, 100);
+%     view(300, 100);
+    view(0,90);
+    rotate3d(gcf, 'on');
 %     set(gca, 'rat')
     shg;
 
 end 
 
 % V_ij_lin = V_ij(:); 
-out = [V_ij, V_ij_std, V_ij_corr];
+out = [V_ij, V_ij_std, V_ij_corr, V_ij_coli];
 
 end
 
