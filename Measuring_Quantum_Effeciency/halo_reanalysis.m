@@ -42,12 +42,16 @@ function output = halo_reanalysis(halo_counts_vel, logging)
 
     %% plot xy projection
     figure(231);clf(231);figure(231);
-    scatter3(halo_xyz(:,1), halo_xyz(:,2), halo_xyz(:,3) ,'.'); hold on;
+    scatter3(halo_xyz(:,1), halo_xyz(:,2), halo_xyz(:,3) , ...
+        '.','MarkerEdgeAlpha',0.1,'MarkerFaceAlpha',0.1, 'LineWidth',0.1); hold on;
     xlabel("x");
     ylabel("y");
     zlabel("z");
     title("halo projection to xy");
     view(0,90);
+%     xlim([-0.1, 0.1]);
+%     ylim([-0.1, 0.1]);
+%     zlim([-0.3, 0.3]);
     
     ori = [0 0 0];
     % https://au.mathworks.com/matlabcentral/fileexchange/24693-ellipsoid-fit
@@ -187,12 +191,29 @@ function output = halo_reanalysis(halo_counts_vel, logging)
 %%%%    237
     figure(237);clf(237);figure(237);
 
-    scatter(halo_azm, halo_radial, '.');
+    scatter(halo_azm, halo_radial, '.'); hold on;
 
     xlabel("azimuthal");
     ylabel("radial");
-    xlim([0 2]*pi);
-%     ylim()
+%     
+%     alin = linspace(0,2*pi,2);
+%     yL_lin   = -0.055*(alin-0.50)+0.058;
+%     yL_lin_L = -0.055*(alin-0.50+0.1)+0.058;
+%     yL_lin_R = -0.055*(alin-0.50-0.1)+0.058;
+%     yR_lin   = +0.055*(alin-3.35)+0.058;
+%     yR_lin_L = +0.055*(alin-3.35+0.1)+0.058;
+%     yR_lin_R = +0.055*(alin-3.35-0.1)+0.058;
+% 
+%     plot(alin, yL_lin); hold on;
+%     plot(alin, yR_lin); hold on;
+%     plot(alin, yL_lin_L);
+%     plot(alin, yL_lin_R);
+%     plot(alin, yR_lin_L);
+%     plot(alin, yR_lin_R);
+% 
+%     xlim([0 2]*pi);
+%     ylim([0.058,0.072]);
+%     hold off;
 
 %%%%    238
     figure(238);clf(238);figure(238);
@@ -203,8 +224,8 @@ function output = halo_reanalysis(halo_counts_vel, logging)
     ylabel("elevation");
     zlabel("radial")
     xlim([0 2]*pi);
-%     ylim([0 1]*pi);
-    ylim([0.5 2.5]);
+    ylim([0 1]*pi);
+%     zlim([0.05 0.1]);
 
     view(0,90);
     rotate3d(gcf, 'on');
@@ -217,9 +238,9 @@ function output = halo_reanalysis(halo_counts_vel, logging)
     xlabel("azimuthal");
     ylabel("elevation");
     zlabel("radial")
-    xlim([0 2]*pi);
-%     ylim([0 1]*pi);
-    ylim([0.5 2.5]);
+%     xlim([0 2]*pi);
+    ylim([0 1]*pi);
+%     zlim([0.05 0.1]);
 
     view(90,0);
     rotate3d(gcf, 'on');
@@ -236,7 +257,16 @@ function output = halo_reanalysis(halo_counts_vel, logging)
         x = this_shot_halo(:, 2);
         y = this_shot_halo(:, 3);
         z = this_shot_halo(:, 1);
+    
+        [hr,ha,he] = ConvToSph([z, x, y]);
+        
+        cutL = (hr > -0.055*(ha-0.50+0.1)+0.058) & (hr < -0.055*(ha-0.50-0.1)+0.058);
+        cutR = (hr < +0.055*(ha-3.35+0.1)+0.058) & (hr > +0.055*(ha-3.35-0.1)+0.058);
+        cut = cutL | cutR; 
+
         xyz = [x, y, z];
+%         xyz = xyz(~cut, :);
+
         xyz_i = (ievg * xyz')' ; 
         xyz_i_n = [xyz_i(:,1)/erg(1), xyz_i(:,2)/erg(2), xyz_i(:,3)/erg(3)];
         xyz_n = (evg * xyz_i_n')';

@@ -40,6 +40,14 @@ disp(lin_model);
 [yfit, dy] = polyconf(p, phase_test, s, 'predopt','curve');
 % [yfit, dy] = polyconf(lin_model.Coefficients.Estimate, Nz_test, lin_model.Coefficients.SE, 'predopt','curve');
 
+cr = [1 0.2 0.2];
+mean_corr = mean(phase_mean_corr);
+mean_corr_std = mean(phase_mean_corr_std);
+yline(mean_corr,   '--',num2str(mean_corr,  4)+"$\pm$"+num2str(mean_corr_std,  4), ...
+        'LineWidth',0.5,'Color',[cr,.9], 'Interpreter','latex'); hold on; 
+rectangle('Position',[0,mean_corr-mean_corr_std   2 2*mean_corr_std], ...
+        'LineStyle','none','FaceColor',[cr,.05]); hold on;
+
 % line(Nz_test,yfit,'color','b','LineWidth',2);
 % line(Nz_test,yfit-dy,'color','r','linestyle',':');
 % line(Nz_test,yfit+dy,'color','r','linestyle',':');

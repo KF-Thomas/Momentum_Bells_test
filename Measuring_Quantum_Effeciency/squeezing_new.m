@@ -120,6 +120,21 @@ V_ij_ind = 1:index_ij_total;
 V_ij_corr = false(index_ij_total,1);
 V_ij_coli = false(index_ij_total,1);
 
+V_ij_prob = false(index_ij_total,1);
+% prob_bin_A1 = fix(0.37273/bin_width_azm)+1;
+% prob_bin_B1 = fix(3.47727/bin_width_azm)+1;
+if zones_azm > 5
+prob_bin_A1 = fix((wrapTo2Pi([0.20, 0.46]+shift_around))/bin_width_azm)+1;
+prob_bin_B1 = fix((wrapTo2Pi([3.32, 3.62]+shift_around))/bin_width_azm)+1;
+else 
+prob_bin_A1 = fix((wrapTo2Pi([0.37273, 0.37273]+shift_around))/bin_width_azm)+1;
+prob_bin_B1 = fix((wrapTo2Pi([0.37273, 0.37273]+shift_around))/bin_width_azm)+1;
+end 
+prob_bin_B2 = prob_bin_B1 + zones_azm;
+prob_bin_A2 = prob_bin_A1 + zones_azm;
+in_prob_A = @(i) (i >= prob_bin_A1(1) && i <= prob_bin_A1(2)) || (i >= prob_bin_A2(1) && i <= prob_bin_A2(2));
+in_prob_B = @(j) (j >= prob_bin_B1(1) && j <= prob_bin_B1(2)) || (j >= prob_bin_B2(1) && j <= prob_bin_B2(2));
+
 for ij = 1:index_ij_total
     
     i = index_ij(ij,1);
@@ -139,6 +154,18 @@ for ij = 1:index_ij_total
         V_ij_coli(ij) = true;
     end 
 
+%     if (i == prob_bin_A1 && j == prob_bin_B2) || ...
+%        (i == prob_bin_A2 && j == prob_bin_B1) || ...
+%        (j == prob_bin_A1 && i == prob_bin_B2) || ...
+%        (j == prob_bin_A2 && i == prob_bin_B1) 
+%     if (i == prob_bin_A1 && (j == prob_bin_B1 || j == prob_bin_B2)) || ...
+%        (i == prob_bin_A2 && (j == prob_bin_B1 || j == prob_bin_B2))
+    if in_prob_A(i) && in_prob_B(j)
+        V_ij_prob(ij) = true;
+    end 
+
+
+    
 
     % assert(i == zones_ae_index_partner(j) & j ~= zones_ae_index_partner(i), "I didn't think is possible to land here?")
     
@@ -157,14 +184,16 @@ V_ij_std(isnan(V_ij_std)) = 0;
 %%
 if plot_on
     
-    V_ij_both = (V_ij_corr | V_ij_coli);
+    V_ij_any_not_corr = (V_ij_corr | V_ij_coli | V_ij_prob);
 
-    mean_corr   = mean(V_ij(V_ij_corr));
-    mean_corr_var = mean(V_ij_std(V_ij_corr).^2);
+    V_ij_corr_not_prob = V_ij_corr & ~V_ij_prob;
+
+    mean_corr   = mean(V_ij(V_ij_corr_not_prob));
+    mean_corr_var = mean(V_ij_std(V_ij_corr_not_prob).^2);
     mean_corr_std = sqrt(mean_corr_var);
     
-    mean_uncorr = mean(V_ij(~V_ij_both));
-    mean_uncorr_var = mean(V_ij_std(~V_ij_both).^2);
+    mean_uncorr = mean(V_ij(~V_ij_any_not_corr));
+    mean_uncorr_var = mean(V_ij_std(~V_ij_any_not_corr).^2);
     mean_uncorr_std = sqrt(mean_uncorr_var);
 
     mean_coli = mean(V_ij(V_ij_coli));
@@ -178,7 +207,7 @@ if plot_on
     figure(200);clf(200);
     figure(200);
 
-    er = errorbar(V_ij_ind(~V_ij_both), V_ij(~V_ij_both), V_ij_std(~V_ij_both), ...
+    errorbar(V_ij_ind(~V_ij_any_not_corr), V_ij(~V_ij_any_not_corr), V_ij_std(~V_ij_any_not_corr), ...
         '.', 'Color',[cb,.9],'CapSize',0); hold on;
 %     alpha(er, 0.1); % this is not working... I hate matlab
 %     set(er, '')
@@ -186,6 +215,9 @@ if plot_on
         '.', 'Color',[cr,.9],'CapSize',0); hold on;
     errorbar(V_ij_ind( V_ij_coli), V_ij( V_ij_coli), V_ij_std( V_ij_coli), ...
         '.', 'Color',[cg,.9],'CapSize',0); hold on;
+    errorbar(V_ij_ind(V_ij_prob), V_ij(V_ij_prob), V_ij_std(V_ij_prob), ...
+        '.', 'Color',[1.0000,0.5020,0.9294,.9],'CapSize',0); hold on;
+
 
     yline(mean_uncorr, '-',num2str(mean_uncorr,4)+"$\pm$"+num2str(mean_uncorr_std,4), ...
         'LineWidth',0.5,'Color',[cb,.9],'Interpreter','latex'); hold on; 
@@ -239,7 +271,7 @@ if plot_on
 end 
 
 % V_ij_lin = V_ij(:); 
-out = [V_ij, V_ij_std, V_ij_corr, V_ij_coli];
+out = [V_ij, V_ij_std, V_ij_corr, V_ij_coli, V_ij_prob];
 
 end
 

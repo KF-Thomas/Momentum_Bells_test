@@ -25,6 +25,7 @@ halo_counts_data = halo{1}.counts_vel';
 %% Wrap halo_analysis data 
 halo_re_out = halo_reanalysis(halo{1}.counts_vel); 
 halo_counts_data = halo_re_out';
+halo_reanalysis(halo_re_out);
 
 % halo_reanalysis(halo_re_out)
 
@@ -60,8 +61,8 @@ halo_reanalysis(halo_sim.cartesian);
 %% 
 %% Calculate stuff
 
-zones_azm = 8;
-shift_around = 0.25*pi;
+zones_azm = 4;
+shift_around = 0.0*pi;
 % random_throw_away_perc = 0.1;
 random_throw_away_perc = 0.0;
 % fprintf(""
@@ -88,18 +89,19 @@ if ~exist("phase_results", "var")
     fprintf("Done --------"+'\n\n');
 end 
 
-if ~exist("szf_out" ,"var")
-    fprintf("\n    Calculating squeezing_zones_filtered ... ");
-    random_throw_away_perc_list = [0, 0.25, 0.50, 0.75];
-    szf_out = squeezing_zones_filtered(halo_counts_data, random_throw_away_perc_list, Nz_test,shift_around); %%%% 
-    fprintf("Done --------"+'\n\n');
-end 
+% if ~exist("szf_out" ,"var")
+%     fprintf("\n    Calculating squeezing_zones_filtered ... ");
+%     random_throw_away_perc_list = [0, 0.25, 0.50, 0.75];
+%     szf_out = squeezing_zones_filtered(halo_counts_data, random_throw_away_perc_list, Nz_test,shift_around); %%%% 
+%     fprintf("Done --------"+'\n\n');
+% end 
 
 disp("=======    All calculations done    ========    ");
 
 %% Actual plot
 
 squeezing_new(halo_counts_data,true,zones_azm,0,shift_around);
+% squeezing_new(halo_counts_data,true,4,0,0*pi);
 
 squeezing_zones_plot(Nz_results) %%%%
 
@@ -107,7 +109,7 @@ squeezing_zones_plot(Nzp_results, 213) %%%%
 
 squeezing_phase_plot(phase_results)
 
-squeezing_zones_filtered_plot(halo_counts_data, szf_out);
+% squeezing_zones_filtered_plot(halo_counts_data, szf_out);
 
 disp("=======    All plotting done    ========    ");
 
@@ -132,6 +134,7 @@ fig_name_list = {
   237,  'halo_reanalysis_azm_rad'
   238,  'halo_reanalysis_azm_ele'
   239,  'halo_reanalysis_ele_rad'
+  250,  'squeezing_zones_mode'
 };
 
 % findobj('Type','figure')
@@ -155,11 +158,16 @@ movegui(figure(200), [0,-30])
 movegui(figure(201), [500,-30]); 
 movegui(figure(210), [0,-430]);
 movegui(figure(211), [500,-430]);
+movegui(figure(213), [1000,-430]);
 movegui(figure(220), [0,-830]);
 movegui(figure(231), [1000,-30]);
 movegui(figure(233), [1000,-430]);
-% movegui(figure(234), [1000,-830]);
-% movegui(figure(235), [1000,-1230]);
+movegui(figure(234), [1000,-830]);
+movegui(figure(235), [1300,-930]);
+movegui(figure(236), [1300,-930]);
+movegui(figure(237), [1300,-930]);
+movegui(figure(238), [1300,-930]);
+movegui(figure(239), [1300,-930]);
 
 
 %% bigger monitor config

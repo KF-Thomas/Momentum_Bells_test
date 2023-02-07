@@ -37,20 +37,41 @@ parfor inz = 1:Nz_test_counts
         shift_around = shift_around_list(isp);
 
         V_ij_results = squeezing_new(halo_centered_cells, false, Nz, random_throw_away_perc, shift_around);
+%         V_ij      = V_ij_results(:,1);
+%         V_ij_std  = V_ij_results(:,2);
+%     
+%         V_ij_corr = logical(V_ij_results(:,3));
+%         V_ij_coli = logical(V_ij_results(:,4));
+%     
+%         V_ij_both = (V_ij_corr | V_ij_coli);
+%     
+%         mean_corr     = mean(V_ij(V_ij_corr));
+%         mean_corr_var = mean(V_ij_std(V_ij_corr).^2);
+%         mean_corr_std = sqrt(mean_corr_var);
+%     
+%         mean_uncorr = mean(V_ij(~V_ij_both));
+%         mean_uncorr_var = mean(V_ij_std(~V_ij_both).^2);
+%         mean_uncorr_std = sqrt(mean_uncorr_var);
+%     
+%         mean_coli = mean(V_ij(V_ij_coli));
+%         mean_coli_var = mean(V_ij_std(V_ij_coli).^2);
+%         mean_coli_std = sqrt(mean_coli_var);
         V_ij      = V_ij_results(:,1);
         V_ij_std  = V_ij_results(:,2);
-    
         V_ij_corr = logical(V_ij_results(:,3));
         V_ij_coli = logical(V_ij_results(:,4));
+        V_ij_prob = logical(V_ij_results(:,5));
     
-        V_ij_both = (V_ij_corr | V_ij_coli);
+        V_ij_any_not_corr = (V_ij_corr | V_ij_coli | V_ij_prob);
     
-        mean_corr     = mean(V_ij(V_ij_corr));
-        mean_corr_var = mean(V_ij_std(V_ij_corr).^2);
+        V_ij_corr_not_prob = V_ij_corr & ~V_ij_prob;
+    
+        mean_corr   = mean(V_ij(V_ij_corr_not_prob));
+        mean_corr_var = mean(V_ij_std(V_ij_corr_not_prob).^2);
         mean_corr_std = sqrt(mean_corr_var);
-    
-        mean_uncorr = mean(V_ij(~V_ij_both));
-        mean_uncorr_var = mean(V_ij_std(~V_ij_both).^2);
+        
+        mean_uncorr = mean(V_ij(~V_ij_any_not_corr));
+        mean_uncorr_var = mean(V_ij_std(~V_ij_any_not_corr).^2);
         mean_uncorr_std = sqrt(mean_uncorr_var);
     
         mean_coli = mean(V_ij(V_ij_coli));

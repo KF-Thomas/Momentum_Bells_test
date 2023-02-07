@@ -33,23 +33,47 @@ parfor inz = 1:phase_test_counts
 
     %     [V_ij,  V_ij_std, V_ij_corr] = squeezing_new(halo_centered_cells, false, Nz_test);
     V_ij_results = squeezing_new(halo_centered_cells, false, zones_azm, random_throw_away_perc, phase);
+
     V_ij      = V_ij_results(:,1);
     V_ij_std  = V_ij_results(:,2);
     V_ij_corr = logical(V_ij_results(:,3));
+    V_ij_coli = logical(V_ij_results(:,4));
+    V_ij_prob = logical(V_ij_results(:,5));
 
-    mean_corr     = mean(V_ij(V_ij_corr));
-    mean_corr_var = mean(V_ij_std(V_ij_corr).^2);
+    V_ij_any_not_corr = (V_ij_corr | V_ij_coli | V_ij_prob);
+
+    V_ij_corr_not_prob = V_ij_corr & ~V_ij_prob;
+
+    mean_corr   = mean(V_ij(V_ij_corr_not_prob));
+    mean_corr_var = mean(V_ij_std(V_ij_corr_not_prob).^2);
     mean_corr_std = sqrt(mean_corr_var);
     
-    mean_uncorr     = mean(V_ij(~V_ij_corr));
-    mean_uncorr_var = mean(V_ij_std(~V_ij_corr).^2);
+    mean_uncorr = mean(V_ij(~V_ij_any_not_corr));
+    mean_uncorr_var = mean(V_ij_std(~V_ij_any_not_corr).^2);
     mean_uncorr_std = sqrt(mean_uncorr_var);
+
+%     mean_coli = mean(V_ij(V_ij_coli));
+%     mean_coli_var = mean(V_ij_std(V_ij_coli).^2);
+%     mean_coli_std = sqrt(mean_coli_var);
+
+%     V_ij      = V_ij_results(:,1);
+%     V_ij_std  = V_ij_results(:,2);
+%     V_ij_corr = logical(V_ij_results(:,3));
+% 
+%     mean_corr     = mean(V_ij(V_ij_corr));
+%     mean_corr_var = mean(V_ij_std(V_ij_corr).^2);
+%     mean_corr_std = sqrt(mean_corr_var);
+%     
+%     mean_uncorr     = mean(V_ij(~V_ij_corr));
+%     mean_uncorr_var = mean(V_ij_std(~V_ij_corr).^2);
+%     mean_uncorr_std = sqrt(mean_uncorr_var);
 
 %     phase_results(inz,1) = mean_corr;
 %     phase_results(inz,2) = mean_corr_std;
 %     phase_results(inz,3) = mean_uncorr;
 %     phase_results(inz,4) = mean_uncorr_std;
 %     phase_results(inz,:) = [];
+
     phase_results_par{inz} = [mean_corr; mean_corr_std; mean_uncorr; mean_uncorr_std];
     parfor_progress;
 end 
