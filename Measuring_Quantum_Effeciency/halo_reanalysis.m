@@ -3,7 +3,10 @@ function output = halo_reanalysis(halo_counts_vel, logging)
         halo_counts_vel 
         logging = true
     end 
-
+    % halo_reanalysis.m
+    %   wraps the output from halo_analysis
+    %   still in development (09 Feb 2023 - Tony)
+    %     
     %{
         halo_reanalysis(halo{1}.counts_vel);
         halo_reanalysis(halo{1}.counts_vel, false);
@@ -39,6 +42,9 @@ function output = halo_reanalysis(halo_counts_vel, logging)
     halo_zxy = cell2mat(halo_counts_vel);
     halo_xyz = [halo_zxy(:,2), halo_zxy(:,3), halo_zxy(:,1)];
 
+%     lim_r = [0.04, 0.08];
+%     lim_
+
 
     %% plot xy projection
     figure(231);clf(231);figure(231);
@@ -49,9 +55,9 @@ function output = halo_reanalysis(halo_counts_vel, logging)
     zlabel("z");
     title("halo projection to xy");
     view(0,90);
-%     xlim([-0.1, 0.1]);
-%     ylim([-0.1, 0.1]);
-%     zlim([-0.3, 0.3]);
+    xlim([-0.1, 0.1]);
+    ylim([-0.1, 0.1]);
+    zlim([-0.3, 0.3]);
     
     ori = [0 0 0];
     % https://au.mathworks.com/matlabcentral/fileexchange/24693-ellipsoid-fit
@@ -120,6 +126,10 @@ function output = halo_reanalysis(halo_counts_vel, logging)
     title("Fitting halo to ellipsoid")
     view(0,90);
     rotate3d(gcf, 'on');
+
+    xlim([-1,1]*1.2);
+    ylim([-1,1]*1.2);
+    zlim([-1,1]*1.2);
 
     if logging
         fprintf("    center,   radius     final \n");
@@ -211,8 +221,8 @@ function output = halo_reanalysis(halo_counts_vel, logging)
 %     plot(alin, yR_lin_L);
 %     plot(alin, yR_lin_R);
 % 
-%     xlim([0 2]*pi);
-%     ylim([0.058,0.072]);
+    xlim([0 2]*pi);
+    ylim([0.05,0.08]);
 %     hold off;
 
 %%%%    238
@@ -238,9 +248,9 @@ function output = halo_reanalysis(halo_counts_vel, logging)
     xlabel("azimuthal");
     ylabel("elevation");
     zlabel("radial")
-%     xlim([0 2]*pi);
+    xlim([0 2]*pi);
     ylim([0 1]*pi);
-%     zlim([0.05 0.1]);
+    zlim([0.05 0.08]);
 
     view(90,0);
     rotate3d(gcf, 'on');

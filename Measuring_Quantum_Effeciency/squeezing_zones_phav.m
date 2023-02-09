@@ -1,5 +1,10 @@
 function out=squeezing_zones_phav(halo_centered_cells, Npz_test, random_throw_away_perc)
-    
+%   squeezing_zones_phav.m
+%       Do a phase averaged result of squeezing_zones using phases from list Npz_test
+%
+%
+
+
 if ~exist('Npz_test', 'var')
     warning("Npz_test default value is used")
     Npz_test = [(2:2:50) 60:10:180]'; % default

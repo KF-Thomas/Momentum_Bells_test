@@ -1,4 +1,9 @@
 function out=squeezing_zones(halo_centered_cells,plot_on, Nz_test, random_throw_away_perc, shift_around)
+% squeezing_zones.m 
+%   scan through squeezing_new() with various zones_azm from values in Nz_test array
+% 
+% 
+
 
 if ~exist('Nz_test', 'var')
     Nz_test = [(2:2:50) 60:10:360]'; % default
@@ -88,6 +93,7 @@ Nz_results = reshape(cell2mat(Nz_results_par), 6, Nz_test_counts)';
 
 if plot_on 
     fprintf(repmat(' ',1, 100));
+    fprintf("DEPRECATED, don't plot here!")
     fprintf("Done \n");
 end
 

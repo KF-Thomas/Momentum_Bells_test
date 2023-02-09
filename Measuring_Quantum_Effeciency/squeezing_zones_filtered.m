@@ -1,5 +1,9 @@
 function output=squeezing_zones_filtered(halo_centered_cells, random_throw_away_perc_list, Nz_test, shift_around)
-
+% squeezing_zones_filtered.m
+%   throw away different amount of data with amount config in random_throw_away_perc_list
+% 
+% 
+% 
 %{
 
 szf_out = squeezing_zones_filtered(halo{1}.counts_vel')

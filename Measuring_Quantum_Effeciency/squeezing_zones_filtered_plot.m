@@ -1,5 +1,8 @@
 function squeezing_zones_filtered_plot(halo_centered_cells, szcf_out)
-
+%   squeezing_zones_filtered_plot.m
+%       plot results from squeezing_zones_filtered
+% 
+% 
 %{
 
 szcf_out = squeezing_zones_calc_filtered(halo{1}.counts_vel')

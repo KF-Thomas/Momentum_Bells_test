@@ -109,6 +109,10 @@ squeezing_zones_plot(Nzp_results, 213) %%%%
 
 squeezing_phase_plot(phase_results)
 
+%TODO 
+% squeezing_zones_mode(halo_counts_data, true, [(2:2:50) 60:10:180]', [5,20,40], 0);
+squeezing_zones_mode(halo_counts_data, true, Nz_test, [5,20,40], 0);
+
 % squeezing_zones_filtered_plot(halo_counts_data, szf_out);
 
 disp("=======    All plotting done    ========    ");

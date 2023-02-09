@@ -1,5 +1,11 @@
 function squeezing_zones_plot(squeezing_zones_out, fig_id)
-
+% squeezing_zones_plot.m 
+%   Plotting results from squeezing_zones()
+%
+%
+%
+%
+%
 %{
 Nz_test = [(2:2:50) 60:10:360]';
 Nz_results = squeezing_zones(halo{1}.counts_vel',true, Nz_test);

@@ -20,9 +20,11 @@ opts.data_root = '/Users/tonyyan/Library/CloudStorage/OneDrive-AustralianNationa
 % data_folder = '20230130_new_plates_halo_3_halos';
 % data_folder = '20230201_single_helo_new_plate';
 data_folder = '20230202_single_helo_8 percent_new_plate';
+% data_folder = '20230208_new_plate';
+% data_folder = '20230208_early_push_k=0,-1_halo_new_plate';
 
 opts.import.dir = fullfile(opts.data_root, data_folder);
-opts.import.force_reimport = false;
+opts.import.force_reimport = true;
 opts.import.force_cache_load = ~opts.import.force_reimport;
 
 % opts.import.shot_num = 313:625; %can select specific shots to import

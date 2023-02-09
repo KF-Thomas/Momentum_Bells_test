@@ -1,5 +1,8 @@
 function squeezing_phase_plot(squeezing_zones_out)
-
+% plotting for results from squeezing_phase
+% 
+% 
+% 
 %{
 phase_test = (0:0.01:2)'*pi; % default
 phase_results = squeezing_phase(halo{1}.counts_vel', true, phase_test,4,0);

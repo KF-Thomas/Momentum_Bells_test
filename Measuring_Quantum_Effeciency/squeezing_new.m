@@ -1,5 +1,27 @@
 function out=squeezing_new(halo_centered_cells,plot_on,zones_azm, random_throw_away_perc, shift_around)
+% squeezing_new.m the new squeezing analysis code
+%   algorithm roughtly follows the paper 
 % [1] paper Sub-Poissonian Number Diff in 4 wave mixing 
+% Inputs:
+%   halo_centered_cells:    usually this is halo{1}.counts_vel'
+%                           or can use the output from halo_reanalysis.m 
+%   plot_on:    turns on plotting feature, otherwise will just return the squeezing analysis
+%   zones_azm:  number of zones in the azimuth 0 to 2*pi
+%   random_throw_away_perc: randomly remove some data to test the algorithm, tase value (0-1)
+%   shift_around:   rotate the halo by this rad 
+% Outputs:
+%   out: [V_ij, V_ij_std, V_ij_corr, V_ij_coli, V_ij_prob]
+%       V_ij is the variance between bin i and bin j
+%           Note: bin label from 1 to 2*zones_azm
+%       V_ij_std
+%       V_ij_corr: boolean array - is this pair ij back-to-back
+%       V_ijcoli:  boolean array - is this pair ij next to each other 
+%       V_ij_prob: boolean array - is this pair ij the probmatic region 
+%               - WARNING: this need to be done manually for each dataset
+% 
+%   
+%   2023 Feb - Xintong (Tony) Yan - xintong.yan@anu.edu.au
+%   written for analysing the quantum efficiency for the new plate
 
 %%
 % debug = true;

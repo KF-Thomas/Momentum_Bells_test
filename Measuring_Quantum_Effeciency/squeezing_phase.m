@@ -1,4 +1,9 @@
 function out=squeezing_phase(halo_centered_cells,plot_on, phase_test, zones_azm, random_throw_away_perc)
+% squeezing_phase.
+%   rotate halo testes for each phase in phase_test
+% 
+% 
+% 
 
 if ~exist('phase_test', 'var')
     phase_test = (0:0.25:2)'*pi; % default

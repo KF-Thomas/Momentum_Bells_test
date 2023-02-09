@@ -6,7 +6,14 @@ function output = squeezing_zones_mode(halo_centered_cells,plot_on, Nz_test, Mod
         Mode_test = [10,20,Inf];
         random_throw_away_perc = 0;
     end 
-
+    % squeezing_zones_mode.m 
+    %   scans through squeezing_zones_phav() with halo of counts using Mode_test
+    % 
+    % 
+    % 
+    %     
+    %
+    % 
     % squeezing_zones_mode(halo_counts_data)
     % squeezing_zones_mode(halo_counts_data, true, [(2:2:50) 60:10:180]', [10,20,Inf], 0);
     % squeezing_zones_mode(halo_counts_data, true, [(2:2:50) 60:10:180]', [5,15,Inf], 0);
@@ -50,8 +57,10 @@ function output = squeezing_zones_mode(halo_centered_cells,plot_on, Nz_test, Mod
 
             co = colors(im,:);
             mode_str = num2str(mode_cut_lower) + " to " + num2str(mode_cut_upper);
+            errorbar(Nz_test, Nz_mean_unco, Nz_mean_unco_std, 'x', ...
+                'Color',co,'CapSize',0,'DisplayName',mode_str+" uncorr"); hold on;
             errorbar(Nz_test, Nz_mean_corr, Nz_mean_corr_std, '.', ...
-                'Color',co,'CapSize', 0,'DisplayName',mode_str); hold on;
+                'Color',co,'CapSize', 0,'DisplayName',mode_str+" corr",'MarkerSize',5); hold on;
 
             nz_lin = linspace(1, Nz_test(end)*1.02,1000)';
             cr = 0.065*2*pi;
@@ -64,7 +73,10 @@ function output = squeezing_zones_mode(halo_centered_cells,plot_on, Nz_test, Mod
             fill([nz_lin; flipud(nz_lin)], [y_mod_ci(:,1); flipud(y_mod_ci(:,2))], co, ...
                 'FaceAlpha',0.1, 'LineStyle','none','DisplayName',"Prob Fit $2\sigma$ CI")
             
-            fprintf(mode_str + "\t fitted eta = " + num2str(mdl.Coefficients.Estimate(1)) + '\n');
+            fprintf(mode_str + "  \t fitted η = " + num2str(mdl.Coefficients.Estimate(1)) + ...
+                ' ± ' + num2str(mdl.Coefficients.SE(1)) + ...
+                '\t σ = ' + num2str(mdl.Coefficients.Estimate(2)) + ...
+                ' ± ' + num2str(mdl.Coefficients.SE(2)) + '\n');
 
         end 
 
