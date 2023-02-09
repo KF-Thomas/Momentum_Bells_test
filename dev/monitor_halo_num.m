@@ -50,8 +50,8 @@ const.fall_distance = 8.52925545e-01;
 opts.cent.visual = 2;
 opts.cent.threshold = [100,30,30].*1e3; %set in inverse units (Hz for time 1/m for space)
 opts.cent.sigma = [8e-5,25e-5,25e-5];
-% opts.cent.t_bounds = {[3.8598,3.871],[3.871,3.8844],[3.8844,3.8972],[3.8,3.95]}; %time bounds for the different momentum states k=+1,0,-1 respectively
-opts.cent.t_bounds = {[1.741,1.75],[1.75,1.763],[1.763,1.776],[1.73,1.779]};;
+opts.cent.t_bounds = {[3.8598,3.871],[3.871,3.8844],[3.8844,3.8972],[3.8,3.95]}; %time bounds for the different momentum states k=+1,0,-1 respectively
+% opts.cent.t_bounds = {[1.741,1.75],[1.75,1.763],[1.763,1.776],[1.73,1.779]};;
 
 opts.vel_conv.plot_percentage = 0.2;
 opts.vel_conv.visual = 0;

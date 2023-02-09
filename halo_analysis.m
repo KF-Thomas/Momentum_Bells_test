@@ -11,7 +11,7 @@ opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
 % opts.data_root = 'C:\Users\kieran\Documents\LOCAL-DATA\';
 % opts.data_root = 'C:\Users\BEC Machine\Documents\DATA_BACKUP\';
 
-data_folder = '';%'20230201_single_helo_new_plate';%'20221212_new_plates_halo_test_4';%'20221102_new_plates_halo_test';%'20221125_new_plates_halo_test_2';%'20221209_new_plates_halo_test_3';%'2023130_new_plates_halo_3_halos';%
+data_folder = '20230209_mag_trans_then_mj=0_k=0-1,_halo_new_plate';%'20230201_single_helo_new_plate';%'20221212_new_plates_halo_test_4';%'20221102_new_plates_halo_test';%'20221125_new_plates_halo_test_2';%'20221209_new_plates_halo_test_3';%'2023130_new_plates_halo_3_halos';%
 % data_folder = 'k=0,-1,-2_halos_data\weak trap\20201119_k=0,-1,-2_halos_data_test_3';%20201006_k=0,-1,-2_halos_data_3';%'
 
 opts.import.dir = fullfile(opts.data_root, data_folder);

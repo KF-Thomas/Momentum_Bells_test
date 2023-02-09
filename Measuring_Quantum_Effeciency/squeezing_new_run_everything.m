@@ -39,16 +39,17 @@ sim_hits = [15 3];
 sim_detector_noise = [0, 0.001];
 % sim_detector_noise = [0, 0.01];
 % sim_detector_noise = [0, 0];
-sim_cut_pi_ang = 1.5*pi;
+sim_cut_pi_ang = 0.0*pi;
 % sim_cut_pi_ang = 1 * pi;
 % sim_cut_pi_ang = 0.25 * pi;
 % sim_cut_pi_ang = 0;
 sim_cut_pi_per = 0.9;
+detector_noise = [0, 0*0.065*0.5];
 
 
 halo_sim = sim_halo_exp_samples(sim_radius, sim_shots, sim_hits, sim_detector_noise, sim_cut_pi_ang, sim_cut_pi_per);
 halo_counts_data = halo_sim.cartesian';
-detector_noise = [0, 0.065*0.5];
+
 
 % data_folder_backup = data_folder;
 data_folder = 'sim_halo_exp_samples_justcut_15';
@@ -67,7 +68,7 @@ shift_around = 0.0*pi;
 random_throw_away_perc = 0.0;
 % fprintf(""
 
-
+%%
 if ~exist("Nz_results", "var")
     fprintf("\n    Calculating squeezing_zones ... ");
     Nz_test = [(2:2:50) 60:10:180]'; % faster
