@@ -27,13 +27,13 @@ tlim=[0,4];
 
 opts.num_lim = 1.5e3;%0.5e3;% %minimum atom number 1.5e3
 opts.halo_N_lim = -1;%2;%10;%0;% %minimum allowed number in halo 10
-opts.halo_N_lim_upper = 120;%Inf;%2;%10;%0;% %minimum allowed number in halo 10
+opts.halo_N_lim_upper = Inf;%120;%2;%10;%0;% %minimum allowed number in halo 10
 y_cut = 11e-3;
 
 z_limits = [-0.9,0.9];%[-0.3,0.3];%[-0.3,0.3];%[-0.4,0.4];%[-0.68,0.68];%[-0.15,0.15];%[-0.15,0.15];%[-0.36,0.36];%
-radius_lim = [0.058,0.07];%[0.03,0.08];%[0.06,0.07];%[0.05,0.07];%[0.,1.17].*0.065;%[0.79,1.17].*0.065;%[0.61,1.26];%[0.89,1.11];%[0.89,1.16];%[0.9,1.05];%
+radius_lim = [0.058,0.07];%[0.01,0.09];%[0.06,0.07];%[0.05,0.07];%[0.,1.17].*0.065;%[0.79,1.17].*0.065;%[0.61,1.26];%[0.89,1.11];%[0.89,1.16];%[0.9,1.05];%
 
-ang_lim = 30;%45;%35;%angular limit in degrees
+ang_lim = 35;%30;%35;%angular limit in degrees
 
 plot_dist = true; %do you want to see all the detailed stuff about the halo distributions
 opts.corr_center_check = false; %do you want a sceond check
