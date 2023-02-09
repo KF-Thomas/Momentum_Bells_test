@@ -19,9 +19,10 @@ opts.data_root = '/Users/tonyyan/Library/CloudStorage/OneDrive-AustralianNationa
 % data_folder = '20221212_new_plates_halo_test_4';
 % data_folder = '20230130_new_plates_halo_3_halos';
 % data_folder = '20230201_single_helo_new_plate';
-data_folder = '20230202_single_helo_8 percent_new_plate';
+% data_folder = '20230202_single_helo_8 percent_new_plate';
 % data_folder = '20230208_new_plate';
 % data_folder = '20230208_early_push_k=0,-1_halo_new_plate';
+data_folder = '20230209_mag_trans_then_mj=0_k=0-1,_halo_new_plate';
 
 opts.import.dir = fullfile(opts.data_root, data_folder);
 opts.import.force_reimport = true;
@@ -34,15 +35,15 @@ tmp_xlim=[-35e-3, 35e-3];     %tight XY lims to eliminate hot spot from destroyi
 tmp_ylim=[-35e-3, 35e-3];
 tlim=[0,4];
 
-opts.num_lim = 1e3;%0.5e3;% %minimum atom number 1.5e3
+opts.num_lim = 1.5e3;%0.5e3;% %minimum atom number 1.5e3
 opts.halo_N_lim = -1;%2;%10;%0;% %minimum allowed number in halo 10
 opts.halo_N_lim_upper = Inf;%2;%10;%0;% %minimum allowed number in halo 10
 y_cut = 11e-3;
 
 z_limits = [-0.9,0.9];%[-0.3,0.3];%[-0.3,0.3];%[-0.4,0.4];%[-0.68,0.68];%[-0.15,0.15];%[-0.15,0.15];%[-0.36,0.36];%
-radius_lim = [0.058,0.072];%[0.05,0.07];%[0.03,0.08];%[0.,1.17].*0.065;%[0.79,1.17].*0.065;%[0.61,1.26];%[0.89,1.11];%[0.89,1.16];%[0.9,1.05];%
+radius_lim = [0.061,0.068]; %[0.058,0.07];%[0.058,0.072];%[0.05,0.07];%[0.03,0.08];%[0.,1.17].*0.065;%[0.79,1.17].*0.065;%[0.61,1.26];%[0.89,1.11];%[0.89,1.16];%[0.9,1.05];%
 
-ang_lim = 45;%35;%angular limit in degrees
+ang_lim = 35;%35;%angular limit in degrees
 
 plot_dist = true; %do you want to see all the detailed stuff about the halo distributions
 opts.corr_center_check = false; %do you want a sceond check

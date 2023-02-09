@@ -57,10 +57,10 @@ function output = squeezing_zones_mode(halo_centered_cells,plot_on, Nz_test, Mod
 
             co = colors(im,:);
             mode_str = num2str(mode_cut_lower) + " to " + num2str(mode_cut_upper);
-            errorbar(Nz_test, Nz_mean_unco, Nz_mean_unco_std, 'x', ...
-                'Color',co,'CapSize',0,'DisplayName',mode_str+" uncorr"); hold on;
+%             errorbar(Nz_test, Nz_mean_unco, Nz_mean_unco_std, 'x', ...
+%                 'Color',co,'CapSize',0,'DisplayName',mode_str+" uncorr"); hold on;
             errorbar(Nz_test, Nz_mean_corr, Nz_mean_corr_std, '.', ...
-                'Color',co,'CapSize', 0,'DisplayName',mode_str+" corr",'MarkerSize',5); hold on;
+                'Color',co,'CapSize', 3,'DisplayName',mode_str+" corr",'MarkerSize',5); hold on;
 
             nz_lin = linspace(1, Nz_test(end)*1.02,1000)';
             cr = 0.065*2*pi;
