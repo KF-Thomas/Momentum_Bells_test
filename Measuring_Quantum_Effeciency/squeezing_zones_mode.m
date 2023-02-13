@@ -3,7 +3,7 @@ function output = squeezing_zones_mode(halo_centered_cells,plot_on, Nz_test, Mod
         halo_centered_cells;
         plot_on = true;
         Nz_test = [(2:2:50) 60:10:180]';
-        Mode_test = [10,20,Inf];
+        Mode_test = [0,10,20,Inf];
         random_throw_away_perc = 0;
     end 
     % squeezing_zones_mode.m 
@@ -20,13 +20,13 @@ function output = squeezing_zones_mode(halo_centered_cells,plot_on, Nz_test, Mod
     % squeezing_zones_mode(halo_counts_data, true, [(2:2:50) 60:10:180]', [5,15,25,Inf], 0);
     %
     
-    mode_test_counts = numel(Mode_test);
+    mode_test_counts = numel(Mode_test)-1;
     
     mode_test_results = cell(mode_test_counts,1);
     
     colors = hsv(mode_test_counts);
     
-    mode_cut_lower = 0;
+    mode_cut_lower = Mode_test(1);
     
     if plot_on
         figure(250);clf(250);figure(250);
@@ -34,7 +34,7 @@ function output = squeezing_zones_mode(halo_centered_cells,plot_on, Nz_test, Mod
 
 
     for im = 1:mode_test_counts
-        mode_cut_upper = Mode_test(im);
+        mode_cut_upper = Mode_test(im+1);
 
         mode_halo_ind = cellfun(@(c) size(c,1) > mode_cut_lower & size(c,1) < mode_cut_upper, halo_centered_cells);
 
