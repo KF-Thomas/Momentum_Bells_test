@@ -52,7 +52,7 @@ halo_counts_data = halo_sim.cartesian';
 
 
 % data_folder_backup = data_folder;
-data_folder = 'sim_halo_exp_samples_justcut_15';
+data_folder = '20230213_BEC_mj=0_k=0,-1_helo_new_plate';
 
 halo_reanalysis(halo_sim.cartesian); 
 

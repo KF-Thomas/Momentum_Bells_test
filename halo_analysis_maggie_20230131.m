@@ -309,3 +309,25 @@ end
 %% Measure Correlations
 
 %% Measure Squeezing
+
+%plot options
+sqz_opts.plot_sqz_angle=1; %plot variance between bin pairs vs angle between them. Return naive QE estimate
+sqz_opts.plot_sqz_num_zones=1; %plot variance for un/correlated pairs vs number of zones. Return QE estimate from fit. This may take some time to calculate. 
+
+%data options
+%window counts
+sqz_opts.window_counts=1; %Only use shots with counts in range count_lims
+sqz_opts.count_lims=[15,60]; %acceptable range for counts
+
+%call squeezing
+%get QE estimate(s) as output
+squeezing(halo{1}.counts_vel',sqz_opts,1);
+
+%the squeezing code has two methods for calculating squeezing
+%the naive estimate is based on the average variance between correlated
+%(diametrically opposite) zones, which should be 1-QE. 
+%the fit estimate takes into account the probability that the correlated
+%partner of a particular count will land in the opposite zone, which
+%depends on the number of zones the halo is divided into. The variance
+%between zones is calculated for an array of zone numbers and the QE 
+%determined from fit parameters of the expected ditsribution.
