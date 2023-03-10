@@ -6,7 +6,7 @@ vr = -0.130159/2;
 g = -const.g0;
 d = const.fall_distance;
 tf = sqrt(-2*d/g);
-delt = 1.769-tf;%3.8772-tf;%2.1749-tf;%
+delt = 3.8772-tf;%1.769-tf;%2.1749-tf;%
 
 opposite_pol = @(t,s) (2*d+t.^2.*g+4.*t.*vr*s-sqrt(-8*t.^2.*d.*g+(2*d+t.^2.*g+4*t.*vr*s).^2))./(2*t.*g);
 

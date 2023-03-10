@@ -25,7 +25,7 @@ dkr = 5e-3;%(dkx.*dky.*dkz).^(1/3);
 
 %% BACK TO BACK (in the same halo)
 %chose method of correlation calculation
-corr_opts.type='radial_bb';%'1d_cart_bb';%'1d_vol_bb';%'2d_cart_bb';%
+corr_opts.type='1d_cart_bb';%'radial_bb';%'1d_vol_bb';%'2d_cart_bb';%
 corr_opts.bin_lims = 6;
 corr_opts.one_d_dimension = 2;
 corr_opts.two_d_dimensions = [2,3];
@@ -33,7 +33,7 @@ corr_opts.two_d_dimensions = [2,3];
 corr_opts.one_d_window=[[-1,1].*dkz;[-1,1].*dkx;[-1,1].*dky];
 
 %setup grid spacing
-one_d_range=0.015*7;%0.017;%0.05;%0.01;%0.01;%0.017;%0.09;%0.075;%0.02%0.03
+one_d_range=0.015*20;%0.017;%0.05;%0.01;%0.01;%0.017;%0.09;%0.075;%0.02%0.03
 % one_d_range=0.16;
 
 num_pts_cart = round(one_d_range./global_opts.delta_kd(corr_opts.one_d_dimension));
