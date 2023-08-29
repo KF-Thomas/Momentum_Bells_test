@@ -443,6 +443,7 @@ plot(phi,v_top_r(:,2),'linewidth',1.5)
 legend('bottom','top')
 ylabel('Average radial value')
 xlabel('\(\phi\)')
+
 stfig('spherical density plot')
 for ii = 1:(nbins-1)
     for jj = 1:(nbins-1)

@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[    130390,       3107]
-NotebookOptionsPosition[    119141,       2907]
-NotebookOutlinePosition[    119490,       2922]
-CellTagsIndexPosition[    119447,       2919]
+NotebookDataLength[    144470,       3406]
+NotebookOptionsPosition[    132434,       3193]
+NotebookOutlinePosition[    132785,       3208]
+CellTagsIndexPosition[    132742,       3205]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -2376,7 +2376,7 @@ Cell[BoxData[{
   ";"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{"Num", "=", 
-   RowBox[{"10", "^", "6"}]}], ";"}], "\[IndentingNewLine]", 
+   RowBox[{"10", "^", "5"}]}], ";"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{
    RowBox[{"Rf", "[", "\[Omega]_", "]"}], ":=", 
@@ -2497,68 +2497,70 @@ Cell[BoxData[{
   3.886184718369871*^9, 3.886184791299036*^9}, {3.8861848322446117`*^9, 
   3.8861848340175962`*^9}, {3.886184919699519*^9, 3.886184995724718*^9}, {
   3.886185032503724*^9, 3.886185056738719*^9}, {3.886185206973117*^9, 
-  3.886185207525509*^9}, {3.887400248325135*^9, 3.8874002491370153`*^9}},
+  3.886185207525509*^9}, {3.887400248325135*^9, 3.8874002491370153`*^9}, {
+  3.8876544482414956`*^9, 3.887654448614887*^9}, {3.887657766540413*^9, 
+  3.8876577679748898`*^9}},
  CellLabel->
-  "In[163]:=",ExpressionUUID->"9111c0fe-df08-4f2a-bdd2-6def48d3fb0d"],
+  "In[194]:=",ExpressionUUID->"9111c0fe-df08-4f2a-bdd2-6def48d3fb0d"],
 
 Cell[BoxData[
  GraphicsBox[{{{}, {}, 
     TagBox[
      {RGBColor[0.368417, 0.506779, 0.709798], AbsoluteThickness[1.6], Opacity[
       1.], LineBox[CompressedData["
-1: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
-R8J7nsksziQgGV7xbWWFhNcOOaOpDAL/A1uwRTU=
+1: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
        "]]},
-     Annotation[#, "Charting`Private`Tag$108746#1"]& ], 
+     Annotation[#, "Charting`Private`Tag$137580#1"]& ], 
     TagBox[
      {RGBColor[0.880722, 0.611041, 0.142051], AbsoluteThickness[1.6], Opacity[
       1.], LineBox[CompressedData["
@@ -2616,7 +2618,7 @@ StbrtZggwSOpHtZNJbAQ/+/r4c8kKFmrsTEOBOpOCYqwzZHIjb7FWmxPgHky
 /rtMQrdKWfekNQGLWLPbr1ZJXD1Z51thRYA3pnRpbY1EoRN5Y9CSwP8Axe45
 OQ==
        "]]},
-     Annotation[#, "Charting`Private`Tag$108746#2"]& ]}, {}},
+     Annotation[#, "Charting`Private`Tag$137580#2"]& ]}, {}},
   AspectRatio->NCache[GoldenRatio^(-1), 0.6180339887498948],
   Axes->{True, True},
   AxesLabel->{None, None},
@@ -2650,7 +2652,7 @@ OQ==
          Part[#, 1]], 
         (Identity[#]& )[
          Part[#, 2]]}& )}},
-  PlotRange->{{10, 400}, {0., 1438.2951462299118`}},
+  PlotRange->{{10, 400}, {0., 907.5028860439763}},
   PlotRangeClipping->True,
   PlotRangePadding->{{
      Scaled[0.02], 
@@ -2661,9 +2663,9 @@ OQ==
  CellChangeTimes->{{3.8861847505336084`*^9, 3.886184791936245*^9}, 
    3.8861848383683424`*^9, {3.886184921856764*^9, 3.886184997575202*^9}, {
    3.8861850476204944`*^9, 3.886185062127804*^9}, 3.8861852113740573`*^9, 
-   3.8874002540572987`*^9},
+   3.8874002540572987`*^9, 3.8876544521350718`*^9, 3.8876577718975296`*^9},
  CellLabel->
-  "Out[168]=",ExpressionUUID->"5e3c6e1b-496b-4c73-ab6c-0d90969603bf"]
+  "Out[199]=",ExpressionUUID->"a844973e-c100-43f9-8a83-3ebdadaa03a2"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -2673,7 +2675,7 @@ Cell[BoxData[{
   RowBox[{
    RowBox[{
     RowBox[{"Rf", "[", 
-     RowBox[{"20", 
+     RowBox[{"40", 
       NamespaceBox["LinguisticAssistant",
        DynamicModuleBox[{Typeset`query$$ = "Hz", Typeset`boxes$$ = 
         TemplateBox[{
@@ -2717,7 +2719,7 @@ Cell[BoxData[{
   RowBox[{
    RowBox[{
     RowBox[{"a0f", "[", 
-     RowBox[{"20", 
+     RowBox[{"40", 
       NamespaceBox["LinguisticAssistant",
        DynamicModuleBox[{Typeset`query$$ = "Hz", Typeset`boxes$$ = 
         TemplateBox[{
@@ -2761,30 +2763,34 @@ Cell[BoxData[{
   3.8861855064898767`*^9, 3.8861855184500985`*^9}, {3.8861855622453313`*^9, 
   3.8861855656668024`*^9}, {3.8861911578559165`*^9, 3.886191160608577*^9}, {
   3.8871322053000717`*^9, 3.887132215100953*^9}, {3.8873138319904413`*^9, 
-  3.8873138355104647`*^9}, {3.8873407261958175`*^9, 3.887340729452798*^9}},
+  3.8873138355104647`*^9}, {3.8873407261958175`*^9, 3.887340729452798*^9}, {
+  3.88740032574984*^9, 3.887400327208527*^9}, {3.887657748682497*^9, 
+  3.8876577624781885`*^9}},
  CellLabel->
-  "In[169]:=",ExpressionUUID->"05aa7165-f210-4176-8b30-9281871bccb3"],
+  "In[200]:=",ExpressionUUID->"05aa7165-f210-4176-8b30-9281871bccb3"],
 
 Cell[BoxData[
- TemplateBox[{"1090.0242373640176`","\"s\"","seconds","\"Seconds\""},
+ TemplateBox[{"521.2237021174035`","\"s\"","seconds","\"Seconds\""},
   "Quantity"]], "Output",
  CellChangeTimes->{{3.8861850160340347`*^9, 3.88618502698167*^9}, {
    3.8861855087697077`*^9, 3.8861855210772085`*^9}, 3.8861855670495872`*^9, 
    3.886191172899043*^9, 3.8871322155695267`*^9, 3.8873138360535445`*^9, 
-   3.8873407331363597`*^9, 3.8874002542208614`*^9},
+   3.8873407331363597`*^9, 3.8874002542208614`*^9, 3.887400479415616*^9, 
+   3.887654454356659*^9, {3.8876577497713737`*^9, 3.8876577740284224`*^9}},
  CellLabel->
-  "Out[169]=",ExpressionUUID->"0d5593d5-a490-4dd8-bc3a-badd9e9a0494"],
+  "Out[200]=",ExpressionUUID->"2ffa765a-372f-4e17-8d52-17fff2173118"],
 
 Cell[BoxData[
  TemplateBox[{
-  "172.6610057498323857314`6.821301202068361","\"s\"","seconds","\"Seconds\""},
+  "122.0897680121959524867`6.821301202068361","\"s\"","seconds","\"Seconds\""},
   "Quantity"]], "Output",
  CellChangeTimes->{{3.8861850160340347`*^9, 3.88618502698167*^9}, {
    3.8861855087697077`*^9, 3.8861855210772085`*^9}, 3.8861855670495872`*^9, 
    3.886191172899043*^9, 3.8871322155695267`*^9, 3.8873138360535445`*^9, 
-   3.8873407331363597`*^9, 3.8874002542597575`*^9},
+   3.8873407331363597`*^9, 3.8874002542208614`*^9, 3.887400479415616*^9, 
+   3.887654454356659*^9, {3.8876577497713737`*^9, 3.887657774064349*^9}},
  CellLabel->
-  "Out[170]=",ExpressionUUID->"02da9f70-fb17-4be6-87e9-226d7bdac9ef"]
+  "Out[201]=",ExpressionUUID->"ba07a3a7-8e2a-4a1d-ad6e-eaa1f59c8a25"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -2903,10 +2909,290 @@ Cell[BoxData[
  CellChangeTimes->{3.8871343930594845`*^9, 3.887313827340562*^9},
  CellLabel->
   "Out[137]=",ExpressionUUID->"9a5f6ad0-43fb-466b-9623-a9ae1b749484"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"UnitSimplify", "[", 
+  RowBox[{"Exp", "[", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"-", "2"}], "*", 
+     RowBox[{"g", "^", "2"}], "*", "2", "*", 
+     RowBox[{"k0", "^", "2"}], "*", 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{"800", "*", 
+        RowBox[{"10", "^", 
+         RowBox[{"-", "6"}]}], " ", 
+        NamespaceBox["LinguisticAssistant",
+         DynamicModuleBox[{Typeset`query$$ = "seconds", Typeset`boxes$$ = 
+          TemplateBox[{
+            InterpretationBox["\[InvisibleSpace]", 1], "\"s\"", "seconds", 
+            "\"Seconds\""}, "Quantity", SyntaxForm -> Mod], 
+          Typeset`allassumptions$$ = {{
+           "type" -> "Clash", "word" -> "seconds", "template" -> 
+            "Assuming \"seconds\" is a unit${separator}Use as ${desc} \
+instead", "count" -> "2", "pulldown" -> "false", "default" -> 
+            "{\"C\", \"seconds\"} -> {\"Unit\", \"dflt\"}", 
+            "Values" -> {{
+              "name" -> "Unit", "desc" -> "a unit", "input" -> 
+               "{\"C\", \"seconds\"} -> {\"Unit\"}"}, {
+              "name" -> "Word", "desc" -> "a word", "input" -> 
+               "{\"C\", \"seconds\"} -> {\"Word\"}"}}}, {
+           "type" -> "Unit", "word" -> "seconds", "template" -> 
+            "Assuming seconds of time for \"seconds\"${separator}Use ${desc} \
+instead", "count" -> "2", "pulldown" -> "false", "default" -> 
+            "\"UnitClash\" -> {\"seconds\", {\"Seconds\", \"dflt\"}}", 
+            "Values" -> {{
+              "name" -> "Seconds", "desc" -> "seconds of time", "input" -> 
+               "\"UnitClash\" -> {\"seconds\", {\"Seconds\"}}"}, {
+              "name" -> "Arcseconds", "desc" -> "seconds of arc", "input" -> 
+               "\"UnitClash\" -> {\"seconds\", {\"Arcseconds\"}}"}}}}, 
+          Typeset`assumptions$$ = {}, Typeset`open$$ = {1, 2}, 
+          Typeset`querystate$$ = {
+          "Online" -> True, "Allowed" -> True, "mparse.jsp" -> 
+           2.0331909`7.759723150749033, "Messages" -> {}}}, 
+          DynamicBox[ToBoxes[
+            AlphaIntegration`LinguisticAssistantBoxes["", 4, Automatic, 
+             Dynamic[Typeset`query$$], 
+             Dynamic[Typeset`boxes$$], 
+             Dynamic[Typeset`allassumptions$$], 
+             Dynamic[Typeset`assumptions$$], 
+             Dynamic[Typeset`open$$], 
+             Dynamic[Typeset`querystate$$]], StandardForm],
+           ImageSizeCache->{79., {10., 17.}},
+           
+           TrackedSymbols:>{
+            Typeset`query$$, Typeset`boxes$$, Typeset`allassumptions$$, 
+             Typeset`assumptions$$, Typeset`open$$, Typeset`querystate$$}],
+          DynamicModuleValues:>{},
+          UndoTrackedVariables:>{Typeset`open$$}],
+         BaseStyle->{"Deploy"},
+         DeleteWithContents->True,
+         Editable->False,
+         SelectWithContents->True]}], ")"}], "^", "4"}]}], "-", 
+    RowBox[{"4", "*", "I", "*", "g", "*", 
+     RowBox[{"Sqrt", "[", "2", "]"}], "*", "k0", "*", 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{"800", "*", 
+        RowBox[{"10", "^", 
+         RowBox[{"-", "6"}]}], 
+        NamespaceBox["LinguisticAssistant",
+         DynamicModuleBox[{Typeset`query$$ = "seconds", Typeset`boxes$$ = 
+          TemplateBox[{
+            InterpretationBox["\[InvisibleSpace]", 1], "\"s\"", "seconds", 
+            "\"Seconds\""}, "Quantity", SyntaxForm -> Mod], 
+          Typeset`allassumptions$$ = {{
+           "type" -> "Clash", "word" -> "seconds", "template" -> 
+            "Assuming \"seconds\" is a unit${separator}Use as ${desc} \
+instead", "count" -> "2", "pulldown" -> "false", "default" -> 
+            "{\"C\", \"seconds\"} -> {\"Unit\", \"dflt\"}", 
+            "Values" -> {{
+              "name" -> "Unit", "desc" -> "a unit", "input" -> 
+               "{\"C\", \"seconds\"} -> {\"Unit\"}"}, {
+              "name" -> "Word", "desc" -> "a word", "input" -> 
+               "{\"C\", \"seconds\"} -> {\"Word\"}"}}}, {
+           "type" -> "Unit", "word" -> "seconds", "template" -> 
+            "Assuming seconds of time for \"seconds\"${separator}Use ${desc} \
+instead", "count" -> "2", "pulldown" -> "false", "default" -> 
+            "\"UnitClash\" -> {\"seconds\", {\"Seconds\", \"dflt\"}}", 
+            "Values" -> {{
+              "name" -> "Seconds", "desc" -> "seconds of time", "input" -> 
+               "\"UnitClash\" -> {\"seconds\", {\"Seconds\"}}"}, {
+              "name" -> "Arcseconds", "desc" -> "seconds of arc", "input" -> 
+               "\"UnitClash\" -> {\"seconds\", {\"Arcseconds\"}}"}}}}, 
+          Typeset`assumptions$$ = {}, Typeset`open$$ = {1, 2}, 
+          Typeset`querystate$$ = {
+          "Online" -> True, "Allowed" -> True, "mparse.jsp" -> 
+           1.4613445`7.616297602867939, "Messages" -> {}}}, 
+          DynamicBox[ToBoxes[
+            AlphaIntegration`LinguisticAssistantBoxes["", 4, Automatic, 
+             Dynamic[Typeset`query$$], 
+             Dynamic[Typeset`boxes$$], 
+             Dynamic[Typeset`allassumptions$$], 
+             Dynamic[Typeset`assumptions$$], 
+             Dynamic[Typeset`open$$], 
+             Dynamic[Typeset`querystate$$]], StandardForm],
+           ImageSizeCache->{79., {10., 17.}},
+           
+           TrackedSymbols:>{
+            Typeset`query$$, Typeset`boxes$$, Typeset`allassumptions$$, 
+             Typeset`assumptions$$, Typeset`open$$, Typeset`querystate$$}],
+          DynamicModuleValues:>{},
+          UndoTrackedVariables:>{Typeset`open$$}],
+         BaseStyle->{"Deploy"},
+         DeleteWithContents->True,
+         Editable->False,
+         SelectWithContents->True]}], ")"}], "^", "2"}]}]}], "]"}], 
+  "]"}]], "Input",
+ CellChangeTimes->{{3.887489460167101*^9, 3.8874896039740624`*^9}},
+ CellLabel->
+  "In[183]:=",ExpressionUUID->"9d27dbee-5ffd-47ca-ad64-7f80b40fee4e"],
+
+Cell[BoxData[
+ TemplateBox[{
+  "General","munfl",
+   "\"\\!\\(\\*RowBox[{\\\"Exp\\\", \\\"[\\\", RowBox[{RowBox[{\\\"-\\\", \
+\\\"2652.6191572008715`\\\"}], \\\"-\\\", \
+RowBox[{\\\"145.67413379734572`\\\", \\\" \\\", \\\"\[ImaginaryI]\\\"}]}], \\\
+\"]\\\"}]\\) is too small to represent as a normalized machine number; \
+precision may be lost.\"",2,183,13,34212249340554158179,"Local"},
+  "MessageTemplate"]], "Message", "MSG",
+ CellChangeTimes->{3.8874896048351607`*^9},
+ CellLabel->
+  "During evaluation of \
+In[183]:=",ExpressionUUID->"207daebc-ebc5-43c5-af23-2defcd0a80bb"],
+
+Cell[BoxData[
+ RowBox[{"0.`", "\[VeryThinSpace]", "+", 
+  RowBox[{"0.`", " ", "\[ImaginaryI]"}]}]], "Output",
+ CellChangeTimes->{{3.887489591741441*^9, 3.8874896048511176`*^9}},
+ CellLabel->
+  "Out[183]=",ExpressionUUID->"dfe7ba76-8c99-478a-822f-5d387a6c0354"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"UnitSimplify", "[", 
+  RowBox[{"k0", "*", "g", "*", 
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{"1200", "*", 
+      RowBox[{"10", "^", 
+       RowBox[{"(", 
+        RowBox[{"-", "6"}], ")"}]}], 
+      NamespaceBox["LinguisticAssistant",
+       DynamicModuleBox[{Typeset`query$$ = "seconds", Typeset`boxes$$ = 
+        TemplateBox[{
+          InterpretationBox["\[InvisibleSpace]", 1], "\"s\"", "seconds", 
+          "\"Seconds\""}, "Quantity", SyntaxForm -> Mod], 
+        Typeset`allassumptions$$ = {{
+         "type" -> "Clash", "word" -> "seconds", "template" -> 
+          "Assuming \"seconds\" is a unit${separator}Use as ${desc} instead", 
+          "count" -> "2", "pulldown" -> "false", "default" -> 
+          "{\"C\", \"seconds\"} -> {\"Unit\", \"dflt\"}", 
+          "Values" -> {{
+            "name" -> "Unit", "desc" -> "a unit", "input" -> 
+             "{\"C\", \"seconds\"} -> {\"Unit\"}"}, {
+            "name" -> "Word", "desc" -> "a word", "input" -> 
+             "{\"C\", \"seconds\"} -> {\"Word\"}"}}}, {
+         "type" -> "Unit", "word" -> "seconds", "template" -> 
+          "Assuming seconds of time for \"seconds\"${separator}Use ${desc} \
+instead", "count" -> "2", "pulldown" -> "false", "default" -> 
+          "\"UnitClash\" -> {\"seconds\", {\"Seconds\", \"dflt\"}}", 
+          "Values" -> {{
+            "name" -> "Seconds", "desc" -> "seconds of time", "input" -> 
+             "\"UnitClash\" -> {\"seconds\", {\"Seconds\"}}"}, {
+            "name" -> "Arcseconds", "desc" -> "seconds of arc", "input" -> 
+             "\"UnitClash\" -> {\"seconds\", {\"Arcseconds\"}}"}}}}, 
+        Typeset`assumptions$$ = {}, Typeset`open$$ = {1, 2}, 
+        Typeset`querystate$$ = {
+        "Online" -> True, "Allowed" -> True, "mparse.jsp" -> 
+         1.8271213`7.71331237400228, "Messages" -> {}}}, 
+        DynamicBox[ToBoxes[
+          AlphaIntegration`LinguisticAssistantBoxes["", 4, Automatic, 
+           Dynamic[Typeset`query$$], 
+           Dynamic[Typeset`boxes$$], 
+           Dynamic[Typeset`allassumptions$$], 
+           Dynamic[Typeset`assumptions$$], 
+           Dynamic[Typeset`open$$], 
+           Dynamic[Typeset`querystate$$]], StandardForm],
+         ImageSizeCache->{79., {10., 17.}},
+         TrackedSymbols:>{
+          Typeset`query$$, Typeset`boxes$$, Typeset`allassumptions$$, 
+           Typeset`assumptions$$, Typeset`open$$, Typeset`querystate$$}],
+        DynamicModuleValues:>{},
+        UndoTrackedVariables:>{Typeset`open$$}],
+       BaseStyle->{"Deploy"},
+       DeleteWithContents->True,
+       Editable->False,
+       SelectWithContents->True]}], ")"}], "^", "2"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.8877655679750457`*^9, 3.8877656072132406`*^9}},
+ CellLabel->
+  "In[203]:=",ExpressionUUID->"5cf7ab8c-4cc0-4752-b22e-824d4eaf7f2a"],
+
+Cell[BoxData["57.94153191651351`"], "Output",
+ CellChangeTimes->{{3.887765591531185*^9, 3.8877656075471783`*^9}},
+ CellLabel->
+  "Out[203]=",ExpressionUUID->"d2a9003a-3380-43f4-a083-d643221b2779"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"UnitSimplify", "[", 
+  RowBox[{"mhe", "*", 
+   RowBox[{"vr", "/", 
+    RowBox[{"(", 
+     RowBox[{"2", "*", "\[HBar]"}], ")"}]}], "*", "g", "*", 
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{"1200", "*", 
+      RowBox[{"10", "^", 
+       RowBox[{"(", 
+        RowBox[{"-", "6"}], ")"}]}], 
+      NamespaceBox["LinguisticAssistant",
+       DynamicModuleBox[{Typeset`query$$ = "seconds", Typeset`boxes$$ = 
+        TemplateBox[{
+          InterpretationBox["\[InvisibleSpace]", 1], "\"s\"", "seconds", 
+          "\"Seconds\""}, "Quantity", SyntaxForm -> Mod], 
+        Typeset`allassumptions$$ = {{
+         "type" -> "Clash", "word" -> "seconds", "template" -> 
+          "Assuming \"seconds\" is a unit${separator}Use as ${desc} instead", 
+          "count" -> "2", "pulldown" -> "false", "default" -> 
+          "{\"C\", \"seconds\"} -> {\"Unit\", \"dflt\"}", 
+          "Values" -> {{
+            "name" -> "Unit", "desc" -> "a unit", "input" -> 
+             "{\"C\", \"seconds\"} -> {\"Unit\"}"}, {
+            "name" -> "Word", "desc" -> "a word", "input" -> 
+             "{\"C\", \"seconds\"} -> {\"Word\"}"}}}, {
+         "type" -> "Unit", "word" -> "seconds", "template" -> 
+          "Assuming seconds of time for \"seconds\"${separator}Use ${desc} \
+instead", "count" -> "2", "pulldown" -> "false", "default" -> 
+          "\"UnitClash\" -> {\"seconds\", {\"Seconds\", \"dflt\"}}", 
+          "Values" -> {{
+            "name" -> "Seconds", "desc" -> "seconds of time", "input" -> 
+             "\"UnitClash\" -> {\"seconds\", {\"Seconds\"}}"}, {
+            "name" -> "Arcseconds", "desc" -> "seconds of arc", "input" -> 
+             "\"UnitClash\" -> {\"seconds\", {\"Arcseconds\"}}"}}}}, 
+        Typeset`assumptions$$ = {}, Typeset`open$$ = {1, 2}, 
+        Typeset`querystate$$ = {
+        "Online" -> True, "Allowed" -> True, "mparse.jsp" -> 
+         1.8271213`7.71331237400228, "Messages" -> {}}}, 
+        DynamicBox[ToBoxes[
+          AlphaIntegration`LinguisticAssistantBoxes["", 4, Automatic, 
+           Dynamic[Typeset`query$$], 
+           Dynamic[Typeset`boxes$$], 
+           Dynamic[Typeset`allassumptions$$], 
+           Dynamic[Typeset`assumptions$$], 
+           Dynamic[Typeset`open$$], 
+           Dynamic[Typeset`querystate$$]], StandardForm],
+         ImageSizeCache->{79., {10., 17.}},
+         TrackedSymbols:>{
+          Typeset`query$$, Typeset`boxes$$, Typeset`allassumptions$$, 
+           Typeset`assumptions$$, Typeset`open$$, Typeset`querystate$$}],
+        DynamicModuleValues:>{},
+        UndoTrackedVariables:>{Typeset`open$$}],
+       BaseStyle->{"Deploy"},
+       DeleteWithContents->True,
+       Editable->False,
+       SelectWithContents->True]}], ")"}], "^", "2"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.887765647200434*^9, 3.8877656863115377`*^9}},
+ CellLabel->
+  "In[204]:=",ExpressionUUID->"b68f2429-3610-45c1-9f50-4bb0513b2814"],
+
+Cell[BoxData["57.94153191651351`"], "Output",
+ CellChangeTimes->{3.887765689848689*^9},
+ CellLabel->
+  "Out[204]=",ExpressionUUID->"a80a0642-5c3c-4d4a-b8a7-de5e97e73919"]
 }, Open  ]]
 },
-WindowSize->{3840, 2077},
-WindowMargins->{{-8, Automatic}, {Automatic, -8}},
+WindowSize->{1920, 997},
+WindowMargins->{{-1928, Automatic}, {-6, Automatic}},
 FrontEndVersion->"12.0 for Microsoft Windows (64-bit) (April 8, 2019)",
 StyleDefinitions->"ReverseColor.nb"
 ]
@@ -3012,7 +3298,7 @@ Cell[CellGroupData[{
 Cell[42671, 1120, 980, 23, 67, "Input",ExpressionUUID->"8f0c05a0-efdd-4451-9e27-f081418c835a"],
 Cell[43654, 1145, 821, 12, 40, "Output",ExpressionUUID->"b0b72aa5-308b-4983-bb66-e79e6e77daa9"],
 Cell[44478, 1159, 823, 12, 40, "Output",ExpressionUUID->"51978c63-5548-46a2-a469-c6d69e353b6b"],
-Cell[45304, 1173, 847, 13, 73, "Output",ExpressionUUID->"d52c7722-837f-4e62-9839-27c65f766c4a"]
+Cell[45304, 1173, 847, 13, 40, "Output",ExpressionUUID->"d52c7722-837f-4e62-9839-27c65f766c4a"]
 }, Open  ]],
 Cell[CellGroupData[{
 Cell[46188, 1191, 181, 3, 28, "Input",ExpressionUUID->"2a09e102-d41b-4bf7-9857-1a7dee7a81dc"],
@@ -3093,21 +3379,34 @@ Cell[80154, 2053, 11099, 244, 593, "Output",ExpressionUUID->"c0a855e2-5e6b-4d78-
 }, Open  ]],
 Cell[91268, 2300, 2435, 51, 45, "Input",ExpressionUUID->"fa32b71a-bdf8-4c62-9fd3-87fae36db602"],
 Cell[CellGroupData[{
-Cell[93728, 2355, 6333, 146, 138, "Input",ExpressionUUID->"9111c0fe-df08-4f2a-bdd2-6def48d3fb0d"],
-Cell[100064, 2503, 8510, 162, 234, "Output",ExpressionUUID->"5e3c6e1b-496b-4c73-ab6c-0d90969603bf"]
+Cell[93728, 2355, 6435, 148, 138, "Input",ExpressionUUID->"9111c0fe-df08-4f2a-bdd2-6def48d3fb0d"],
+Cell[100166, 2505, 8560, 162, 237, "Output",ExpressionUUID->"a844973e-c100-43f9-8a83-3ebdadaa03a2"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[108611, 2670, 4557, 95, 76, "Input",ExpressionUUID->"05aa7165-f210-4176-8b30-9281871bccb3"],
-Cell[113171, 2767, 463, 8, 40, "Output",ExpressionUUID->"0d5593d5-a490-4dd8-bc3a-badd9e9a0494"],
-Cell[113637, 2777, 488, 9, 73, "Output",ExpressionUUID->"02da9f70-fb17-4be6-87e9-226d7bdac9ef"]
+Cell[108763, 2672, 4656, 97, 76, "Input",ExpressionUUID->"05aa7165-f210-4176-8b30-9281871bccb3"],
+Cell[113422, 2771, 560, 9, 40, "Output",ExpressionUUID->"2ffa765a-372f-4e17-8d52-17fff2173118"],
+Cell[113985, 2782, 584, 10, 40, "Output",ExpressionUUID->"ba07a3a7-8e2a-4a1d-ad6e-eaa1f59c8a25"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[114162, 2791, 2165, 46, 42, "Input",ExpressionUUID->"902a1faa-7bda-49a0-b7f6-d34d8693a6c0"],
-Cell[116330, 2839, 310, 6, 40, "Output",ExpressionUUID->"aa5661e8-119f-4b3c-aafa-f0c61bd222a1"]
+Cell[114606, 2797, 2165, 46, 42, "Input",ExpressionUUID->"902a1faa-7bda-49a0-b7f6-d34d8693a6c0"],
+Cell[116774, 2845, 310, 6, 40, "Output",ExpressionUUID->"aa5661e8-119f-4b3c-aafa-f0c61bd222a1"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[116677, 2850, 2166, 46, 42, "Input",ExpressionUUID->"2b26f5f0-9933-45d9-a7fa-38ab2367e687"],
-Cell[118846, 2898, 279, 6, 40, "Output",ExpressionUUID->"9a5f6ad0-43fb-466b-9623-a9ae1b749484"]
+Cell[117121, 2856, 2166, 46, 42, "Input",ExpressionUUID->"2b26f5f0-9933-45d9-a7fa-38ab2367e687"],
+Cell[119290, 2904, 279, 6, 40, "Output",ExpressionUUID->"9a5f6ad0-43fb-466b-9623-a9ae1b749484"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[119606, 2915, 5789, 117, 42, "Input",ExpressionUUID->"9d27dbee-5ffd-47ca-ad64-7f80b40fee4e"],
+Cell[125398, 3034, 578, 12, 23, "Message",ExpressionUUID->"207daebc-ebc5-43c5-af23-2defcd0a80bb"],
+Cell[125979, 3048, 260, 5, 32, "Output",ExpressionUUID->"dfe7ba76-8c99-478a-822f-5d387a6c0354"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[126276, 3058, 2821, 57, 42, "Input",ExpressionUUID->"5cf7ab8c-4cc0-4752-b22e-824d4eaf7f2a"],
+Cell[129100, 3117, 196, 3, 32, "Output",ExpressionUUID->"d2a9003a-3380-43f4-a083-d643221b2779"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[129333, 3125, 2912, 60, 42, "Input",ExpressionUUID->"b68f2429-3610-45c1-9f50-4bb0513b2814"],
+Cell[132248, 3187, 170, 3, 65, "Output",ExpressionUUID->"a80a0642-5c3c-4d4a-b8a7-de5e97e73919"]
 }, Open  ]]
 }
 ]

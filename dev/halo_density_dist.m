@@ -1,14 +1,14 @@
 %% Initializing path
 clear all;
 % close all;
-this_folder = fileparts(which(mfilename));
+this_folder = fileparts(which(mfilename));%'C:\Users\helium\cloudstor\PROJECTS\';
 addpath(genpath(this_folder));
 core_folder = fullfile(fileparts(this_folder), 'Core_BEC_Analysis\');
 addpath(genpath(core_folder));
 set(groot, 'DefaultTextInterpreter', 'latex')
 %% Import directory
 opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
- opts.data_root = 'Z:\EXPERIMENT-DATA\2020_Momentum_Bells\pulse_characterisation\';%'Z:\EXPERIMENT-DATA\2020_Momentum_Bells\';
+%  opts.data_root = 'Z:\EXPERIMENT-DATA\2020_Momentum_Bells\pulse_characterisation\';%'Z:\EXPERIMENT-DATA\2020_Momentum_Bells\';
 % opts.data_root = 'C:\Users\BEC Machine\Documents\DATA_BACKUP\';
 % data_folder='20210727_k=0,-1_halo_mirror_tests\98_kHz_2';%1.227641917170454e-01
 % data_folder='20210728_k=0,-1_halo_splitter_tests\test_1';
@@ -37,7 +37,7 @@ opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
 %%'20210727_k=0,-1_halo_mirror_tests\98_kHz_2';%
 % 'pulse_characterisation\20210201_bragg_pulse_testing\prototyping\gauss_2';
 % 'pulse_characterisation\20210129_mirror_test_1\sqrt(20)';
-
+data_folder = '20230404_k=0,-1_and_mirror_Vsh_0_75_Vq_0_7';%'test data for halo_density_dist'; %'test data for halo_density_dist';%'20230405_check_splitter_50_50';%20230322_k=+1,0_and_splitter_2_500_mus
 % data_folder='20210715_testing_bs_on_k=0,-1_halo\moving_detuning_further';
 % data_folder='20210715_testing_bs_on_k=0,-1_halo\moving_detuning';
 % data_folder='20210715_testing_bs_on_k=0,-1_halo\first_pulse_change_detuning';
@@ -58,12 +58,14 @@ opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
 % data_folder='20210312_bragg_scan\1200_mus_delay\8_111_kHz';
 % data_folder='20210310_bragg_pulse_test\800mus_mirror_v5';
 % data_folder='20230301_second_attempt_k=0,-1_mj=0_only_halo_Vq_2_Vsh_0.65';
-data_folder='20200901_k=0,-1_transfer_vs_amp\Pamp_16';%'20210201_bragg_pulse_testing\scan\amp_5_5';
+% data_folder='20200901_k=0,-1_transfer_vs_amp\Pamp_16';%'20210201_bragg_pulse_testing\scan\amp_5_5';
 % data_folder='20211206_scaning_across_freq\norm_0_844_MHz';
 % data_folder='20211027_validating_bragg_pulses\bs_2';
 opts.import.dir = fullfile(opts.data_root, data_folder);
-opts.import.force_reimport = false;
+opts.import.force_reimport = true;
 opts.import.force_cache_load = ~opts.import.force_reimport;
+
+% opts.import.shot_num = 4:28; %
 
 %validating first run
 % opts.import.shot_num = 32:41; %0 can select specific shots to import
@@ -119,7 +121,7 @@ end
 opts.vel_conv.top.z_mask = [-0.9,0.9];%[-1,1];%[-0.9,0.9];
 opts.vel_conv.btm.z_mask = [-0.9,0.9];%[-1,1];%[-0.9,0.9];%in units of radius ([-0.68,0.68])
 
-radius_lim = [0.00,0.14];%[0.03,0.09];%[0.01.*0.065,0.08];%[0.01.*0.065,0.1];%[0.05,0.07];%[0.3,1.61].*0.065;%[0.61,1.26].*0.065;%[0.9,1.05];%[0.89,1.11];
+radius_lim = [0.056,0.072];%[0.00,0.14];%[0.03,0.09];%[0.01.*0.065,0.08];%[0.01.*0.065,0.1];%[0.05,0.07];%[0.3,1.61].*0.065;%[0.61,1.26].*0.065;%[0.9,1.05];%[0.89,1.11];
 ang_lim = 90;%angular limit in degrees
 
 %% Import parameters
@@ -189,9 +191,9 @@ end
 % [data, ~] = import_mcp_tdc_data(opts.import);
 
 %% remove any ringing
-data_ht_spot=hotspot_mask(data);
-data.counts_txy=data_ht_spot.masked.counts_txy;
-data.num_counts=data_ht_spot.masked.num_counts;
+% data_ht_spot=hotspot_mask(data);
+% data.counts_txy=data_ht_spot.masked.counts_txy;
+% data.num_counts=data_ht_spot.masked.num_counts;
 opts.ring_lim = 0.09e-6;%0.1e-6;%-1;%0;%0.101 %how close can points be in time
 data_masked = ring_removal(data,opts.ring_lim);
 
@@ -228,7 +230,8 @@ opts.cent.btm.method = {'margin','average','average'};
 % opts.cent.t_bounds = {[1.735,1.75],[1.75,1.763],[1.763,1.776],[1.73,1.779]};
 % opts.cent.t_bounds = {[1.741,1.75],[1.75,1.763],[1.763,1.776],[1.73,1.779]};
 % opts.cent.t_bounds = {[2.134,2.148],[2.148,2.161],[2.161,2.18],[2.13,2.2]};
- opts.cent.t_bounds = {[3.844,3.8598],[3.8598,3.871],[3.871,3.8844],[3.75,4]};%time bounds for the different momentum states
+ opts.cent.t_bounds = {[3.8598,3.871],[3.871,3.8844],[3.884,3.896],[3.75,4]};%
+%  opts.cent.t_bounds = {[3.844,3.8598],[3.8598,3.871],[3.871,3.8844],[3.75,4]};%time bounds for the different momentum states
 % opts.cent.t_bounds = {[5.350,5.356],[5.361,5.367],[5.372,5.380],[5.34,5.39]};%time bounds for the different momentum states (for full evap settings)
 bec = halo_cent(data_masked,opts.cent);
 
@@ -426,8 +429,8 @@ v_top_dens_unc = [];
 phi_mask_top = (phi_top<0.154& phi_top>-0.154);
 phi_mask_btm = (phi_btm<0.154& phi_btm>-0.154);
 phi_sig = 0.05;
-r_btm_zxy_masked=smooth_hist(theta_btm(phi_mask_btm),'sigma',0.04,'lims',[-pi,pi],'bin_num',nbins);
-r_top_zxy_masked=smooth_hist(theta_top(phi_mask_top),'sigma',0.04,'lims',[-pi,pi],'bin_num',nbins);
+r_btm_zxy_masked=smooth_hist(theta_btm(phi_mask_btm),'sigma',0.1,'lims',[-pi,pi],'bin_num',nbins);
+r_top_zxy_masked=smooth_hist(theta_top(phi_mask_top),'sigma',0.1,'lims',[-pi,pi],'bin_num',nbins);
 v_btm_dens(:,1) = r_btm_zxy_masked.count_rate.smooth./num_shots;
 v_top_dens(:,1) = r_top_zxy_masked.count_rate.smooth./num_shots;
 v_btm_dens_unc(:,1) = sqrt(r_btm_zxy_masked.count_rate.smooth).*sqrt(abs(r_btm_zxy_masked.bin.edge(1:end-1)...
@@ -716,7 +719,7 @@ end
 %% 2d comparison radius
 if opts.do_top_halo && opts.do_btm_halo
     stfig('density of halos radius');
-%     clf
+    clf
     combined_vzr = [v_top_zxy_unnorm(:,1)+z_shift_top(:,1),rxy_top;...
         v_btm_zxy_unnorm(:,1)-z_shift_btm(:,1),rxy_btm];
     ndhist(combined_vzr(:,[2,1]),'bins',4,'filter');
@@ -724,28 +727,28 @@ if opts.do_top_halo && opts.do_btm_halo
     ylabel('$v_z$ (m/s)')
     colormap('default')
     axis equal
-    caxis([0 9])
+    caxis([0 0.5e7])
 end
 
 %% 2d comparison radius
-if opts.do_top_halo && opts.do_btm_halo
-    stfig('density of halos radius');
-%     clf
-    combined_vzr = [v_top_zxy_unnorm(:,1)+z_shift_top(:,1),rxy_top;...
-        v_btm_zxy_unnorm(:,1)-z_shift_btm(:,1),rxy_btm];
-    ndhist(combined_vzr(:,[1,2]),'bins',4,'filter');
-    xlabel('$v_z$ (m/s)')
-    ylabel('$v_r$ (m/s)')
-    colormap('default')
-    axis equal
-    caxis([0 9])
-    xlim([-0.115 0.115])
-    ylim([0.005 0.08])
-    set(gca,'FontSize',18)
-    
-set(gca,'xticklabel',[])
-set(gca,'yticklabel',[])
-end
+% if opts.do_top_halo && opts.do_btm_halo
+%     stfig('density of halos radius');
+% %     clf
+%     combined_vzr = [v_top_zxy_unnorm(:,1)+z_shift_top(:,1),rxy_top;...
+%         v_btm_zxy_unnorm(:,1)-z_shift_btm(:,1),rxy_btm];
+%     ndhist(combined_vzr(:,[1,2]),'bins',4,'filter');
+%     xlabel('$v_z$ (m/s)')
+%     ylabel('$v_r$ (m/s)')
+%     colormap('default')
+%     axis equal
+%     caxis([0 2000000])
+%     xlim([-0.115 0.115])
+%     ylim([0.005 0.08])
+%     set(gca,'FontSize',18)
+%     
+% set(gca,'xticklabel',[])
+% set(gca,'yticklabel',[])
+% end
 %% full 3d comparison
 plt_p = 1;
 stfig('halo comparison');

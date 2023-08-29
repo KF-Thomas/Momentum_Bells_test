@@ -3,7 +3,7 @@ addpath(genpath(this_folder));
 core_folder = fullfile(fileparts(this_folder), 'Core_BEC_Analysis\');
 addpath(genpath(core_folder));
 % BEGIN USER VAR-------------------------------------------------
-anal_opts.tdc_import.dir='Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
+anal_opts.tdc_import.dir='Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20230405_check_splitter_50_50\';
 % anal_opts.tdc_import.dir='Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20200803_early_k=0,-1,-2_halo_data\';
 anal_opts.tdc_import.file_name='d';
 anal_opts.tdc_import.force_load_save=false;   %takes precidence over force_reimport
@@ -50,7 +50,7 @@ opts.cent.visual = 2;
 opts.cent.threshold = [100,30,30].*1e3; %set in inverse units (Hz for time 1/m for space)
 opts.cent.sigma = [8e-5,25e-5,25e-5];
 % opts.cent.t_bounds = {[3.8598,3.871],[3.871,3.8844],[3.8844,3.8972],[3.8,3.95]}; %time bounds for the different momentum states k=+1,0,-1 respectively
-opts.cent.t_bounds  = {[3.848,3.8598],[3.8598,3.871],[3.871,3.8844],[3.75,4]};
+opts.cent.t_bounds  = {[3.8598,3.871],[3.871,3.8844],[3.884,3.896],[3.75,4]};%{[3.848,3.8598],[3.8598,3.871],[3.871,3.8844],[3.75,4]};
 
 opts.vel_conv.plot_percentage = 0.2;
 opts.vel_conv.visual = 0;

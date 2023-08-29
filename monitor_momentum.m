@@ -49,7 +49,7 @@ anal_opts.trig_ai_in=20;
 % anal_opts.osc_fit.tlim=[0.86,1.08];
 % anal_opts.osc_fit.dimesion=2; %Sel ect coordinate to bin. 1=X, 2=Y.
 
-anal_opts.history.shots=20;
+anal_opts.history.shots=50;
 
 hebec_constants
 const.fall_distance = 8.52925545e-01;
@@ -171,8 +171,8 @@ while true
                 h.MinorGridColor=[0,0,0]; % here's the color for the minor grid lines
                 xlabel('Shot Number')
                 ylabel('Tranfer Fraction')
-%                 legend('$k=+1$','$k=0$','$k=-1$')
-                legend('$k=-2$','$k=-1$','$k=0$')
+                legend('$k=+1$','$k=0$','$k=-1$')
+%                 legend('$k=-2$','$k=-1$','$k=0$')
                 
                 pause(0.1)
                 %             saveas(gcf,fullfile(anal_out.dir,'freq_history.png'))

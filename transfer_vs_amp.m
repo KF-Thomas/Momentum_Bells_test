@@ -10,10 +10,13 @@ addpath(genpath(core_folder));
 set(groot, 'DefaultTextInterpreter', 'latex')
 
 %% Import directories
-opts.data_root = 'Z:\EXPERIMENT-DATA\2020_Momentum_Bells\pulse_characterisation\';
-% opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
-data_folder = '';
+% opts.data_root = 'Z:\EXPERIMENT-DATA\2020_Momentum_Bells\pulse_characterisation\';
+opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
+data_folder = '20230406,k=0,+1, p=0.3,T=var,f=18_delay=210_AB';%'20230406,k=0,+1, p=0.3,T=40,f=18_delay=210_AB';
+log_folder = 'log_Phi.txt';
+log_lab_folder = 'log_LabviewMatlab.txt';
 data_folders = {
+% ''
     %original scan
 %     '20200901_k=0,-1_transfer_vs_amp\Pamp_0_t2'
 %     '20200901_k=0,-1_transfer_vs_amp\Pamp_0_25_t2'
@@ -42,15 +45,15 @@ data_folders = {
 %     '20200907_k=-1,-2_transfer_vs_amp\Pamp_11_5'
 
     %new scan
-    '20210201_bragg_pulse_testing\scan\amp_0'
-    '20210201_bragg_pulse_testing\scan\amp_2'
-    '20210201_bragg_pulse_testing\scan\amp_2_5'
-    '20210201_bragg_pulse_testing\scan\amp_3\alpha_3_5'
-    '20210201_bragg_pulse_testing\scan\amp_3_5\alpha_3_5'
-    '20210201_bragg_pulse_testing\scan\amp_4'
-    '20210201_bragg_pulse_testing\scan\amp_4_5\alpha_3_5'
-    '20210201_bragg_pulse_testing\scan\amp_5'
-    '20210201_bragg_pulse_testing\scan\amp_5_5'
+%     '20210201_bragg_pulse_testing\scan\amp_0'
+%     '20210201_bragg_pulse_testing\scan\amp_2'
+%     '20210201_bragg_pulse_testing\scan\amp_2_5'
+%     '20210201_bragg_pulse_testing\scan\amp_3\alpha_3_5'
+%     '20210201_bragg_pulse_testing\scan\amp_3_5\alpha_3_5'
+%     '20210201_bragg_pulse_testing\scan\amp_4'
+%     '20210201_bragg_pulse_testing\scan\amp_4_5\alpha_3_5'
+%     '20210201_bragg_pulse_testing\scan\amp_5'
+%     '20210201_bragg_pulse_testing\scan\amp_5_5'
     
     %alpha scan
 %     '20210201_bragg_pulse_testing\scan\amp_3_5\alpha_3'
@@ -83,7 +86,7 @@ data_folders = {
 %     5,
 %                     ];
 
-opts.import.force_reimport = false;
+opts.import.force_reimport = true;
 opts.import.force_cache_load = ~opts.import.force_reimport;
 
 %% Import parameters
@@ -92,7 +95,7 @@ tmp_ylim=[-35e-3, 35e-3];
 tlim=[0,4];
 opts.import.txylim=[tlim;tmp_xlim;tmp_ylim];
 
-opts.num_lim = 2.5e3;%2.1e3;%0.5e3;% %minimum atom number 1.5e3
+opts.num_lim = 2.0e3;%2.5e3;%2.1e3;%0.5e3;% %minimum atom number 1.5e3
 opts.halo_N_lim = -1;%2;%10;%0;% %minimum allowed number in halo 10
 
 %% Calibration settings
@@ -101,7 +104,7 @@ norm_folders = [1]; %folders to be used in calibrating out the effects of BEC bl
 % btm_halo_comp = [22 23 24];%transfering the bottom halo for comparison
 btm_halo_comp = [];
 % Eamp = sqrt([0,0.25,0.5,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,15,16,19,0,5.3,11.5]); %amplitude vector %sqrt([0,5.3,11.5]);%
-Eamp = [0,2,2.5,3,3.5,4,4.5,5,5.5];
+Eamp = 1:6;%[0,0.23,0.26,0.28,0.29];%[0,0.085,0.115];%[0,0.1,0.145,0.18];%[0,0.23,0.26,0.28,0.29];%[0,linspace(0.1,0.26,9-1)];%[0,0.232];%[0,0.085,0.14,0.15,0.155];%[0,0.07,0.14,0.15];%[0,linspace(0.1,0.29,12-1)];%[0,1];%[0,linspace(0.16,0.28,12-1)];%linspace(0,0.6,12);%[0,linspace(0.16,0.28,4)];%[0,0.52,0.55];%[0,linspace(0.35,0.65,5-1)];%[0,linspace(0.35,0.65,10-1)];%linspace(0,20,10).*1e3;%[0,2,2.5,3,3.5,4,4.5,5,5.5];
 % Eamp = sqrt([0,3,3.5,4,4.5]);
 % Eamp = sqrt([0,2.5,3,3.25,3.5,3.75,4,4.5,5,6]);
 num_norms = length(norm_folders);
@@ -110,11 +113,35 @@ calibration_density_btm= [];
 calibration_shot_num = [];
 cal_dens_btm = 0;
 
+opts.logfile = fullfile(fullfile(opts.data_root, data_folder),log_folder);
+    opts.loglabfile = fullfile(fullfile(opts.data_root, data_folder),log_lab_folder);
+    log_check = isfile(opts.logfile);
+if log_check
+    phi_logs = table2array(readtable(opts.logfile));
+    unique_phi = unique(phi_logs(:,3));
+    folder_indxs = [norm_folders, 1:numel(unique_phi)];
+end
+
+loop_num = length(folder_indxs);
+
 %% Run over each folder
-for folder_indx = 1:length(folder_indxs)
-    this_folder = folder_indxs(folder_indx);
+cal_dens_top_data_top = zeros(151,2);
+cal_dens_top_data_btm = zeros(151,2);
+for folder_indx = 1:loop_num
+    
     %% import raw data
-    data_folder = data_folders{this_folder};
+
+    this_folder = folder_indxs(folder_indx);
+
+    if log_check
+        phi_mask = phi_logs(:,3) == unique_phi(this_folder);
+        opts.import.shot_num = phi_logs(phi_mask,1).'; %
+    else
+        data_folder = data_folders{this_folder};
+        opts.import = rmfield(opts.import,'shot_num');
+    end
+
+    
     opts.import.dir = fullfile(opts.data_root, data_folder);
     [data, ~] = import_mcp_tdc_data(opts.import);
     
@@ -128,8 +155,9 @@ for folder_indx = 1:length(folder_indxs)
     %% find centers
     opts.cent.visual = 0; %from 0 to 2
     opts.cent.savefigs = 0;
-    opts.cent.correction = 1;
+    opts.cent.correction = 2;
     opts.cent.correction_opts.plots = 0;
+    opts.cent.nan_cull = 1;
     
     opts.cent.top.visual = 0; %from 0 to 2
     opts.cent.top.savefigs = 0;
@@ -152,7 +180,8 @@ for folder_indx = 1:length(folder_indxs)
     opts.cent.btm.sigma = [6.7e-5,16e-5,16e-5];%[8e-5,25e-5,25e-5];
     opts.cent.btm.method = {'margin','average','average'};
     
-    opts.cent.t_bounds = {[3.844,3.8598],[3.8598,3.871],[3.871,3.8844],[3.75,4]};%time bounds for the different momentum states
+    opts.cent.t_bounds = {[3.8598,3.871],[3.871,3.8844],[3.884,3.896],[3.75,4]};%
+%     opts.cent.t_bounds = {[3.844,3.8598],[3.8598,3.871],[3.871,3.8844],[3.75,4]};%time bounds for the different momentum states
     bec = halo_cent(data_masked,opts.cent);
     
     %% run some checks
@@ -189,7 +218,7 @@ for folder_indx = 1:length(folder_indxs)
     opts.vel_conv.top.const.fall_distance = const.fall_distance;
     opts.vel_conv.top.v_thresh = 0.15; %maximum velocity radius
     opts.vel_conv.top.v_mask=[0.89,1.11].*0.065; %bounds on radisu as multiple of radius value
-    opts.vel_conv.top.z_mask = [-0.68,0.68]; %in units of radius (standard [-0.76,0.76])
+    opts.vel_conv.top.z_mask = [-0.8,0.8]; %in units of radius (standard [-0.76,0.76])
     opts.vel_conv.top.y_mask = [-1.9,1.9]; %in units of radius
     opts.vel_conv.top.center = [t0,x0,y0];%bec_masked_halo.centre_top;%ones(size(bec_masked_halo.centre_top,1),1).*[t0,x0,y0];%%bec_masked_halo.centre_top;%bec_masked_halo.centre_mid; %use the mid BEC as the zero momentum point
     
@@ -211,7 +240,7 @@ for folder_indx = 1:length(folder_indxs)
     opts.vel_conv.btm.const.fall_distance = const.fall_distance;
     opts.vel_conv.btm.v_thresh = 0.15; %maximum velocity radius
     opts.vel_conv.btm.v_mask=[0.89,1.11].*0.065; %bounds on radisu as multiple of radius value
-    opts.vel_conv.btm.z_mask = [-0.68,0.68]; %in units of radius
+    opts.vel_conv.btm.z_mask = [-0.8,0.8]; %in units of radius
     opts.vel_conv.btm.y_mask = [-1.9,1.9]; %in units of radius
     opts.vel_conv.btm.center = [t0,x0,y0];%bec_masked_halo.centre_top;%ones(size(bec_masked_halo.centre_top,1),1).*[t0,x0,y0];%,bec_masked_halo.centre_top; %use the mid BEC as the zero momentum point
     
@@ -258,6 +287,8 @@ for folder_indx = 1:length(folder_indxs)
     v_btm_dens(:,2) = r_btm_zxy_masked.count_rate.smooth;
     v_top_dens(:,2) = r_top_zxy_masked.count_rate.smooth;
     
+
+
     if folder_indx == num_norms+1 && num_norms>0
         cal_dens_top_data_top = squeeze(nansum(calibration_density_top.*calibration_shot_num,1)./nansum(calibration_shot_num(:,1,1)));
         cal_dens_top_data_btm = squeeze(nansum(calibration_density_btm.*calibration_shot_num,1)./nansum(calibration_shot_num(:,1,1)));
@@ -299,19 +330,19 @@ for folder_indx = 1:length(folder_indxs)
             cal_dens_top = cal_dens_top_data_top;
             cal_dens_btm = cal_dens_top_data_btm;
             N_cal = N_Bec(1);
-            cal_N = cal_N_top_data;
+%             cal_N = cal_N_top_data;
         end
         
-        if Eamp(this_folder).^2<3
-            Cbtm = N_Bec(this_folder)./N_cal;
-            Ctop = (cal_N./((size(v_top_zxy,1)+size(v_btm_zxy,1))./num_shots)).^(-1);
-        elseif Eamp(this_folder).^2<9
-            Cbtm = N_Bec(this_folder)./N_cal;
-            Ctop = (cal_N./((size(v_top_zxy,1)+size(v_btm_zxy,1))./num_shots)).^(-1);
-        else
-            Cbtm = (cal_N./((size(v_top_zxy,1)+size(v_btm_zxy,1))./num_shots)).^(-1);
-            Ctop = (cal_N./((size(v_top_zxy,1)+size(v_btm_zxy,1))./num_shots)).^(-1);
-        end
+%         if Eamp(this_folder).^2<3
+%             Cbtm = N_Bec(this_folder)./N_cal;
+%             Ctop = (cal_N./((size(v_top_zxy,1)+size(v_btm_zxy,1))./num_shots)).^(-1);
+%         elseif Eamp(this_folder).^2<9
+%             Cbtm = N_Bec(this_folder)./N_cal;
+%             Ctop = (cal_N./((size(v_top_zxy,1)+size(v_btm_zxy,1))./num_shots)).^(-1);
+%         else
+%             Cbtm = (cal_N./((size(v_top_zxy,1)+size(v_btm_zxy,1))./num_shots)).^(-1);
+%             Ctop = (cal_N./((size(v_top_zxy,1)+size(v_btm_zxy,1))./num_shots)).^(-1);
+%         end
         %         Ctop = Cbtm;
         
         
@@ -328,7 +359,8 @@ for folder_indx = 1:length(folder_indxs)
         %(Cen_test(1,1)./Cen_test(this_folder,1)).^1.5;
         
         %1;%no normalisation (unadjusted calibration)
-        
+        Ctop = 1;
+        Cbtm = 1;
         C_vec(this_folder,:) = [Ctop,Cbtm];
         trans_ratio_top{this_folder} = (v_top_dens-Ctop.*cal_dens_top)./(v_top_dens+v_btm_dens-Ctop.*cal_dens_top.*2);
         trans_ratio_btm{this_folder} = (v_btm_dens-Cbtm.*cal_dens_btm)./(v_top_dens+v_btm_dens-Cbtm.*cal_dens_btm.*2);
@@ -340,10 +372,15 @@ for folder_indx = 1:length(folder_indxs)
 %         equator_trans_ratio_btm(this_folder) = trans_ratio_btm{this_folder}(round(nbins/2),2);
 %         equator_trans_naive(this_folder) = trans_ratio_naive{this_folder}(round(nbins/2),2);
 %         equator_trans_ratio_unc(this_folder) = trans_ratio_unc{this_folder}(round(nbins/2),2);
-        equator_trans_ratio_top(this_folder) = nanmean(trans_ratio_top{this_folder}(69:73,2));
-        equator_trans_ratio_btm(this_folder) = nanmean(trans_ratio_btm{this_folder}(69:73,2));
-        equator_trans_naive(this_folder) = nanmean(trans_ratio_naive{this_folder}(69:73,2));
-        equator_trans_ratio_unc(this_folder) = nanmean(trans_ratio_unc{this_folder}(69:73,2));
+        indx_vec = 68:84;%65:87;%:73;
+        equator_trans_ratio_top(this_folder) = nanmean(trans_ratio_top{this_folder}(indx_vec,2));
+        equator_trans_ratio_btm(this_folder) = nanmean(trans_ratio_btm{this_folder}(indx_vec,2));
+        equator_trans_naive(this_folder) = nanmean(trans_ratio_naive{this_folder}(indx_vec,2));
+        equator_trans_ratio_unc(this_folder) = nanmean(trans_ratio_unc{this_folder}(indx_vec,2));
+
+        equator_trans_ratio_btm_unc(this_folder) = nanstd(trans_ratio_btm{this_folder}(indx_vec,2));
+        equator_trans_ratio_top_unc(this_folder) = nanstd(trans_ratio_top{this_folder}(indx_vec,2));
+        equator_trans_naive_unc(this_folder) = nanstd(trans_ratio_naive{this_folder}(indx_vec,2));
     else
         if ismember(this_folder,btm_halo_comp)
             calibration_density_btm_data_btm(folder_indx,:,:) = v_btm_dens;
@@ -361,7 +398,10 @@ for folder_indx = 1:length(folder_indxs)
     
 end
 %%
-top_indx = setdiff(1:numel(data_folders),btm_halo_comp);
+Eamp = unique_phi;
+% top_indx = setdiff(1:numel(data_folders),btm_halo_comp);
+top_indx = setdiff(1:numel(unique_phi),btm_halo_comp);
+% top_indx = 1:10;%
 % Eamp = sqrt([0,0.25,0.5,1,2,3,4,5,6,7,8,9,11,12,13,14,15,15,16,19]);
 % Eamp = sqrt([0,0.25,0.5,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,15,16,19,5.3]);
 equator_trans_ratio_top_bounded = equator_trans_ratio_top;
@@ -383,70 +423,124 @@ colors_main=[[88,113,219];[60,220,180]./1.75;[88,113,219]./1.7]./255;
 
 % modelfun = @(b,x) b(1).*cos(x(:,1).*b(2)+b(4))+b(3);
 % fit_1 = fitnlm(Eamp,equator_trans_ratio,modelfun,[-0.5,2*pi/6,0.5,0])
-
-modelfun = @(b,x) b(1).*cos((x(:,1).^b(3)).*b(2)-pi/2).^2;
-fit_top = fitnlm(Eamp,equator_trans_ratio_top,modelfun,[1,-0.5*pi/6,1])
-fit_btm = fitnlm(Eamp,equator_trans_ratio_btm,modelfun,[1,-0.5*pi/6,1])
-fit_naive = fitnlm(Eamp,equator_trans_naive,modelfun,[1,-0.5*pi/6,1])
-fit_both = fitnlm(Eamp(top_indx),equator_trans_ratio_both,modelfun,[1,-0.5*pi/6,1])
+% Eamp = Eamp.';
+modelfun = @(b,x) min(10e6.*ones(size(x)),real(b(1).*sin(b(4)+(b(3).*x(:,1)).^b(2)).^2));
+fit_top = fitnlm(Eamp,equator_trans_ratio_top,modelfun,[1,0.5,30,0])
+fit_btm = fitnlm(Eamp,equator_trans_ratio_btm,modelfun,[1,0.5,30,pi/2])
+% fit_naive = fitnlm(Eamp,equator_trans_naive,modelfun,[1,0,1,1])
+% fit_both = fitnlm(Eamp(top_indx),equator_trans_ratio_both,modelfun,[1,0,1,1])
 
 stfig('Transfer efficency against pulse amplitude comp');
 clf
 grid on
 hold on
-Evec = linspace(0,6,1e4);
-[ysamp_val,ysamp_ci]=predict(fit_both,Evec','Prediction','curve','Alpha',1-erf(1/sqrt(2))); %'Prediction','observation'
+Evec = linspace(0,0.5,1e4);
+[ysamp_val,ysamp_ci]=predict(fit_top,Evec','Prediction','curve','Alpha',1-erf(1/sqrt(2))); %'Prediction','observation'
 hold on
-plot(Evec.^2,ysamp_val,'k','LineWidth',1.5)
+plot(Evec,ysamp_val,'k','LineWidth',1.5)
 drawnow
 yl=ylim*1.1;
-plot(Evec.^2,ysamp_ci,'color',[1,1,1].*0.5)
+% plot(Evec,ysamp_ci,'color',[1,1,1].*0.5)
 
-curve1 = ysamp_ci(:,1)';
-curve2 = ysamp_ci(:,2)';
-x1 = Evec.^2;
-x2 = [x1, fliplr(x1)];
-inBetween = [curve1, fliplr(curve2)];
-h = fill(x2, inBetween, 'g');
-h.FaceColor = [0.31 0.31 0.32].*2;
-h.FaceAlpha = 0.5;
-parms1 = fit_top.Coefficients.Estimate;
+% curve1 = ysamp_ci(:,1)';
+% curve2 = ysamp_ci(:,2)';
+% x1 = Evec.^2;
+% x2 = [x1, fliplr(x1)];
+% inBetween = [curve1, fliplr(curve2)];
+% h = fill(x2, inBetween, 'g');
+% h.FaceColor = [0.31 0.31 0.32].*2;
+% h.FaceAlpha = 0.5;
+% parms1 = fit_top.Coefficients.Estimate;
 % equator_trans_ratio_unc  = equator_trans_ratio.*0.1;
-p_top = errorbar(Eamp(top_indx).^2,equator_trans_ratio_both,0.5./sqrt(out_data.num_shots(top_indx)),'o','CapSize',0,'MarkerSize',5,'Color',colors_main(3,:),...
-    'MarkerFaceColor',colors_main(2,:),'LineWidth',2.5)
-
-p_btm = errorbar(Eamp(btm_halo_comp).^2,equator_trans_ratio_both_btm,0.5./sqrt(out_data.num_shots(btm_halo_comp)),'o','CapSize',0,'MarkerSize',5,'Color',[0.7,0.4,.3],...
-    'MarkerFaceColor',[0.8,0.2,.2],'LineWidth',2.5)
-
-% errorbar(Eamp.^2,equator_trans_naive,0.5./sqrt(out_data.num_shots),'o','CapSize',0,'MarkerSize',5,'Color',[0.5,0.5,.2],...
-%     'MarkerFaceColor',[0.5,0.7,.05],'LineWidth',2.5)
-%
-% errorbar(Eamp.^2,equator_trans_ratio_btm,0.5./sqrt(out_data.num_shots),'o','CapSize',0,'MarkerSize',5,'Color',[0.8,0.3,.1],...
+% p_top = errorbar(Eamp(top_indx).^2,equator_trans_ratio_both,0.5./sqrt(out_data.num_shots(top_indx)),'o','CapSize',0,'MarkerSize',5,'Color',colors_main(3,:),...
+%     'MarkerFaceColor',colors_main(2,:),'LineWidth',2.5)
+% % 
+% p_btm = errorbar(Eamp(btm_halo_comp).^2,equator_trans_ratio_both_btm,0.5./sqrt(out_data.num_shots(btm_halo_comp)),'o','CapSize',0,'MarkerSize',5,'Color',[0.7,0.4,.3],...
 %     'MarkerFaceColor',[0.8,0.2,.2],'LineWidth',2.5)
-%
-% errorbar(Eamp.^2,equator_trans_ratio_top,0.5./sqrt(out_data.num_shots),'o','CapSize',0,'MarkerSize',5,'Color',[0.5,0.8,.7],...
-%     'MarkerFaceColor',[0.6,0.8,.7],'LineWidth',2.5)
 
+p_nav = errorbar(Eamp,equator_trans_naive,equator_trans_naive_unc,'o','CapSize',0,'MarkerSize',5,'Color',[0.5,0.5,.2],...
+    'MarkerFaceColor',[0.5,0.7,.05],'LineWidth',2.5);
+% %
+p_btm = errorbar(Eamp,equator_trans_ratio_btm,equator_trans_ratio_btm_unc,'o','CapSize',0,'MarkerSize',5,'Color',[0.8,0.3,.1],...
+    'MarkerFaceColor',[0.8,0.2,.2],'LineWidth',2.5);
+
+p_top = errorbar(Eamp,equator_trans_ratio_top,equator_trans_ratio_top_unc,'o','CapSize',0,'MarkerSize',5,'Color',[0.5,0.8,.7],...
+    'MarkerFaceColor',[0.6,0.8,.7],'LineWidth',2.5);
+% % 
 % errorbar(Eamp(top_indx).^2,equator_trans_ratio_both,0.5./sqrt(out_data.num_shots(top_indx)),'o','CapSize',0,'MarkerSize',5,'Color',[0.5,0.8,.7],...
 %     'MarkerFaceColor',[0.6,0.8,.7],'LineWidth',2.5)
 
 
 % plot(Evec.^2, modelfun([1,pi/10,2],Evec'))
-legend([p_top,p_btm],'Top Halo transfer','Bottom Halo transfer')
+legend([p_top,p_btm p_nav],'Top Halo transfer','Bottom Halo transfer','Naive Transfer')
 set(gca,'FontSize',22)
 hold off
 ylabel('Transfer Percentage')
 xlabel('Pulse Amplitude')
+ylim([0 1])
 
+%%
+stfig('transfer plot');
+clf
+plt_indx = 3;
+unique_phi(plt_indx)
+subplot(1,2,1)
+plot(r_top_zxy_masked.bin.centers,out_data.v_dens.btm{plt_indx}(:,2)-cal_dens_btm(:,2),'LineWidth',2.5)
+hold on
+plot(r_top_zxy_masked.bin.centers,out_data.v_dens.top{plt_indx}(:,2)-cal_dens_top(:,2),'LineWidth',2.5)
+% plot(r_top_zxy_masked.bin.centers,out_data.v_dens.btm{plt_indx}(:,2),'LineWidth',2.5)
+% hold on
+% plot(r_top_zxy_masked.bin.centers,out_data.v_dens.top{plt_indx}(:,2),'LineWidth',2.5)
+
+plot(r_top_zxy_masked.bin.centers(indx_vec),out_data.v_dens.btm{plt_indx}(indx_vec,2)-cal_dens_btm(indx_vec,2),'k--','LineWidth',2.0)
+plot(r_top_zxy_masked.bin.centers(indx_vec),out_data.v_dens.top{plt_indx}(indx_vec,2)-cal_dens_top(indx_vec,2),'k--','LineWidth',2.0)
+
+ylabel('density')
+xlabel('elevation  (rad)')
+set(gca,'FontSize',18)
+xlim([-0.8, 0.8])
+legend('Density of Bottom','Density of Top','Averaged Region')
+subplot(1,2,2)
+plot(r_top_zxy_masked.bin.centers,trans_ratio_btm{plt_indx}(:,2),'LineWidth',2.5)
+hold on
+plot(r_top_zxy_masked.bin.centers,trans_ratio_naive{plt_indx}(:,2),'LineWidth',2.5)
+
+plot(r_top_zxy_masked.bin.centers(indx_vec),trans_ratio_btm{plt_indx}(indx_vec,2),'k--','LineWidth',2.0)
+plot(r_top_zxy_masked.bin.centers(indx_vec),trans_ratio_naive{plt_indx}(indx_vec,2),'k--','LineWidth',2.0)
+
+xlim([-0.8, 0.8])
+ylabel('transfer percentage')
+xlabel('elevation (rad)')
+set(gca,'FontSize',18)
+legend('Transfer from Bottom','Transfer from Top','Averaged Region')
+ylim([0 1])
+
+%%
+plt_indx = 4;
+stfig('flip comp');
+clf
+plot(r_top_zxy_masked.bin.centers,trans_ratio_btm{plt_indx}(:,2),'LineWidth',2.5)
+hold on
+plot(r_top_zxy_masked.bin.centers,trans_ratio_naive{plt_indx}(:,2),'LineWidth',2.5)
+
+plot(r_top_zxy_masked.bin.centers,flip(trans_ratio_btm{plt_indx}(:,2)),'--','LineWidth',2.5)
+plot(r_top_zxy_masked.bin.centers,flip(trans_ratio_naive{plt_indx}(:,2)),'--','LineWidth',2.5)
+xlim([-0.8, 0.8])
+xlabel('elevation (rad)')
+ylabel('transfer percentage')
+set(gca,'FontSize',18)
+legend('Transfer from Bottom','Transfer from Top','Transfer from Bottom flipped','Transfer from Top flipped')
+ylim([0 1])
 %% Plot num checks
 
-stfig('num checks')
+stfig('num checks');
 clf
 subplot(2,1,2)
-plot(Eamp.^2,(out_data.num_counts.top(:)+out_data.num_counts.btm(:)),'o')
-xlabel('amp')
+plot(Eamp,(out_data.num_counts.top(:)+out_data.num_counts.btm(:)),'o')
+xlabel('Amp')
 ylabel('total counts in both halos')
 subplot(2,1,1)
-plot(Eamp.^2,(out_data.num_counts.top(:)+out_data.num_counts.btm(:))./out_data.num_shots','o')
-xlabel('amp')
+plot(Eamp,(out_data.num_counts.top(:)+out_data.num_counts.btm(:))./out_data.num_shots','o')
+xlabel('Amp')
 ylabel('avg counts in both halos')
+set(gca,'FontSize',17)

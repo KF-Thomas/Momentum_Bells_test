@@ -25,20 +25,13 @@ opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
 log_folder = 'log_Phi.txt';
 log_lab_folder = 'log_LabviewMatlab.txt';
 data_folders = {
-   '20230406_RT_k=+1,0,-1_Vsh_0_75_Vq_0_7_250_mus__215us_splitter_delay_AB_4'
-%     '20230402_RT_k=+1,0,-1_Vsh_0_75_Vq_0_7_250_mus_S_11'
-%    '20230331_RT_k=+1,0,-1_Vsh_0_75_Vq_0_7_250_mus_S_10'
-%    '20230330_RT_k=+1,0,-1_Vsh_0_75_Vq_0_7_250_mus_S_9'
-% 
-% 
-%   '20230329_RT_k=+1,0,-1_Vsh_0_75_Vq_0_7_250_mus_S_8'
-%    '20230325_RT_k=+1,0,-1_Vsh_0_75_Vq_0_7_250_mus_S_5'
-%  '20230324_RT_k=+1,0,-1_Vsh_0_75_Vq_0_7_250_mus_S_extra'
+  %  '20230329_RT_k=+1,0,-1_Vsh_0_75_Vq_0_7_250_mus_S_8'
+     '20230325_RT_k=+1,0,-1_Vsh_0_75_Vq_0_7_250_mus_S_5'
+%   '20230324_RT_k=+1,0,-1_Vsh_0_75_Vq_0_7_250_mus_S_extra'
 %   '20230326_RT_k=+1,0,-1_Vsh_0_75_Vq_0_7_250_mus_S_7'
-%   '20230325_RT_k=+1,0,-1_Vsh_0_75_Vq_0_7_250_mus_S_6'
-%    '20230324_RT_k=+1,0,-1_Vsh_0_75_Vq_0_7_250_mus_S_4'
-%    '20230324_RT_k=+1,0,-1_Vsh_0_75_Vq_0_7_250_mus_S_3'
-
+%    '20230325_RT_k=+1,0,-1_Vsh_0_75_Vq_0_7_250_mus_S_6'
+ %    '20230324_RT_k=+1,0,-1_Vsh_0_75_Vq_0_7_250_mus_S_4'
+%     '20230324_RT_k=+1,0,-1_Vsh_0_75_Vq_0_7_250_mus_S_3'
 % '20230325_RT_k=+1,0,-1_Vsh_0_75_Vq_0_7_250_mus_S_5'
 
 %     '20230323_RT_k=+1,0,-1_Vsh_0_75_Vq_0_7_250_mus_S'
@@ -195,7 +188,7 @@ tmp_ylim=[-35e-3, 35e-3];
 tlim=[0,4];
 opts.import.txylim=[tlim;tmp_xlim;tmp_ylim];
 
-opts.num_lim = 1.53e3;%1.5e3;%2.3e3;%9e3;%2.1e3;%0.5e3;% %minimum atom number 1.5e3
+opts.num_lim = 3.53e3;%1.5e3;%2.3e3;%9e3;%2.1e3;%0.5e3;% %minimum atom number 1.5e3
 opts.halo_N_lim = -1;%2;%10;%0;% %minimum allowed number in halo 10
 opts.halo_N_lim_upper = Inf;%6;%8;%15;%10;%17;%12;%30;%5;%10;%20;%3.5;%2;%10;%0;% %max allowed number in halo 10
 
@@ -208,7 +201,9 @@ opts.halo_number_limit = Inf;%24;%25;%Inf;%26;%30;%21;
 y_cut = 11e-3;
 catch_count = 0;
 
-ang_lim = 11;%65;%23;%55;%13;%13;%11;%15;%20.0;%20;%40;%%20;%angular limit in degrees
+ang_lim = 30;%65;%23;%55;%13;%13;%11;%15;%20.0;%20;%40;%%20;%angular limit in degrees
+
+
 
 % opts.import.shot_num = 1:16; %can select which shots you want to import
 
@@ -240,7 +235,7 @@ for folder_indx = 1:length(data_folders)
         opts.cent.nan_cull = true;
         opts.import.force_reimport = force_reimport;
         opts.import.force_cache_load = ~opts.import.force_reimport;
-        %         opts.import.shot_num = 1:24; %can select which shots you want to importl_index
+        %         opts.import.shot_num = 1:24; %can select which shots you want to import
     else
         opts.cent.nan_cull = false;
         opts.import.force_reimport = force_reimport_norm;
@@ -276,7 +271,7 @@ for folder_indx = 1:length(data_folders)
     
     opts.vel_conv.top.z_mask = [-0.9,0.9];
     opts.vel_conv.btm.z_mask = [-0.9,0.9];%in units of radius ([-0.68,0.68])
-    radius_lim = [0.0515,0.079];%[0.057,0.075];%[0.0515,0.079];%[0.062,0.071];%[0.03,0.09];%[0.03,0.09];%[0.06,0.069];%[0.03,0.09];%[0.0585,0.069];%[0.06,0.067];%[0.06,0.07];%[0.045,0.085];%[0.79,1.17].*0.065;%[0.61,1.26];%[0.89,1.11];%[0.89,1.16];%[0.9,1.05];%
+    radius_lim = [0.057,0.075];%[0.0515,0.079];%[0.062,0.071];%[0.03,0.09];%[0.03,0.09];%[0.06,0.069];%[0.03,0.09];%[0.0585,0.069];%[0.06,0.067];%[0.06,0.07];%[0.045,0.085];%[0.79,1.17].*0.065;%[0.61,1.26];%[0.89,1.11];%[0.89,1.16];%[0.9,1.05];%
     %     ang_lim = 20;%40;%%20;%angular limit in degrees
     %     ang_lim = 90;%
     
@@ -602,7 +597,7 @@ for folder_indx = 1:length(data_folders)
         v_btm_dens(:,2) = r_btm_zxy_masked.count_rate.smooth;
         v_top_dens(:,2) = r_top_zxy_masked.count_rate.smooth;
         
-        if ~exist('cal_dens_top','var')log_folderfolder
+        if ~exist('cal_dens_top','var')
             cal_dens_top = zeros(nbins,1);
             cal_dens_btm = zeros(nbins,1);
         end
@@ -769,7 +764,7 @@ for ii = 1:length(phi_vec)
     ylabel('Freq')
     xlim([min([r_hist_top_un.bin.centers;r_hist_btm_un.bin.centers]),...
         max([r_hist_top_un.bin.centers;r_hist_btm_un.bin.centers])])
-    legend(append('top ',num2str(phi_vec(ii))),append('btm ',num2str(phi_vec(ii))),'expected radius')
+    legend('top','btm','expected radius')
     
     %%
     for jj = 1:size(out_data{ii}.top_halo.counts_vel,1)
@@ -1109,19 +1104,19 @@ w = top_dens_vec(:,2);
 
 stfig('dens over sphere');
 [a, b] = sort(x_vec);
-%surf(a,phi,y_vec(b,:)')
+surf(a,phi,y_vec(b,:)')
 % pcolor(phi,x_vec,y_vec)
 % caxis([0.28 0.6])
-%caxis([0.25 0.9])
-%xlim([min(phi_vec),max(phi_vec)])
-%ylim([-0.2 0.2].*pi)
-%zlim([0 1])
-%ylabel('$\phi$')
-%xlabel('phase')
-%shading flat
-%box on
-%set(gca,'FontSize',19)
-%colorbar
+caxis([0.25 0.9])
+xlim([min(phi_vec),max(phi_vec)])
+ylim([-0.2 0.2].*pi)
+zlim([0 1])
+ylabel('$\phi$')
+xlabel('phase')
+shading flat
+box on
+set(gca,'FontSize',19)
+colorbar
 
 [x_vec, y_vec] = combine_data(phi_vec,out_data_vec(:,:,1));
 % [x_vec, y_vec] = combine_data(phi_vec,1-out_data_vec_ratio);
@@ -1310,6 +1305,7 @@ vis_str = string_value_with_unc(abs(2.*best_fit.Coefficients.Estimate(1)),2.*bes
 % ylabel('Offset')
 % set(gca,'FontSize',14)
 % xlim([-0.5,0.5])
+
 %% g2 (and E) plots
 num_shots_phi = cellfun(@(x) size(x.top_halo.num_counts,1),out_data);
 ref_indx = [1];%base line points (ie points that weren't put through an interferometer)
@@ -1317,8 +1313,10 @@ int_indx = setdiff(1:numel(phi_vec),ref_indx);
 if do_g2
     %% using the ports method
     x = phi_vec;
-    y = top_corr_bb_vec;
-    l_indx = 5;
+    y = top_corr_bb_vec;%
+    l_indx = 3;
+    %5
+
     %     E_raw=((g2_raw.g12.val(:)+g2_raw.g34.val(:)-g2_raw.g14.val(:)-g2_raw.g23.val(:))./(g2_raw.g12.val(:)+g2_raw.g34.val(:)+g2_raw.g14.val(:)+g2_raw.g23.val(:))).';
     E_raw=((g2_raw.g12.vec(:,l_indx)+g2_raw.g34.vec(:,l_indx)-1.0.*g2_raw.g14.vec(:,l_indx)-1.0.*g2_raw.g23.vec(:,l_indx))./...
         (g2_raw.g12.vec(:,l_indx)+g2_raw.g34.vec(:,l_indx)+1.0.*g2_raw.g14.vec(:,l_indx)+1.0.*g2_raw.g23.vec(:,l_indx))).';

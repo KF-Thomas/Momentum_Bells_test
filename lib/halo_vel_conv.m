@@ -98,7 +98,11 @@ for this_idx = 1:num_shots % Loop over all shots
         for jj = 1:size(opts_vel_conv.theta_mask,1)
         theta_mask = theta_mask | (theta>opts_vel_conv.theta_mask(jj,1) & theta<opts_vel_conv.theta_mask(jj,2));
         end
-        v_zxy = v_zxy(~theta_mask,:);
+        if isfield(opts_vel_conv,'theta_mask_polarity') && opts_vel_conv.theta_mask_polarity
+        v_zxy = v_zxy(theta_mask,:);
+        else
+            v_zxy = v_zxy(~theta_mask,:);
+        end
     end
     
     ang_mask = abs(180/pi*atan(v_zxy(:,1)./sqrt(v_zxy(:,2).^2+v_zxy(:,3).^2)))<ang_lim;

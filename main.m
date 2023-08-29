@@ -60,7 +60,7 @@ data_folder = '';%'20221212_new_plates_halo_test_4';
 % data_folder = '20210305_rarity_tapster_k=0,-1,-2_scan_1200_mus_evap_0_8543';
 
 opts.import.dir = fullfile(opts.data_root, data_folder);
-opts.import.force_reimport = false;
+opts.import.force_reimport = true;
 opts.import.force_cache_load = ~opts.import.force_reimport;
 % opts.import.shot_num = 313:625; %can select specific shots to import
 %% Import parameters
@@ -76,7 +76,7 @@ y_cut = 11e-3;
 z_limits = [-0.9,0.9];%[-0.3,0.3];%[-0.3,0.3];%[-0.4,0.4];%[-0.68,0.68];%[-0.15,0.15];%[-0.15,0.15];%[-0.36,0.36];%
 radius_lim = [0.03,0.08];%[0.05,0.07];%[0.,1.17].*0.065;%[0.79,1.17].*0.065;%[0.61,1.26];%[0.89,1.11];%[0.89,1.16];%[0.9,1.05];%
 
-ang_lim = 35;%35;%angular limit in degrees
+ang_lim = 15;%35;%angular limit in degrees
 
 opts.plot_dist = true; %do you want to see all the detailed stuff about the halo distributions
 opts.corr_center_check = false; %do you want a sceond check
@@ -220,7 +220,10 @@ opts.cent.btm.method = {'margin','average','average'};
 %opts.cent.t_bounds = {[3.861,3.867],[3.874,3.881],[3.887,3.895],[3.8,3.95]}; %time bounds for the different momentum states k=+1,0,-1 respectively
 %opts.cent.t_bounds = {[3.887,3.895],[3.874,3.881],[3.861,3.867],[3.8,3.95]}; %time bounds for the different momentum states k=-1,0,+1 respectively
 
-opts.cent.t_bounds = {[3.844,3.8598],[3.8598,3.871],[3.871,3.8844],[3.75,4]}; %time bounds for the different momentum states k=-2,-1,0 respectively
+opts.cent.t_bounds = {[3.8598,3.871],[3.871,3.8844],[3.884,3.896],[3.75,4]};%
+
+% opts.cent.t_bounds = {[3.844,3.8598],[3.8598,3.871],[3.871,3.8844],[3.75,4]}; %time bounds for the different momentum states k=-2,-1,0 respectively
+
 t0_factor = 3.8772;
 % opts.cent.t_bounds = {[2.134,2.148],[2.148,2.161],[2.161,2.18],[2.13,2.2]};
 % opts.cent.t_bounds = {[1.735,1.75],[1.75,1.763],[1.763,1.776],[1.73,1.779]};
@@ -237,7 +240,7 @@ slosh_cut = ~(abs(bec.centre_mid(:,3))>y_cut);
 % num_masked(~num_check) = NaN;
 % num_outlier = isoutlier(num_masked);
 % ~num_outlier &
-is_shot_good = slosh_cut' & bec.centre_OK_top' & bec.centre_OK_mid' & bec.centre_OK_btm';% & num_check
+is_shot_good = slosh_cut' & bec.centre_OK_top' & bec.centre_OK_mid';% & bec.centre_OK_btm';% & num_check
 data_masked_halo = struct_mask(data_masked,is_shot_good);
 bec_masked_halo = struct_mask(bec,is_shot_good);
 

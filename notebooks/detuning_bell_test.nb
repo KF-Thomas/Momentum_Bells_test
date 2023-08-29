@@ -10,11 +10,10 @@ In[65]:= Ecorr[\[Alpha]_,\[Beta]_]:=(Sin[\[Alpha]+\[Beta]]^2-Cos[\[Alpha]+\[Beta
 In[12]:= Corr[\[Alpha]_,\[Beta]_]:=1/4 Sin[\[Alpha]+\[Beta]]^2
 In[13]:= TransferDist[z_,z0_,A_]:=A*Exp[-(z-z0)^2/2];
 PhaseDist[z_,z0_,A_]:=ArcSin[Sqrt[TransferDist[z,z0,A]]]
-In[135]:= a=0
-A=0.691342
-Out[135]= 0
-Out[136]= 0.691342
-In[137]:= Plot[{TransferDist[x,a,A],TransferDist[x,-a,A]},{x,-5,5}]
+In[170]:= a=0
+A=0.96194;(*0.5;*)(*0.691342*)
+Out[170]= 0
+In[172]:= Plot[{TransferDist[x,a,A],TransferDist[x,-a,A]},{x,-5,5}]
 Plot[{PhaseDist[x,a,A],PhaseDist[x,-a,A],PhaseDist[x,a,A]+PhaseDist[x,-a,A]},{x,-5,5}]
 Plot[{Corr[PhaseDist[x,a,A],PhaseDist[x,-a,A]]},{x,-5,5}]
 ParametricPlot[{PhaseDist[x,a,A]+PhaseDist[x,-a,A],Corr[PhaseDist[x,a,A],PhaseDist[x,-a,A]]},{x,-5,5}]
@@ -22,13 +21,13 @@ Plot[{(TransferDist[x,a,A])*(1-TransferDist[x,-a,A])+(1-TransferDist[x,a,A])*(Tr
 ParametricPlot[{PhaseDist[x,a,A]+PhaseDist[x,-a,A],Ecorr[PhaseDist[x,a,A],PhaseDist[x,-a,A]]},{x,-5,5}]
 ParametricPlot[{PhaseDist[x,a,A]+PhaseDist[x,-a,A],(TransferDist[x,a,A])*(1-TransferDist[x,-a,A])+(1-TransferDist[x,a,A])*(TransferDist[x,-a,A])-(1-TransferDist[x,a,A])*(1-TransferDist[x,-a,A])-(TransferDist[x,a,A])*(TransferDist[x,-a,A])},{x,-5,5}]
 
-Out[137]= 
-Out[138]= 
-Out[139]= 
-Out[140]= 
-Out[141]= 
-Out[142]= 
-Out[143]= 
+Out[172]= 
+Out[173]= 
+Out[174]= 
+Out[175]= 
+Out[176]= 
+Out[177]= 
+Out[178]= 
 In[160]:= Plot[{(TransferDist[x,a,A])*(1-TransferDist[x,-a,A])+(1-TransferDist[x,a,A])*(TransferDist[x,-a,A])-(1-TransferDist[x,a,A])*(1-TransferDist[x,-a,A])-(TransferDist[x,a,A])*(TransferDist[x,-a,A]),Ecorr[PhaseDist[x,a,A],PhaseDist[x,-a,A]]},{x,-5,5}]
 Out[160]= 
 In[90]:= Plot[{(TransferDist[x,a,A])*(1-TransferDist[x,-a,A]),(1-TransferDist[x,a,A])*(TransferDist[x,-a,A]),2*(1-TransferDist[x,a,A])*(1-TransferDist[x,-a,A])},{x,-5,5}]
@@ -52,3 +51,60 @@ In[124]:= 2+4 (-1+0.5)-4 *0.5 *0.5+4(-1+1+0.5)
 Out[124]= 1.
 In[156]:= FullSimplify[Refine[FullSimplify[1/4 (E^(-I \[Phi]2) Cos[\[Beta]] Sin[\[Alpha]]+E^(-I \[Phi]1) Cos[\[Alpha]] Sin[\[Beta]])* (E^(I \[Phi]2) Cos[\[Beta]] Sin[\[Alpha]]+E^(I \[Phi]1) Cos[\[Alpha]] Sin[\[Beta]])],{\[Alpha]>0,\[Alpha]<Pi/2,\[Beta]>0,\[Beta]<Pi/2,\[Phi]1>0,\[Phi]2>0}]]
 Out[156]= 1/4 (Cos[\[Beta]]^2 Sin[\[Alpha]]^2+2 Cos[\[Alpha]] Cos[\[Beta]] Cos[\[Phi]1-\[Phi]2] Sin[\[Alpha]] Sin[\[Beta]]+Cos[\[Alpha]]^2 Sin[\[Beta]]^2)
+In[180]:= Ecorr[PhaseDist[0,a,A],PhaseDist[0,-a,A]]
+Out[180]= -0.707109
+In[227]:= BmapFull[a_,b_,p_,T_,c_]:=1/Sqrt[2]*If[c==1,a*Sqrt[T]+I*Exp[I*p]*b*Sqrt[1-T],b*Sqrt[T]+I*Exp[-I*p]*a*Sqrt[1-T]]
+cf1=Coefficient[Exp[I*\[Phi]1]*BmapFull[as,b,0,Sin[\[Alpha]]^2,1]*BmapFull[c,d,0,Sin[\[Beta]]^2,1]+Exp[I*\[Phi]2]*BmapFull[as,b,0,Sin[\[Alpha]]^2,0]*BmapFull[c,d,0,Sin[\[Beta]]^2,0],b*c];
+cf2=Coefficient[Exp[I*\[Phi]1]*BmapFull[as,b,0,Sin[\[Alpha]]^2,1]*BmapFull[c,d,0,Sin[\[Beta]]^2,1]+Exp[I*\[Phi]2]*BmapFull[as,b,0,Sin[\[Alpha]]^2,0]*BmapFull[c,d,0,Sin[\[Beta]]^2,0],b*d];
+cf3=Coefficient[BmapFull[as,b,0,Sin[\[Alpha]]^2,1]*BmapFull[c,d,0,Sin[\[Beta]]^2,1]+BmapFull[as,b,0,Sin[\[Alpha]]^2,0]*BmapFull[c,d,0,Sin[\[Beta]]^2,0],as*c];
+cf4=Coefficient[BmapFull[as,b,0,Sin[\[Alpha]]^2,1]*BmapFull[c,d,0,Sin[\[Beta]]^2,1]+BmapFull[as,b,0,Sin[\[Alpha]]^2,0]*BmapFull[c,d,0,Sin[\[Beta]]^2,0],as*d];
+FullSimplify[Refine[FullSimplify[(cf2*Conjugate[cf2])],{\[Alpha]>0,\[Alpha]<Pi/2,\[Beta]>0,\[Beta]<Pi/2,\[Phi]1>0,\[Phi]2>0}]]
+1/4 Conjugate[E^(I \[Phi]1) Cos[\[Alpha]] Cos[\[Beta]]-E^(I \[Phi]2) Sin[\[Alpha]] Sin[\[Beta]]] (E^(I \[Phi]1) Cos[\[Alpha]] Cos[\[Beta]]-E^(I \[Phi]2) Sin[\[Alpha]] Sin[\[Beta]])
+Ecorr[\[Alpha]_,\[Beta]_]:=(Sin[\[Alpha]+\[Beta]]^2-Cos[\[Alpha]+\[Beta]]^2)
+Corr[\[Alpha]_,\[Beta]_]:=1/4 Sin[\[Alpha]+\[Beta]]^2
+TransferDist[z_,z0_,A_]:=A*Exp[-(z-z0)^2/2];
+PhaseDist[z_,z0_,A_]:=ArcSin[Sqrt[TransferDist[z,z0,A]]]
+a=0
+A=0.96194;(*0.5;*)(*0.691342*)
+Plot[{TransferDist[x,a,A],TransferDist[x,-a,A]},{x,-5,5}]
+Plot[{PhaseDist[x,a,A],PhaseDist[x,-a,A],PhaseDist[x,a,A]+PhaseDist[x,-a,A]},{x,-5,5}]
+Plot[{Corr[PhaseDist[x,a,A],PhaseDist[x,-a,A]]},{x,-5,5}]
+ParametricPlot[{PhaseDist[x,a,A]+PhaseDist[x,-a,A],Corr[PhaseDist[x,a,A],PhaseDist[x,-a,A]]},{x,-5,5}]
+Plot[{(TransferDist[x,a,A])*(1-TransferDist[x,-a,A])+(1-TransferDist[x,a,A])*(TransferDist[x,-a,A])-(1-TransferDist[x,a,A])*(1-TransferDist[x,-a,A])-(TransferDist[x,a,A])*(TransferDist[x,-a,A]),Ecorr[PhaseDist[x,a,A],PhaseDist[x,-a,A]]},{x,-5,5}]
+ParametricPlot[{PhaseDist[x,a,A]+PhaseDist[x,-a,A],Ecorr[PhaseDist[x,a,A],PhaseDist[x,-a,A]]},{x,-5,5}]
+ParametricPlot[{PhaseDist[x,a,A]+PhaseDist[x,-a,A],(TransferDist[x,a,A])*(1-TransferDist[x,-a,A])+(1-TransferDist[x,a,A])*(TransferDist[x,-a,A])-(1-TransferDist[x,a,A])*(1-TransferDist[x,-a,A])-(TransferDist[x,a,A])*(TransferDist[x,-a,A])},{x,-5,5}]
+
+Plot[{(TransferDist[x,a,A])*(1-TransferDist[x,-a,A]),(1-TransferDist[x,a,A])*(TransferDist[x,-a,A]),2*(1-TransferDist[x,a,A])*(1-TransferDist[x,-a,A])},{x,-5,5}]
+
+Simplify[(t1*t2+(1-t1)*(1-t2)-t2*(1-t1)-t1*(1-t2))]
+
+FullSimplify[(2*a1-1)*(2*b1-1)-(2*a1-1)*(2*b2-1)+(2*a2-1)*(2*b1-1)+(2*a2-1)*(2*b2-1)]
+2+4 (-1+a1) b1-4 a1 b2+4 a2 (-1+b1+b2)/.{a1->0.691342,b1->0.96194,a2->0.96194,b2->0.691342}
+
+FindMaximum[2+4 (-1+a1) b1-4 a1 b2+4 a2 (-1+b1+b2),{a1,b1,a2,b2}]
+
+2+4 (-1+0.5)-4*0.5*0.5+4(-1+1+0.5)
+
+FullSimplify[Refine[FullSimplify[1/4 (E^(-I \[Phi]2) Cos[\[Beta]] Sin[\[Alpha]]+E^(-I \[Phi]1) Cos[\[Alpha]] Sin[\[Beta]])*(E^(I \[Phi]2) Cos[\[Beta]] Sin[\[Alpha]]+E^(I \[Phi]1) Cos[\[Alpha]] Sin[\[Beta]])],{\[Alpha]>0,\[Alpha]<Pi/2,\[Beta]>0,\[Beta]<Pi/2,\[Phi]1>0,\[Phi]2>0}]]
+
+Ecorr[PhaseDist[0,a,A],PhaseDist[0,-a,A]]
+
+Out[232]= 1/4 Conjugate[E^(I \[Phi]1) Cos[\[Alpha]] Cos[\[Beta]]-E^(I \[Phi]2) Sin[\[Alpha]] Sin[\[Beta]]] (E^(I \[Phi]1) Cos[\[Alpha]] Cos[\[Beta]]-E^(I \[Phi]2) Sin[\[Alpha]] Sin[\[Beta]])
+Out[233]= 1/4 Conjugate[E^(I \[Phi]1) Cos[\[Alpha]] Cos[\[Beta]]-E^(I \[Phi]2) Sin[\[Alpha]] Sin[\[Beta]]] (E^(I \[Phi]1) Cos[\[Alpha]] Cos[\[Beta]]-E^(I \[Phi]2) Sin[\[Alpha]] Sin[\[Beta]])
+Out[238]= 0
+Out[240]= 
+Out[241]= 
+Out[242]= 
+Out[243]= 
+Out[244]= 
+Out[245]= 
+Out[246]= 
+Out[247]= 
+Out[248]= (-1+2 t1) (-1+2 t2)
+Out[249]= 2+4 (-1+a1) b1-4 a1 b2+4 a2 (-1+b1+b2)
+Out[250]= 1.41422
+During evaluation of In[227]:= FindMaximum::cvmit: Failed to converge to the requested accuracy or precision within 100 iterations.
+Out[251]= {4.06988*10^209,{a1->1.02646*10^104,b1->2.4781*10^104,a2->2.4781*10^104,b2->1.02646*10^104}}
+Out[252]= 1.
+Out[253]= 1/4 (Cos[\[Beta]]^2 Sin[\[Alpha]]^2+2 Cos[\[Alpha]] Cos[\[Beta]] Cos[\[Phi]1-\[Phi]2] Sin[\[Alpha]] Sin[\[Beta]]+Cos[\[Alpha]]^2 Sin[\[Beta]]^2)
+Out[254]= -0.707109

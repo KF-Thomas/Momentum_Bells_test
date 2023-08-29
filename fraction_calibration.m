@@ -18,7 +18,7 @@ opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
 data_folder = '20200724_mag_transfer_optimiser_9';
 
 frac_opts.num_lim = 0.4e3;%1.5e3;
-frac_opts.transfer_state = 'mag';
+frac_opts.transfer_state = 'momentum';%'mag';
 frac_opts.bounds = [-0.03, 0.03; -0.03, 0.03];%spacecial bounds 
 
 % % Background stuff

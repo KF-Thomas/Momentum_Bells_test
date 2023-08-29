@@ -173,6 +173,37 @@ elseif strcmp(trap_type,'quad_3_0_shunt_0_9')
         'c:\remote\settings202102Aug161030.xml';%evap: ~0.853 MHz
         'c:\remote\settings202102Aug160934.xml';%evap: ~0.854 MHz
         };
+elseif strcmp(trap_type,'quad_0_7_shunt_0_75')
+settings_list = {
+    'c:\remote\settings202325Mar132858.xml';%832
+    'c:\remote\settings202325Mar132842.xml';%834
+    'c:\remote\settings202325Mar132817.xml';%836
+    'c:\remote\settings202325Mar132747.xml';%838
+    'c:\remote\settings202325Mar133039.xml';%839
+    'c:\remote\settings202325Mar132731.xml';%840
+    'c:\remote\settings202325Mar133001.xml';%841
+    'c:\remote\settings202325Mar132711.xml';%evap: ~0.842 MHz
+    'c:\remote\settings202325Mar132655.xml';%844
+        'c:\remote\settings202316Mar164258.xml';%evap: ~0.846 MHz
+        'c:\remote\settings202316Mar164154.xml';%evap: ~0.848 MHz
+        'c:\remote\settings202316Mar164040.xml';%evap: ~0.850 MHz
+        'c:\remote\settings202316Mar163923.xml';%evap: ~0.852 MHz
+        'c:\remote\settings202316Mar163847.xml';%evap: ~0.854 MHz
+        'c:\remote\settings202316Mar163814.xml';%evap: ~0.856 MHz
+        'c:\remote\settings202316Mar163741.xml';%evap: ~0.858 MHz
+        'c:\remote\settings202316Mar164339.xml';%evap: ~0.860 MHz
+        'c:\remote\settings202318Mar214016.xml';%evap: ~0.861 MHz
+        'c:\remote\settings202318Mar214130.xml';%evap: ~0.862 MHz
+        'c:\remote\settings202318Mar214246.xml';%evap: ~0.863 MHz
+        'c:\remote\settings202316Mar164404.xml';%evap: ~0.865 MHz
+        'c:\remote\settings202316Mar164436.xml';%evap: ~0.870 MHz
+        'c:\remote\settings202316Mar164459.xml';%evap: ~0.875 MHz
+        'c:\remote\settings202316Mar170050.xml';%evap: ~0.880 MHz
+
+        };
+settings_list_num = {
+        'c:\remote\settings202316Mar163814.xml';%evap: ~0.838 MHz
+        };
 end
 if mod(i,update_interval) == update_interval-1
     %get the previous halos num
@@ -193,7 +224,7 @@ if mod(i,update_interval) == update_interval-1
         else
             evap_setting = evap_setting-1;
         end
-    elseif num_check>1
+    elseif num_check>4
         if num_check>8
             evap_setting = evap_setting+2;
         else

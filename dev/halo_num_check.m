@@ -30,11 +30,12 @@ anal_opts.history.shots=num_shots;%50;
 % hebec_constants
 % const.fall_distance = 8.52925545e-01;
 %% find centers
-opts.cent.visual = 2;
+opts.cent.visual = 0;
 opts.cent.threshold = [100,30,30].*1e3; %set in inverse units (Hz for time 1/m for space)
 opts.cent.sigma = [8e-5,25e-5,25e-5];
+opts.cent.t_bounds = {[3.8598,3.871],[3.871,3.8844],[3.884,3.896],[3.75,4]};%
 % opts.cent.t_bounds = {[3.8598,3.871],[3.871,3.8844],[3.8844,3.8972],[3.8,3.95]}; %time bounds for the different momentum states k=+1,0,-1 respectively
-opts.cent.t_bounds = {[1.741,1.75],[1.75,1.763],[1.763,1.776],[1.73,1.779]};;
+% opts.cent.t_bounds = {[1.741,1.75],[1.75,1.763],[1.763,1.776],[1.73,1.779]};;
 
 opts.vel_conv.plot_percentage = 0.2;
 opts.vel_conv.visual = 0;
@@ -118,8 +119,11 @@ while not_done
         btm_halo_num_counts = zeros(1,num_shots);
         for ii = 1:num_shots
             this_shot = masked_data.counts_txy{ii};
-            top_halo_num_counts(ii) = size(masktxy_square(this_shot, [1.76, 1.7665; -0.03, 0.03; -0.03, 0.03]),1);
-            btm_halo_num_counts(ii) = size(masktxy_square(this_shot, [1.747, 1.754; -0.03, 0.03; -0.03, 0.03]),1);
+%             top_halo_num_counts(ii) = size(masktxy_square(this_shot, [1.76, 1.7665; -0.03, 0.03; -0.03, 0.03]),1);
+%             btm_halo_num_counts(ii) = size(masktxy_square(this_shot, [1.747, 1.754; -0.03, 0.03; -0.03, 0.03]),1);
+
+            top_halo_num_counts(ii) = size(masktxy_square(this_shot, [3.881, 3.886; -0.03, 0.03; -0.03, 0.03]),1);
+            btm_halo_num_counts(ii) = size(masktxy_square(this_shot, [3.867, 3.872; -0.03, 0.03; -0.03, 0.03]),1);
         end
         not_done = 0;
     catch

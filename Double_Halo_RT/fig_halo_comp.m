@@ -16,7 +16,7 @@ opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
 %single halo (btm)
 % data_folder='single_halo_data\20210316_k=-1,-2_various_tests\20210316_k=-1,-2_test_5';
 % data_folder = '20220204_k=-1,-2_rough_halo';
-data_folder = '20220207_k=-1,-2_rough_halo_2';
+data_folder = '';%'20230330_RT_k=+1,0,-1_Vsh_0_75_Vq_0_7_250_mus_S_9';%'20220207_k=-1,-2_rough_halo_2';
 
 %double halo
 % data_folder='20211027_validating_bragg_pulses\source pulse';
@@ -38,10 +38,9 @@ opts.import.force_cache_load = ~opts.import.force_reimport;
 
 % opts.import.shot_num=100:278;
 
-
 %% Chose which halo(s) to analyse
 opts.do_top_halo = 1;% analyse the top halo?
-opts.do_btm_halo = 0;% analyse the bottom halo?
+opts.do_btm_halo = 1;% analyse the bottom halo?
 
 %% Chose if you want to look at a narrow or wide slice of the halo
 slice_type = 'medium';
@@ -65,20 +64,20 @@ else
     opts.vel_conv.btm.z_mask = [-0.82,0.82];%in units of radius ([-0.68,0.68])
 end
 % 
-opts.vel_conv.top.z_mask = [-3,1];%[-0.9,0.9];%[-1,1];%[-0.9,0.9];
-opts.vel_conv.btm.z_mask = [-0.01,0.02];%[-0.9,0.9];%[-1,1];%[-0.9,0.9];%in units of radius ([-0.68,0.68])
+opts.vel_conv.top.z_mask = [-0.9,0.9];%[-0.9,0.9];%[-1,1];%[-0.9,0.9];
+opts.vel_conv.btm.z_mask = [-0.9,0.9];%[-0.9,0.9];%[-1,1];%[-0.9,0.9];%in units of radius ([-0.68,0.68])
 
-radius_lim = [0,1.0];%[-Inf,Inf];%[-0.03,0.08];%[0.00,0.14];%[0.01.*0.065,0.08];%[0.01.*0.065,0.1];%[0.05,0.07];%[0.3,1.61].*0.065;%[0.61,1.26].*0.065;%[0.9,1.05];%[0.89,1.11];
+radius_lim = [0.057,0.075];%[0,1.0];%[-Inf,Inf];%[-0.03,0.08];%[0.00,0.14];%[0.01.*0.065,0.08];%[0.01.*0.065,0.1];%[0.05,0.07];%[0.3,1.61].*0.065;%[0.61,1.26].*0.065;%[0.9,1.05];%[0.89,1.11];
 ang_lim = 120;%92;%angular limit in degrees
 
 %% Import parameters
-tmp_xlim=[-35e-3, 35e-3];     %tight XY lims to eliminate hot spot from destroying pulse widths
-tmp_ylim=[-35e-3, 35e-3];
-tlim=[0,6];
+tmp_xlim=[-55e-3, 55e-3];     %tight XY lims to eliminate hot spot from destroying pulse widths
+tmp_ylim=[-55e-3, 55e-3];
+tlim=[0,4];
 opts.import.txylim=[tlim;tmp_xlim;tmp_ylim];
 
-opts.num_lim = 0e3;%2.1e3;%0.5e3;% %minimum atom number 1.5e3
-opts.halo_N_lim = 0;%2;%10;%0;% %minimum allowed number in halo 10
+opts.num_lim = 1.5e3;%2.1e3;%0.5e3;% %minimum atom number 1.5e3
+opts.halo_N_lim = -1;%2;%10;%0;% %minimum allowed number in halo 10
 
 opts.plot_dist = false; %do you want to see all the detailed stuff about the halo distributions
 
@@ -175,7 +174,7 @@ opts.cent.btm.sigma = [6.7e-5,16e-5,16e-5];%[8e-5,25e-5,25e-5];
 opts.cent.btm.method = {'margin','average','average'};
 
 % opts.cent.t_bounds = {[1.735,1.75],[1.75,1.763],[1.763,1.776],[1.73,1.779]};
-opts.cent.t_bounds = {[1.741,1.75],[1.75,1.763],[1.763,1.776],[1.73,1.779]};
+opts.cent.t_bounds = {[3.8598,3.871],[3.871,3.8844],[3.884,3.896],[3.75,4]};%{[1.741,1.75],[1.75,1.763],[1.763,1.776],[1.73,1.779]};
 % opts.cent.t_bounds = {[2.134,2.148],[2.148,2.161],[2.161,2.18],[2.13,2.2]};
 %  opts.cent.t_bounds = {[3.844,3.8598],[3.8598,3.871],[3.871,3.8844],[3.75,4]};%time bounds for the different momentum states
 % opts.cent.t_bounds = {[5.350,5.356],[5.361,5.367],[5.372,5.380],[5.34,5.39]};%time bounds for the different momentum states (for full evap settings)

@@ -31,9 +31,9 @@ opts.halo_N_lim_upper = Inf; %120;%2;%10;%0;% %minimum allowed number in halo 10
 y_cut = 11e-3;
 
 z_limits = [-0.9,0.9];%[-0.3,0.3];%[-0.3,0.3];%[-0.4,0.4];%[-0.68,0.68];%[-0.15,0.15];%[-0.15,0.15];%[-0.36,0.36];%
-radius_lim = [0.055,0.075];%[0.01,0.09];%[0.058,0.07];%[0.06,0.07];%[0.05,0.07];%[0.,1.17].*0.065;%[0.79,1.17].*0.065;%[0.61,1.26];%[0.89,1.11];%[0.89,1.16];%[0.9,1.05];%
+radius_lim = [0.058,0.07];%[0.01,0.09];%[0.058,0.07];%[0.06,0.07];%[0.05,0.07];%[0.,1.17].*0.065;%[0.79,1.17].*0.065;%[0.61,1.26];%[0.89,1.11];%[0.89,1.16];%[0.9,1.05];%
 
-ang_lim = 30;%30;%35;%angular limit in degrees
+ang_lim = 90;%30;%35;%angular limit in degrees
 
 plot_dist = true; %do you want to see all the detailed stuff about the halo distributions
 opts.corr_center_check = false; %do you want a sceond check
@@ -209,7 +209,7 @@ opts.vel_conv.v_mask=radius_lim;%[0.31,1.56];%[0.89,1.11]; %[0.61,1.26];%bounds 
 opts.vel_conv.z_mask = z_limits;%[-0.36,0.36];%[-0.65,0.65];%[-0.55,0.55];%[-0.68,0.68]; %[-0.68,0.68]; %in units of radius (standard [-0.76,0.76])
 opts.vel_conv.ang_lim = ang_lim; %angular limits of the azimuthal angle
 opts.vel_conv.y_mask = [-1.9,1.9];%[-0.8,0.8]; %in units of radius
-opts.vel_conv.theta_mask = [1.2,1.25;1.2-pi,1.25-pi];
+opts.vel_conv.theta_mask = [1.25,1.35;1.1-pi,1.25-pi];
 
 opts.vel_conv.centering_correction = [0 0 0].*0.5e-3;
 opts.vel_conv.phi_correction = [0 0];
@@ -247,6 +247,7 @@ if plot_dist
         r_dist_unnorm = sqrt(v_zxy_unnorm(:,1).^2+v_zxy_unnorm(:,2).^2+v_zxy_unnorm(:,3).^2);
         N_current = halo{ii}.num_counts;
 
+        %Radial velocity distribution
         stfig('radial distribution');
         if ii == 1
             clf
@@ -274,9 +275,10 @@ if plot_dist
         xlim([min(r_hist_un.bin.centers),...
             max(r_hist_un.bin.centers)])
         legend('top','btm','expected radius')
-        gaussfitx = radius_lim(1):0.001:radius_lim(2);
-        gaussfity = ylimit.*gaussmf(gaussfitx,[0.003 0.065]);
-        plot(gaussfitx,gaussfity)
+        % Gaussian fit for radial velocity distribution plot 
+        gaussfit = fit(r_hist_un.bin.centers, r_hist_un.counts.smooth,'gauss1');
+        plot(r_hist_un.bin.centers,gaussfit(r_hist_un.bin.centers), 'linewidth', 1.5)
+        
 
         stfig('halo comparison');
         clf
@@ -377,6 +379,27 @@ corr_opts.sampling_method='complete';%'basic';%method for sampling uncorrelated 
 corr_opts.do_pre_mask=false;
 corr_opts.sorted_dir=nan;
 corr_opts.sort_norm=0;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 corr_opts.gaussian_fit = true; %ensure it always uses a gaussian fit
 corr_opts.param_num = 4;
