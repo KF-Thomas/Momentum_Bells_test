@@ -17,14 +17,15 @@
 
 update_keysight = 1;
 
-num_points = 4;
-shots_per_point = 80;
+num_points = 100;
+shots_per_point = 5;
 
 marker = mod(floor((i-1)/shots_per_point),shots_per_point*num_points)+1; %Counts from 1 to num shots before setpt update
 
-sequence = {'mag_transfer','k=0,-1','mirror'}; %Construct desired experimental sequenc from sequences above
 
-new_path='c:\remote\settings202001Sep155855.xml';
+sequence = {'k=+1,0,-1',}; %Construct desired experimental sequenc from sequences above
+
+new_path='c:\remote\settings202308Sep172658.xml';%c:\remote\settings202001Sep155855.xml
 
 %% Keysight settings
 % General settings
@@ -83,9 +84,9 @@ t0_Bragg_mirror=nan;%3.9895e-6;
 sinc_scale_Bragg_mirror=6e-6;%5.5e-6;%5.3e-6;%5.3e-6;
 Amp_sinc_Bragg_mirror=sqrt(5);%sqrt(10.0);%0.2;%
 
-wf_mirror_pulse = @(b,t) sinc((t-b(1)/2)./b(4)).*b(3).*cos(pi*(t-b(1)/2)/(b(1))).^2;
-wf_mirror_pulse_1 = @(b,t) ampfun([60.117, 0.5638],abs(wf_mirror_pulse(b,t)).^2)/2e3.*sin(2*pi*b(2)*t).*sign(wf_mirror_pulse(b,t));%sinc((t-b(1)/2)./b(4)).*b(3).*sin(2*pi*b(2)*t);%
-wf_mirror_pulse_2 = @(b,t) ampfun([132.62, 0.5283],abs(wf_mirror_pulse(b,t)).^2)/2e3.*sin(2*pi*b(2)*t).*sign(wf_mirror_pulse(b,t));%sinc((t-b(1)/2)./b(4)).*b(3).*sin(2*pi*b(2)*t);%
+wf_mirror_pulse_d = @(b,t) sinc((t-b(1)/2)./b(4)).*b(3).*cos(pi*(t-b(1)/2)/(b(1))).^2;
+wf_mirror_pulse_1 = @(b,t) ampfun([60.117, 0.5638],abs(wf_mirror_pulse_d(b,t)).^2)/2e3.*sin(2*pi*b(2)*t).*sign(wf_mirror_pulse_d(b,t));%sinc((t-b(1)/2)./b(4)).*b(3).*sin(2*pi*b(2)*t);%
+wf_mirror_pulse_2 = @(b,t) ampfun([132.62, 0.5283],abs(wf_mirror_pulse_d(b,t)).^2)/2e3.*sin(2*pi*b(2)*t).*sign(wf_mirror_pulse_d(b,t));%sinc((t-b(1)/2)./b(4)).*b(3).*sin(2*pi*b(2)*t);%
 
 %%% 50:50 Beam Splitter pulse
 %--------------------------------------------------------------------------
@@ -120,6 +121,31 @@ K_Bragg_src_f_2=1.33*ampfun([132.62, 0.5283],P_Bragg_f)/2e3;%0.08;%[60.117, 0.56
 Gs_mod_Bragg_src_f_1=0.9*T_Bragg_src_f/4.2E-6*sqrt(2)*sqrt(5.63806937736142e-01);%~0.7 0.95
 Gs_mod_Bragg_src_f_2=0.9*T_Bragg_src_f/4.2E-6*sqrt(2)*sqrt(5.28341254744861e-01);
 t0_Bragg_src_f=nan;
+
+%%% Bragg splitting: |k=0> |--> |k=+1K> + |k=0> + |k=-1K>
+dF_Bragg_1= 42.48e3/2;
+dF_Bragg_2= 42.48e3/2;
+f1_Bragg_sym_f=f0_AOM-dF_Bragg_1;
+f2_Bragg_sym_f=f0_AOM+dF_Bragg_2;
+
+T_Bragg_sym_f=500e-6;
+
+K_Bragg_sym_f_1= 0.6;
+K_Bragg_sym_f_2= 0.6; 
+
+Gs_mod_Bragg_sym_f_1=40e-6;
+Gs_mod_Bragg_sym_f_2=40e-6;
+t0_Bragg_sym_f=nan;
+
+phi1_Bragg = 0;
+phi2_Bragg = 0;
+
+wf_mirror_pulse = @(b,t) exp(-((t-b(1)/2)./b(4)).^2).*b(3);%
+
+wf_bragg_sym_pulse = @(b,t) sinc((t-b(1)/2)./b(4)).*b(3);%.*cos(pi*(t-b(1)/2)/(b(1))).^2;
+wf_bragg_sym_pulse_1 = @(b,t) wf_mirror_pulse(b,t).*sin(2*pi.*(b(2)-b(6).*t).*t+b(5));
+wf_bragg_sym_pulse_2 = @(b,t) wf_mirror_pulse(b,t).*sin(2*pi.*(b(2)-b(6).*t).*t+b(5));
+
 
 %%% Bragg splitting: |k=0> |--> |k=0> + |k=-1K>
 dF_Bragg_1=0.06e6;
@@ -156,7 +182,12 @@ dur_PAL = cycles/freq;
 
 %% Iteration through parameters
 Amp_sinc_Bragg_mirror_vec = flip(sqrt([0 0.25 10 19]));
-Amp_sinc_Bragg_mirror = Amp_sinc_Bragg_mirror_vec(marker);
+Amp_sinc_Bragg_mirror = Amp_sinc_Bragg_mirror_vec(1);%marker
+
+Gs_mod_Bragg_sym_vec = [0:5:500];
+
+Gs_mod_Bragg_sym_f_1= Gs_mod_Bragg_sym_vec(marker) * 1e-6;
+Gs_mod_Bragg_sym_f_2= Gs_mod_Bragg_sym_vec(marker) * 1e-6;
 
 
 %% Waveform generation
@@ -208,6 +239,19 @@ for ii = 1:length(sequence) %run through each segment
                 {{'const',0, srate_all,T_delay_mix}},...
                 {{'sine',    f2_Bragg_src_b       ,phi2,          K_Bragg_src_b,       Gs_mod_Bragg_src_b, srate_all,   T_Bragg_src_b}},...
                 ];
+
+        case 'k=+1,0,-1'
+            %%% Full Halo
+            ch1_raw=[ch1_raw(:)',...
+                {{'const',0, srate_all,T_delay_mix}},...
+                {{'arb',   wf_bragg_sym_pulse_1,  srate_all,  T_Bragg_sym_f,  f1_Bragg_sym_f,  K_Bragg_sym_f_1,  Gs_mod_Bragg_sym_f_1, phi1_Bragg,0}}
+                ];
+            
+            ch2_raw=[ch2_raw(:)',...
+                {{'const',0, srate_all,T_delay_mix}},...
+                {{'arb',   wf_bragg_sym_pulse_2,  srate_all,  T_Bragg_sym_f,  f2_Bragg_sym_f,  K_Bragg_sym_f_2,  Gs_mod_Bragg_sym_f_2, phi2_Bragg,0}}
+                ];
+
         case 'mirror'
             %%% Mirror pulse
             ch1_raw=[ch1_raw(:)',...
@@ -248,6 +292,7 @@ path_param_log = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\log
 ch1_waveform_str = '';
 ch2_waveform_str = '';
 addpath('C:\Users\BEC Machine\Documents\MATLAB\Momentum_Bells_test\dev')
+addpath('C:\Users\BEC Machine\cloudstor\PROJECTS\keysight-33600a\ch_to_waveforms.m')
 for waveforms = 1:numel(ch1_raw)
     if waveforms>1
         ch1_waveform_str = [ch1_waveform_str,', '];
@@ -266,8 +311,9 @@ ch2_waveform_str = replace(ch2_waveform_str,"'",'');
 
 %% Interface
 
-addpath('C:\Users\BEC Machine\cloudstor\MATLAB\keysight-33600a')
-% shot_info = shots.(shot_sequence{marker});
+addpath('C:\Users\BEC Machine\OneDrive - Australian National University\PROJECTS\keysight-33600a')%C:\Users\BEC Machine\OneDrive - Australian National University\PROJECTS\keysight-33600a\WaveformGenMain.m
+%C:\Users\BEC Machine\cloudstor\MATLAB\keysight-33600a
+% shot_info = shots.(shot_sequence{1});
 % new_path=shot_info.LVfile;
 % Send waveforms
 chanels_dev1={ch_to_waveforms(ch1_raw),ch_to_waveforms(ch2_raw)};

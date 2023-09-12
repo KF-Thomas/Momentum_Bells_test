@@ -7,7 +7,7 @@ addpath(genpath(core_folder));
 % BEGIN USER VAR-------------------------------------------------
 % anal_opts.tdc_import.dir='Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20210727_bragg_amp_scan_new_trap_2';
 % 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20210724_bragg_amp_scan_new_trap';
-anal_opts.tdc_import.dir='Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
+anal_opts.tdc_import.dir='Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20230909_bragg_beams_k=0,-1_Pulse_length_scan\'%'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
 % 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20210726_bragg_width_scan_new_trap_3';
 % 
 
@@ -38,8 +38,8 @@ anal_opts.tdc_import.txylim=[tlim;tmp_xlim;tmp_ylim];
 anal_opts.global.fall_time=0.417;
 anal_opts.global.qe=0.09;
 
-anal_opts.trig_dld=20.3;
-anal_opts.dld_aquire=2.3;
+anal_opts.trig_dld=20.5;
+anal_opts.dld_aquire=1.4;
 anal_opts.trig_ai_in=20;
 
 
@@ -49,7 +49,7 @@ anal_opts.trig_ai_in=20;
 % anal_opts.osc_fit.tlim=[0.86,1.08];
 % anal_opts.osc_fit.dimesion=2; %Sel ect coordinate to bin. 1=X, 2=Y.
 
-anal_opts.history.shots=50;
+anal_opts.history.shots=500;
 
 hebec_constants
 const.fall_distance = 8.52925545e-01;
