@@ -49,7 +49,7 @@ anal_opts.trig_ai_in=20;
 % anal_opts.osc_fit.tlim=[0.86,1.08];
 % anal_opts.osc_fit.dimesion=2; %Sel ect coordinate to bin. 1=X, 2=Y.
 
-anal_opts.history.shots=500;
+anal_opts.history.shots=510;
 
 hebec_constants
 const.fall_distance = 8.52925545e-01;
@@ -78,9 +78,10 @@ anal_out.dir=[fullfile(anal_opts.tdc_import.dir,'out','monitor'),filesep];
 if (exist(anal_out.dir, 'dir') == 0), mkdir(anal_out.dir); end
 anal_opts.global.out_dir=anal_out.dir;
 
-frac_opts.num_lim = 1e3;
+frac_opts.num_lim = 0.4e3;
 frac_opts.transfer_state = 'momentum';
 frac_opts.bounds = [-0.03, 0.03; -0.03, 0.03];%spacecial bounds
+frac_opts.average_mask = [1:5:506]%shots;
 
 %%
 mag_history.trans_frac=[];
@@ -127,10 +128,10 @@ while true
         try
             batch_data.mcp_tdc=import_mcp_tdc_data(anal_opts.tdc_import);
             %just to give me a logical vector
-            batch_data.mcp_tdc.all_ok=batch_data.mcp_tdc.num_counts>1e3;
+            batch_data.mcp_tdc.all_ok=batch_data.mcp_tdc.num_counts>0.4e3;
             batch_data.mcp_tdc.all_ok(batch_data.mcp_tdc.all_ok)=...
                 cellfun(@(x) x(end,1),batch_data.mcp_tdc.counts_txy(batch_data.mcp_tdc.all_ok))>anal_opts.dld_aquire*0.8;
-            if sum(batch_data.mcp_tdc.all_ok)==0
+            if sum(batch_data.mcp_tdc.all_ok)==00
                 fprintf('waiting for file to be writen\n')
                 pause(1.0)
             else
@@ -239,3 +240,36 @@ while true
     end
     
 end
+
+%% Plot taking shot average
+
+mag_history.trans_frac_avg = [];
+
+for ii = 1:(numel(frac_opts.average_mask)-1)
+    shot_average_mask = mag_history.shot_num(:) >= frac_opts.average_mask(ii) & mag_history.shot_num(:) < frac_opts.average_mask(ii+1);
+    mag_history.trans_frac_avg = [mag_history.trans_frac_avg ; mean(mag_history.trans_frac(shot_average_mask,1:3))]
+end
+
+stfig('Momentum Transfer Fraction History (Averaged)');
+plot(frac_opts.average_mask(1:end-1),mag_history.trans_frac_avg(:,1:3)','LineWidth',1.5)
+grid on
+hold on
+h=gca;
+grid on    % turn on major grid lines
+grid minor % turn on minor grid lines
+% Set limits and grid spacing separately for the two directions:
+% Must set major grid line properties for both directions simultaneously:
+h.GridLineStyle='-'; % the default is some dotted pattern, I prefer solid
+h.GridAlpha=1;  % the default is partially transparent
+h.GridColor=[0,0,0]; % here's the color for the major grid lines
+% Idem for minor grid line properties:
+h.MinorGridLineStyle='-';
+h.MinorGridAlpha=0.1;
+h.MinorGridColor=[0,0,0]; % here's the color for the minor grid lines
+xlabel('Pulse duration (1e-6)')
+ylabel('Tranfer Fraction')
+legend('$k=+1$','$k=0$','$k=-1$')
+scatter(frac_opts.average_mask(1:end-1),...
+mag_history.trans_frac_avg(:,1:3)',...
+'LineWidth',1.5)
+
