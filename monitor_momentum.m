@@ -7,7 +7,8 @@ addpath(genpath(core_folder));
 % BEGIN USER VAR-------------------------------------------------
 % anal_opts.tdc_import.dir='Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20210727_bragg_amp_scan_new_trap_2';
 % 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20210724_bragg_amp_scan_new_trap';
-anal_opts.tdc_import.dir='Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20230909_bragg_beams_k=0,-1_Pulse_length_scan\'%'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
+% anal_opts.tdc_import.dir='Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20230909_bragg_beams_k=0,-1_Pulse_length_scan\'%'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
+anal_opts.tdc_import.dir = '/Users/tonyyan/Library/CloudStorage/OneDrive-AustralianNationalUniversity/SharePoint - He_ BEC-DFG Lab Jumbo Archives/temp working data/20230909_bragg_beams_k=0,-1_Pulse_length_scan';
 % 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20210726_bragg_width_scan_new_trap_3';
 % 
 
