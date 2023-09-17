@@ -7,7 +7,7 @@ addpath(genpath(core_folder));
 % BEGIN USER VAR-------------------------------------------------
 % anal_opts.tdc_import.dir='Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20210727_bragg_amp_scan_new_trap_2';
 % 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20210724_bragg_amp_scan_new_trap';
-anal_opts.tdc_import.dir='Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20230909_bragg_beams_k=0,-1_Pulse_length_scan\'%'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
+anal_opts.tdc_import.dir='Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\'%'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
 % 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20210726_bragg_width_scan_new_trap_3';
 % 
 
@@ -49,7 +49,7 @@ anal_opts.trig_ai_in=20;
 % anal_opts.osc_fit.tlim=[0.86,1.08];
 % anal_opts.osc_fit.dimesion=2; %Sel ect coordinate to bin. 1=X, 2=Y.
 
-anal_opts.history.shots=510;
+anal_opts.history.shots=100;
 
 hebec_constants
 const.fall_distance = 8.52925545e-01;
@@ -78,10 +78,10 @@ anal_out.dir=[fullfile(anal_opts.tdc_import.dir,'out','monitor'),filesep];
 if (exist(anal_out.dir, 'dir') == 0), mkdir(anal_out.dir); end
 anal_opts.global.out_dir=anal_out.dir;
 
-frac_opts.num_lim = 0.4e3;
+frac_opts.num_lim = 120;
 frac_opts.transfer_state = 'momentum';
 frac_opts.bounds = [-0.03, 0.03; -0.03, 0.03];%spacecial bounds
-frac_opts.average_mask = [1:5:506]%shots;
+frac_opts.average_mask = [1:5:146]%shots;
 
 %%
 mag_history.trans_frac=[];
@@ -128,7 +128,7 @@ while true
         try
             batch_data.mcp_tdc=import_mcp_tdc_data(anal_opts.tdc_import);
             %just to give me a logical vector
-            batch_data.mcp_tdc.all_ok=batch_data.mcp_tdc.num_counts>0.4e3;
+            batch_data.mcp_tdc.all_ok=batch_data.mcp_tdc.num_counts>120;
             batch_data.mcp_tdc.all_ok(batch_data.mcp_tdc.all_ok)=...
                 cellfun(@(x) x(end,1),batch_data.mcp_tdc.counts_txy(batch_data.mcp_tdc.all_ok))>anal_opts.dld_aquire*0.8;
             if sum(batch_data.mcp_tdc.all_ok)==00
@@ -252,8 +252,12 @@ end
 
 stfig('Momentum Transfer Fraction History (Averaged)');
 plot(frac_opts.average_mask(1:end-1),mag_history.trans_frac_avg(:,1:3)','LineWidth',1.5)
+
 grid on
 hold on
+scatter(frac_opts.average_mask(1:end-1),...
+mag_history.trans_frac_avg(:,1:3)',...
+'LineWidth',1.5)
 h=gca;
 grid on    % turn on major grid lines
 grid minor % turn on minor grid lines
