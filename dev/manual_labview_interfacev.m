@@ -17,15 +17,15 @@
 
 update_keysight = 1;
 
-num_points = 131;
-shots_per_point = 10;
+num_points = 22;
+shots_per_point = 3;
 
 marker = mod(floor((i-1)/shots_per_point),shots_per_point*num_points)+1; %Counts from 1 to num shots before setpt update
 
 
 sequence = {'k=+1,0,-1',}; %Construct desired experimental sequenc from sequences above
 
-new_path='c:\remote\settings202325Sep221411.xml';%c:\remote\settings202001Sep155855.xml
+new_path='c:\remote\settings202302Oct150134.xml';%c:\remote\settings202001Sep155855.xml
 
 %% Keysight settings
 % General settings
@@ -123,10 +123,10 @@ Gs_mod_Bragg_src_f_2=0.9*T_Bragg_src_f/4.2E-6*sqrt(2)*sqrt(5.28341254744861e-01)
 t0_Bragg_src_f=nan;
 
 %%% Bragg splitting: |k=0> |--> |k=+1K> + |k=0> + |k=-1K>
-dF_Bragg_1= (3.062-0.085+0.01)*1e6/4;%42.5e3/2;%41.96e3/2;
-dF_Bragg_2= (3.062-0.085+0.01)*1e6/4;%42.5e3/2;%41.96e3/2;
-random_manual_delta = -0.01;%0.01;
-dF_Bragg_sym = (1.730-0.085+random_manual_delta)*1e6/4;
+% dF_Bragg_1= (3.062-0.085+0.01)*1e6/4;%42.5e3/2;%41.96e3/2;
+% dF_Bragg_2= (3.062-0.085+0.01)*1e6/4;%42.5e3/2;%41.96e3/2;
+random_manual_delta = 0.0;%0.01;
+dF_Bragg_sym = (0.7-0.085+random_manual_delta)*1e6/4;
 dF_Bragg_1 = dF_Bragg_sym;
 dF_Bragg_2 = dF_Bragg_sym;
 f1_Bragg_sym_f=f0_AOM-dF_Bragg_1;
@@ -139,8 +139,8 @@ T_Bragg_sym_f=200e-6;
 K_Bragg_sym_f_1= 0.6;%0.6
 K_Bragg_sym_f_2= 0.6;%0.6
 
-Gs_mod_Bragg_sym_f_1=6e-6;
-Gs_mod_Bragg_sym_f_2=6e-6;
+Gs_mod_Bragg_sym_f_1=4.5e-6;
+Gs_mod_Bragg_sym_f_2=4.5e-6;
 t0_Bragg_sym_f=nan;
 
 phi1_Bragg = 0;
@@ -191,13 +191,22 @@ Amp_sinc_Bragg_mirror_vec = flip(sqrt([0 0.25 10 19]));
 Amp_sinc_Bragg_mirror = Amp_sinc_Bragg_mirror_vec(1);%marker
 
 % dF_Bragg_vec = [1.5:0.01:1.8];%[0.5:0.05:3];
-Gs_mod_Bragg_sym_vec = [0:0.3:39];%[0:0.5:30, 31:1:120];%[0:2:50];%[0:0.1:20, 20.2:0.2:50];%[0:0.5:50];
+%Gs_mod_Bragg_sym_vec = [0:0.5:6];%[0:0.5:30, 31:1:120];%[0:2:50];%[0:0.1:20, 20.2:0.2:50];%[0:0.5:50];
 
-Gs_mod_Bragg_sym_f_1= Gs_mod_Bragg_sym_vec(marker) * 1e-6;
-Gs_mod_Bragg_sym_f_2= Gs_mod_Bragg_sym_vec(marker) * 1e-6;
+%Gs_mod_Bragg_sym_f_1= Gs_mod_Bragg_sym_vec(marker) * 1e-6;
+%Gs_mod_Bragg_sym_f_2= Gs_mod_Bragg_sym_vec(marker) * 1e-6;
 
 % f1_Bragg_sym_f=f0_AOM-dF_Bragg_vec(marker)*1e6;
 % f2_Bragg_sym_f=f0_AOM+dF_Bragg_vec(marker)*1e6;
+
+df_vec = [3.3:0.01:3.51];
+
+dF_Bragg_sym = (df_vec(marker)-0.085)*1e6/4;
+
+dF_Bragg_1 = dF_Bragg_sym;
+dF_Bragg_2 = dF_Bragg_sym;
+f1_Bragg_sym_f=f0_AOM-dF_Bragg_1;
+f2_Bragg_sym_f=f0_AOM+dF_Bragg_2;
 
 
 %% Waveform generation

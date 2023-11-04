@@ -39,7 +39,7 @@ anal_opts.global.fall_time=0.417;
 anal_opts.global.qe=0.09;
 
 anal_opts.trig_dld=20.5;
-anal_opts.dld_aquire=1.4;
+anal_opts.dld_aquire=1.1;
 anal_opts.trig_ai_in=20;
 
 
@@ -78,10 +78,10 @@ anal_out.dir=[fullfile(anal_opts.tdc_import.dir,'out','monitor'),filesep];
 if (exist(anal_out.dir, 'dir') == 0), mkdir(anal_out.dir); end
 anal_opts.global.out_dir=anal_out.dir;
 
-frac_opts.num_lim = 120;
+frac_opts.num_lim = 50;
 frac_opts.transfer_state = 'momentum';
 frac_opts.bounds = [-0.03, 0.03; -0.03, 0.03];%spacecial bounds
-frac_opts.average_mask = [1:5:146]%shots;
+frac_opts.average_mask = [1:3:109]%shots;
 
 %%
 mag_history.trans_frac=[];
@@ -128,14 +128,15 @@ while true
         try
             batch_data.mcp_tdc=import_mcp_tdc_data(anal_opts.tdc_import);
             %just to give me a logical vector
-            batch_data.mcp_tdc.all_ok=batch_data.mcp_tdc.num_counts>120;
+            batch_data.mcp_tdc.all_ok=batch_data.mcp_tdc.num_counts>50;
             batch_data.mcp_tdc.all_ok(batch_data.mcp_tdc.all_ok)=...
-                cellfun(@(x) x(end,1),batch_data.mcp_tdc.counts_txy(batch_data.mcp_tdc.all_ok))>anal_opts.dld_aquire*0.8;
+                cellfun(@(x) x(end,1),batch_data.mcp_tdc.counts_txy(batch_data.mcp_tdc.all_ok))>anal_opts.dld_aquire*1;
             if sum(batch_data.mcp_tdc.all_ok)==00
                 fprintf('waiting for file to be writen\n')
                 pause(1.0)
             else
-                out_frac = fraction_calc(batch_data.mcp_tdc,frac_opts);
+
+                out_frac = fraction_calc(batch_data.mcp_tdc,frac_opts)
 %                 cost = momentum_transfer_cost(out_frac.shot_num',anal_opts.tdc_import.dir);
                 
                 mag_history.all_shots=[mag_history.all_shots,batch_data.mcp_tdc.shot_num];
@@ -244,19 +245,25 @@ end
 %% Plot taking shot average
 
 mag_history.trans_frac_avg = [];
+mag_history.trans_frac_std = [];
 
 for ii = 1:(numel(frac_opts.average_mask)-1)
     shot_average_mask = mag_history.shot_num(:) >= frac_opts.average_mask(ii) & mag_history.shot_num(:) < frac_opts.average_mask(ii+1);
     mag_history.trans_frac_avg = [mag_history.trans_frac_avg ; mean(mag_history.trans_frac(shot_average_mask,1:3))]
+    mag_history.trans_frac_std = [mag_history.trans_frac_std ; std(mag_history.trans_frac(shot_average_mask,1:3))]
 end
 
+pulse_step = [0:0.5:20];
+len_avg_shots = numel(frac_opts.average_mask(1:end-1)); 
 stfig('Momentum Transfer Fraction History (Averaged)');
-plot(frac_opts.average_mask(1:end-1),mag_history.trans_frac_avg(:,1:3)','LineWidth',1.5)
-
 grid on
 hold on
-scatter(frac_opts.average_mask(1:end-1),...
-mag_history.trans_frac_avg(:,1:3)',...
+errorbar(pulse_step(1:len_avg_shots),mag_history.trans_frac_avg(:,1)',mag_history.trans_frac_std(:,1)','LineWidth',1.5)
+errorbar(pulse_step(1:len_avg_shots),mag_history.trans_frac_avg(:,2)',mag_history.trans_frac_std(:,2)','LineWidth',1.5)
+%errorbar(pulse_step(1:len_avg_shots),mag_history.trans_frac_avg(:,3)',mag_history.trans_frac_std(:,3)','LineWidth',1.5)
+
+scatter(pulse_step(1:len_avg_shots),...
+mag_history.trans_frac_avg(:,1:2)',...
 'LineWidth',1.5)
 h=gca;
 grid on    % turn on major grid lines
@@ -273,7 +280,7 @@ h.MinorGridColor=[0,0,0]; % here's the color for the minor grid lines
 xlabel('Pulse duration (1e-6)')
 ylabel('Tranfer Fraction')
 legend('$k=+1$','$k=0$','$k=-1$')
-scatter(frac_opts.average_mask(1:end-1),...
-mag_history.trans_frac_avg(:,1:3)',...
-'LineWidth',1.5)
+% scatter(pulse_step(1:len_avg_shots),...
+% mag_history.trans_frac_avg(:,1:3)',...
+% 'LineWidth',1.5)
 
