@@ -1,4 +1,37 @@
 
+if ~exist("halo", "var")
+    error("Run halo_analysis.m first (need variable halo)");
+end
+
+% Number of azimuthal zones (always have two elevation zones, so total bins Nz = 2*zones_azm) 
+zones_azm = 4;
+% How much to rotate the halo 
+shift_around = 0.0*pi;
+% Randomly remove this percentage of data (for checking algorithm reasonable)
+random_throw_away_perc = 0.0;
+% Nz = number of bins to check 
+Nz_test = [(2:2:50) 60:10:180]'; 
+
+
+% halo_counts_data = halo{1}.counts_vel_unmasked'; % this currently won't work
+halo_counts_data = halo{1}.counts_vel';
+
+% Plot for zones_azm and its bins pairing
+squeezing_new(halo_counts_data,true,zones_azm,0,shift_around);
+
+% Scan through Nz and do a rotating halo average
+Nzp_results = squeezing_zones_phav(halo_counts_data, Nz_test, random_throw_away_perc);
+squeezing_zones_plot(Nzp_results, 213) 
+
+% Check counts between 5-20, 20-40
+count_ranges = [5,20,40];
+squeezing_zones_mode(halo_counts_data, true, Nz_test, count_ranges, random_throw_away_perc);
+
+
+
+%%
+if exist("run_legacy_tony_code", "var")
+if run_legacy_tony_code == true
 %%
 % WARNING: use "Run Section" otherwise the output will make no sense... or a mess
 
@@ -39,17 +72,16 @@ sim_hits = [15 3];
 sim_detector_noise = [0, 0.001];
 % sim_detector_noise = [0, 0.01];
 % sim_detector_noise = [0, 0];
-sim_cut_pi_ang = 0.0*pi;
+sim_cut_pi_ang = 1.5*pi;
 % sim_cut_pi_ang = 1 * pi;
 % sim_cut_pi_ang = 0.25 * pi;
 % sim_cut_pi_ang = 0;
 sim_cut_pi_per = 0.9;
-detector_noise = [0, 0*0.065*0.5];
 
 
 halo_sim = sim_halo_exp_samples(sim_radius, sim_shots, sim_hits, sim_detector_noise, sim_cut_pi_ang, sim_cut_pi_per);
 halo_counts_data = halo_sim.cartesian';
-
+detector_noise = [0, 0.065*0.5];
 
 % data_folder_backup = data_folder;
 data_folder = 'sim_halo_exp_samples_justcut_15';
@@ -62,13 +94,7 @@ halo_reanalysis(halo_sim.cartesian);
 %% 
 %% Calculate stuff
 
-zones_azm = 4;
-shift_around = 0.0*pi;
-% random_throw_away_perc = 0.1;
-random_throw_away_perc = 0.0;
-% fprintf(""
 
-%%
 if ~exist("Nz_results", "var")
     fprintf("\n    Calculating squeezing_zones ... ");
     Nz_test = [(2:2:50) 60:10:180]'; % faster
@@ -351,8 +377,8 @@ end
 
 
 
-
-
+end 
+end 
 
 
 

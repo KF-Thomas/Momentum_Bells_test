@@ -6,22 +6,32 @@ core_folder = fullfile(fileparts(this_folder), 'Core_BEC_Analysis\');
 addpath(genpath(core_folder));
 set(groot, 'DefaultTextInterpreter', 'latex')
 %% Import directory
-opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
+% opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
 % opts.data_root = 'Z:\EXPERIMENT-DATA\2020_Momentum_Bells\';
 % opts.data_root = 'C:\Users\kieran\Documents\LOCAL-DATA\';
 % opts.data_root = 'C:\Users\BEC Machine\Documents\DATA_BACKUP\';
+% opts.data_root = '/Users/tonyyan/Documents/_ANU/_He_BEC_Group/data_root_copy_meh';
+opts.data_root = '/Users/tonyyan/Library/CloudStorage/OneDrive-AustralianNationalUniversity/_He_BEC_data_root_copy';
 
-data_folder = '20230209_mag_trans_then_mj=0_k=0-1,_halo_new_plate';%'k=0,-1,-2_halos_data\weak trap\20210302_k=0,-1,-2_halo_data_4';%'20230202_single_halo_8 percent_new_plate';%'20221212_new_plates_halo_test_4';%'20230130_new_plates_halo_3_halos';%20221212_new_plates_halo_test_4
+
+% data_folder = '';%'2023130_new_plates_halo_3_halos';%20221212_new_plates_halo_test_4
+% data_folder = '20221212_new_plates_halo_test_34_combined_notHe34_just_test_34';
+% data_folder = '20221212_new_plates_halo_test_4';
+% data_folder = '20230130_new_plates_halo_3_halos';
+% data_folder = '20230201_single_helo_new_plate';
+data_folder = '20230202_single_helo_8 percent_new_plate';
+% data_folder = '20230208_new_plate';
+% data_folder = '20230208_early_push_k=0,-1_halo_new_plate';
 
 opts.import.dir = fullfile(opts.data_root, data_folder);
-opts.import.force_reimport = false;
+opts.import.force_reimport = true;
 opts.import.force_cache_load = ~opts.import.force_reimport;
 
 % opts.import.shot_num = 313:625; %can select specific shots to import
 
 %% Import parameters
-tmp_xlim=[-35e-3, 35e-3];     %tight XY lims to eliminate hot spot from destroying pulse widths
-tmp_ylim=[-35e-3, 35e-3];
+tmp_xlim=[-35, 35]*0.001;     %tight XY lims to eliminate hot spot from destroying pulse widths
+tmp_ylim=[-35, 35]*0.001;
 tlim=[0,4];
 
 opts.num_lim = 1e3;%0.5e3;% %minimum atom number 1.5e3
@@ -30,14 +40,15 @@ opts.halo_N_lim_upper = Inf;%2;%10;%0;% %minimum allowed number in halo 10
 y_cut = 11e-3;
 
 z_limits = [-0.9,0.9];%[-0.3,0.3];%[-0.3,0.3];%[-0.4,0.4];%[-0.68,0.68];%[-0.15,0.15];%[-0.15,0.15];%[-0.36,0.36];%
-radius_lim = [0.05,0.07];%[0.05,0.07];%[0.03,0.08];%[0.,1.17].*0.065;%[0.79,1.17].*0.065;%[0.61,1.26];%[0.89,1.11];%[0.89,1.16];%[0.9,1.05];%
+radius_lim = [0.058,0.072];%[0.05,0.07];%[0.03,0.08];%[0.,1.17].*0.065;%[0.79,1.17].*0.065;%[0.61,1.26];%[0.89,1.11];%[0.89,1.16];%[0.9,1.05];%
 
 ang_lim = 45;%35;%angular limit in degrees
 
 plot_dist = true; %do you want to see all the detailed stuff about the halo distributions
 opts.corr_center_check = false; %do you want a sceond check
 
-bec_bounds = {[3.849,3.857],[3.857,3.871],[3.871,3.883]}; %halo_8_percent: %{[3.8598,3.871],[3.871,3.8844]}; %{[3.849,3.857],[3.857,3.871],[3.871,3.883],[3.883,3.897]}; %{[3.874,3.884],[3.884,3.893]};%{[3.8598,3.871],[3.871,3.8844]};
+% bec_bounds = {[3.849,3.857],[3.857,3.871],[3.871,3.883],[3.883,3.897]};%{[3.874,3.884],[3.884,3.893]};%{[3.8598,3.871],[3.871,3.8844]};
+bec_bounds = {[3.8598,3.871],[3.871,3.8844]};
 t0_factor = 3.8772;
 
 do_bb = 1;%if you want to measure the back to back correlations
@@ -159,7 +170,7 @@ opts.cent.method = {'margin','average','average'};
 
 opts.cent.t_bounds = bec_bounds; %time bounds for the different momentum states k=-2,-1,0 respectively
 
-for ii = length(bec_bounds)-1
+for ii = 1:(length(bec_bounds)-1)
     
 
 % opts.cent.t_bounds = {[2.134,2.148],[2.148,2.161],[2.161,2.18],[2.13,2.2]};
@@ -214,7 +225,7 @@ opts.vel_conv.phi_correction = [0 0];
 
 
 % Loop over halos
-for ii = length(bec_bounds)-1
+for ii = 1:(length(bec_bounds)-1)
 opts.vel_conv.title = ['halo ', num2str(ii)];
 
 opts.vel_conv.bec_center.north = bec_masked_halo{ii}.centre_top;
@@ -238,7 +249,7 @@ bec_halo{ii} = struct_mask(bec_masked_halo{ii},halo_N_check);
 end
 %% Plot distribution
 if plot_dist
-for ii = length(bec_bounds)-1
+for ii = 1:(length(bec_bounds)-1)
 v_zxy = cell2mat(halo{ii}.counts_vel_norm);
 v_zxy_unnorm = cell2mat(halo{ii}.counts_vel);
 r_dist = sqrt(v_zxy(:,1).^2+v_zxy(:,2).^2+v_zxy(:,3).^2);
@@ -254,6 +265,7 @@ end
 r_hist=smooth_hist(r_dist,'sigma',0.0001);
 r_hist_un=smooth_hist(r_dist_unnorm,'sigma',0.0001);
 subplot(2,1,1)
+hold on
 plot(r_hist.bin.centers,r_hist.counts.smooth,'linewidth',1.5)
 xlabel('r')
 ylabel('Freq')
@@ -263,9 +275,9 @@ legend('top','btm')
 subplot(2,1,2)
 plot(r_hist_un.bin.centers,r_hist_un.counts.smooth,'linewidth',1.5)
 hold on
-ylimit = max(r_hist_un.counts.smooth);
-plot([0.130159/2 0.130159/2],[-0.1,ylimit.*2],'k-','linewidth',1.5)
-ylim([0 ylimit.*1.1])
+%ylimit = max(r_hist_un.counts.smooth);
+%plot([0.130159/2 0.130159/2],[-0.1,ylimit.*2],'k-','linewidth',1.5)
+%ylim([0 ylimit.*1.1])
 xlabel('r')
 ylabel('Freq')
 xlim([min(r_hist_un.bin.centers),...
@@ -277,9 +289,9 @@ clf
 plot_mask = rand(size(v_zxy,1),1)<0.65;
 scatter3(v_zxy(plot_mask,2),v_zxy(plot_mask,3),v_zxy(plot_mask,1),'.')
 axis equal
-xlabel('vx')
-ylabel('vy')
-zlabel('vz')
+xlabel('x')
+ylabel('y')
+zlabel('z')
 
 stfig(['radial density ',num2str(ii)]);
 clf
@@ -309,25 +321,3 @@ end
 %% Measure Correlations
 
 %% Measure Squeezing
-
-%plot options
-sqz_opts.plot_sqz_angle=1; %plot variance between bin pairs vs angle between them. Return naive QE estimate
-sqz_opts.plot_sqz_num_zones=1; %plot variance for un/correlated pairs vs number of zones. Return QE estimate from fit. This may take some time to calculate. 
-
-%data options
-%window counts
-sqz_opts.window_counts=1; %Only use shots with counts in range count_lims
-sqz_opts.count_lims=[15,60]; %acceptable range for counts
-
-%call squeezing
-%get QE estimate(s) as output
-squeezing(halo{1}.counts_vel',sqz_opts,1);
-
-%the squeezing code has two methods for calculating squeezing
-%the naive estimate is based on the average variance between correlated
-%(diametrically opposite) zones, which should be 1-QE. 
-%the fit estimate takes into account the probability that the correlated
-%partner of a particular count will land in the opposite zone, which
-%depends on the number of zones the halo is divided into. The variance
-%between zones is calculated for an array of zone numbers and the QE 
-%determined from fit parameters of the expected ditsribution.

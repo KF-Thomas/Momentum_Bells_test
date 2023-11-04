@@ -91,6 +91,15 @@ for this_idx = 1:num_shots % Loop over all shots
         & (v_zxy(:,2).^2+v_zxy(:,3).^2)>(opts_vel_conv.vxy_mask(1)).^2;
     v_zxy = v_zxy(logical(xy_rad_mask),:);
     end
+
+    if isfield(opts_vel_conv,'theta_mask')
+        [theta,rho,z] = cart2pol(v_zxy(:,2),v_zxy(:,3),v_zxy(:,1));
+        theta_mask = false(size(theta));
+        for jj = 1:size(opts_vel_conv.theta_mask,1)
+        theta_mask = theta_mask | (theta>opts_vel_conv.theta_mask(jj,1) & theta<opts_vel_conv.theta_mask(jj,2));
+        end
+        v_zxy = v_zxy(~theta_mask,:);
+    end
     
     ang_mask = abs(180/pi*atan(v_zxy(:,1)./sqrt(v_zxy(:,2).^2+v_zxy(:,3).^2)))<ang_lim;
     v_zxy = v_zxy(ang_mask,:);

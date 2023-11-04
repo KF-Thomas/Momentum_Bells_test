@@ -228,6 +228,7 @@ if plot_on
 
     figure(200);clf(200);
     figure(200);
+    set(figure(200), 'name', 'V_ij');
 
     errorbar(V_ij_ind(~V_ij_any_not_corr), V_ij(~V_ij_any_not_corr), V_ij_std(~V_ij_any_not_corr), ...
         '.', 'Color',[cb,.9],'CapSize',0); hold on;
@@ -264,6 +265,7 @@ if plot_on
 
     figure(201);clf(201);
     figure(201);
+    set(figure(201),'name','Correlated bins');
     assert(zones_elev==2, "below code only works with two elev zones! ");
     colors = [hsv(zones_total/2); zeros(zones_azm, 3)];
     for ie = zones_azm:zones_total

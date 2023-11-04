@@ -8,7 +8,7 @@ addpath(genpath(core_folder));
 set(groot, 'DefaultTextInterpreter', 'latex')
 %% Import directory
 opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
-%  opts.data_root = 'Z:\EXPERIMENT-DATA\2020_Momentum_Bells\';
+ opts.data_root = 'Z:\EXPERIMENT-DATA\2020_Momentum_Bells\pulse_characterisation\';%'Z:\EXPERIMENT-DATA\2020_Momentum_Bells\';
 % opts.data_root = 'C:\Users\BEC Machine\Documents\DATA_BACKUP\';
 % data_folder='20210727_k=0,-1_halo_mirror_tests\98_kHz_2';%1.227641917170454e-01
 % data_folder='20210728_k=0,-1_halo_splitter_tests\test_1';
@@ -57,11 +57,12 @@ opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
 % data_folder='20210218_bragg_pulses_at_1200_mus\splitter_3';
 % data_folder='20210312_bragg_scan\1200_mus_delay\8_111_kHz';
 % data_folder='20210310_bragg_pulse_test\800mus_mirror_v5';
-data_folder='';
+% data_folder='20230301_second_attempt_k=0,-1_mj=0_only_halo_Vq_2_Vsh_0.65';
+data_folder='20200901_k=0,-1_transfer_vs_amp\Pamp_16';%'20210201_bragg_pulse_testing\scan\amp_5_5';
 % data_folder='20211206_scaning_across_freq\norm_0_844_MHz';
 % data_folder='20211027_validating_bragg_pulses\bs_2';
 opts.import.dir = fullfile(opts.data_root, data_folder);
-opts.import.force_reimport = true;
+opts.import.force_reimport = false;
 opts.import.force_cache_load = ~opts.import.force_reimport;
 
 %validating first run
@@ -225,9 +226,9 @@ opts.cent.btm.sigma = [6.7e-5,16e-5,16e-5];%[8e-5,25e-5,25e-5];
 opts.cent.btm.method = {'margin','average','average'};
 
 % opts.cent.t_bounds = {[1.735,1.75],[1.75,1.763],[1.763,1.776],[1.73,1.779]};
-opts.cent.t_bounds = {[1.741,1.75],[1.75,1.763],[1.763,1.776],[1.73,1.779]};
+% opts.cent.t_bounds = {[1.741,1.75],[1.75,1.763],[1.763,1.776],[1.73,1.779]};
 % opts.cent.t_bounds = {[2.134,2.148],[2.148,2.161],[2.161,2.18],[2.13,2.2]};
-%  opts.cent.t_bounds = {[3.844,3.8598],[3.8598,3.871],[3.871,3.8844],[3.75,4]};%time bounds for the different momentum states
+ opts.cent.t_bounds = {[3.844,3.8598],[3.8598,3.871],[3.871,3.8844],[3.75,4]};%time bounds for the different momentum states
 % opts.cent.t_bounds = {[5.350,5.356],[5.361,5.367],[5.372,5.380],[5.34,5.39]};%time bounds for the different momentum states (for full evap settings)
 bec = halo_cent(data_masked,opts.cent);
 

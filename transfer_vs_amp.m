@@ -83,7 +83,7 @@ data_folders = {
 %     5,
 %                     ];
 
-opts.import.force_reimport = true;
+opts.import.force_reimport = false;
 opts.import.force_cache_load = ~opts.import.force_reimport;
 
 %% Import parameters
@@ -188,7 +188,7 @@ for folder_indx = 1:length(folder_indxs)
     opts.vel_conv.top.const.g0 = const.g0;
     opts.vel_conv.top.const.fall_distance = const.fall_distance;
     opts.vel_conv.top.v_thresh = 0.15; %maximum velocity radius
-    opts.vel_conv.top.v_mask=[0.89,1.11]; %bounds on radisu as multiple of radius value
+    opts.vel_conv.top.v_mask=[0.89,1.11].*0.065; %bounds on radisu as multiple of radius value
     opts.vel_conv.top.z_mask = [-0.68,0.68]; %in units of radius (standard [-0.76,0.76])
     opts.vel_conv.top.y_mask = [-1.9,1.9]; %in units of radius
     opts.vel_conv.top.center = [t0,x0,y0];%bec_masked_halo.centre_top;%ones(size(bec_masked_halo.centre_top,1),1).*[t0,x0,y0];%%bec_masked_halo.centre_top;%bec_masked_halo.centre_mid; %use the mid BEC as the zero momentum point
@@ -210,7 +210,7 @@ for folder_indx = 1:length(folder_indxs)
     opts.vel_conv.btm.const.g0 = const.g0;
     opts.vel_conv.btm.const.fall_distance = const.fall_distance;
     opts.vel_conv.btm.v_thresh = 0.15; %maximum velocity radius
-    opts.vel_conv.btm.v_mask=[0.89,1.11]; %bounds on radisu as multiple of radius value
+    opts.vel_conv.btm.v_mask=[0.89,1.11].*0.065; %bounds on radisu as multiple of radius value
     opts.vel_conv.btm.z_mask = [-0.68,0.68]; %in units of radius
     opts.vel_conv.btm.y_mask = [-1.9,1.9]; %in units of radius
     opts.vel_conv.btm.center = [t0,x0,y0];%bec_masked_halo.centre_top;%ones(size(bec_masked_halo.centre_top,1),1).*[t0,x0,y0];%,bec_masked_halo.centre_top; %use the mid BEC as the zero momentum point

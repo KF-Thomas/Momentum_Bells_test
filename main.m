@@ -11,7 +11,7 @@ opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
 % opts.data_root = 'C:\Users\kieran\Documents\LOCAL-DATA\';
 % opts.data_root = 'C:\Users\BEC Machine\Documents\DATA_BACKUP\';
 
-data_folder = '20221212_new_plates_halo_test_4';
+data_folder = '';%'20221212_new_plates_halo_test_4';
 % data_folder = '';%'20221102_new_plates_halo_test';
 
 % data_folder = 'full_interferometer\rarity-tapster\tighter_trap\20210412_k=0,-1,-2_rt_scan_4';
@@ -60,7 +60,7 @@ data_folder = '20221212_new_plates_halo_test_4';
 % data_folder = '20210305_rarity_tapster_k=0,-1,-2_scan_1200_mus_evap_0_8543';
 
 opts.import.dir = fullfile(opts.data_root, data_folder);
-opts.import.force_reimport = true;
+opts.import.force_reimport = false;
 opts.import.force_cache_load = ~opts.import.force_reimport;
 % opts.import.shot_num = 313:625; %can select specific shots to import
 %% Import parameters
@@ -70,13 +70,13 @@ tlim=[0,4];
 opts.import.txylim=[tlim;tmp_xlim;tmp_ylim];
 
 opts.num_lim = 1e3;%0.5e3;% %minimum atom number 1.5e3
-opts.halo_N_lim = -1;%2;%10;%0;% %minimum allowed number in halo 10
+opts.halo_N_lim = 2;%2;%10;%0;% %minimum allowed number in halo 10
 opts.halo_N_lim_upper = Inf;%2;%10;%0;% %minimum allowed number in halo 10
 y_cut = 11e-3;
 z_limits = [-0.9,0.9];%[-0.3,0.3];%[-0.3,0.3];%[-0.4,0.4];%[-0.68,0.68];%[-0.15,0.15];%[-0.15,0.15];%[-0.36,0.36];%
 radius_lim = [0.03,0.08];%[0.05,0.07];%[0.,1.17].*0.065;%[0.79,1.17].*0.065;%[0.61,1.26];%[0.89,1.11];%[0.89,1.16];%[0.9,1.05];%
 
-ang_lim = 45;%35;%angular limit in degrees
+ang_lim = 35;%35;%angular limit in degrees
 
 opts.plot_dist = true; %do you want to see all the detailed stuff about the halo distributions
 opts.corr_center_check = false; %do you want a sceond check
@@ -237,7 +237,7 @@ slosh_cut = ~(abs(bec.centre_mid(:,3))>y_cut);
 % num_masked(~num_check) = NaN;
 % num_outlier = isoutlier(num_masked);
 % ~num_outlier &
-is_shot_good = slosh_cut' & bec.centre_OK_top' & bec.centre_OK_mid';% & bec.centre_OK_btm'; & num_check
+is_shot_good = slosh_cut' & bec.centre_OK_top' & bec.centre_OK_mid' & bec.centre_OK_btm';% & num_check
 data_masked_halo = struct_mask(data_masked,is_shot_good);
 bec_masked_halo = struct_mask(bec,is_shot_good);
 
@@ -264,10 +264,11 @@ opts.vel_conv.top.title = 'top halo';
 opts.vel_conv.top.const.g0 = const.g0;
 opts.vel_conv.top.const.fall_distance = const.fall_distance;
 opts.vel_conv.top.v_thresh = 0.15; %maximum velocity radius
-opts.vel_conv.top.v_mask=[0.06,0.071];%radius_lim;%[0.31,1.56];%[0.89,1.11]; %[0.61,1.26];%bounds on radisu as multiple of radius value
+opts.vel_conv.top.v_mask=radius_lim;%[0.06,0.071];%radius_lim;%[0.31,1.56];%[0.89,1.11]; %[0.61,1.26];%bounds on radisu as multiple of radius value
 opts.vel_conv.top.z_mask = z_limits;%[-0.36,0.36];%[-0.65,0.65];%[-0.55,0.55];%[-0.68,0.68]; %[-0.68,0.68]; %in units of radius (standard [-0.76,0.76])
-opts.vel_conv.top.ang_lim = 30;%45;%ang_lim; %angular limits of the azimuthal angle
+opts.vel_conv.top.ang_lim = 20;%30;%45;%ang_lim; %angular limits of the azimuthal angle
 opts.vel_conv.top.y_mask = [-1.9,1.9];%[-0.8,0.8]; %in units of radius
+opts.vel_conv.top.theta_mask = [1,2;-2.6,-1.3];
 opts.vel_conv.top.center = [t0,x0,y0];%bec_masked_halo.centre_top;%ones(size(bec_masked_halo.centre_top,1),1).*[t0,x0,y0];%%bec_masked_halo.centre_top;%bec_masked_halo.centre_mid; %use the mid BEC as the zero momentum point
 
 opts.vel_conv.top.centering_correction = [0           0           0].*0.5e-3;%[0.60063           0           0].*0.5e-3;%[-0.40102     0.39517     0.40242].*0.5e-3;%[0 0 0];%[0.95943        0.62    -0.39765].*0.5e-3;%[-0.2223,0.5662,-0.8083].*0.5e-3;%[0,0,0]; %[-0.73,0.822,-1.209].*0.5e-3;%[-0.96226,0.788847,-1.11].*0.5e-3;%[-0.6519,0.7836,-1.167].*0.5e-3;%[0,0,0]; %[0.677,0.9842,-1.139].*0.5e-3;%[0,0,0]; %;[3.145e-1,1.313,-1.1705].*0.5e-3;%[0,0,0]; %[0,0,0]; %correctoin shift to the centering in m/s
@@ -299,7 +300,10 @@ opts.vel_conv.btm.v_mask=radius_lim;%[0.61,1.26];%[0.31,1.56];%[0.89,1.11]; %[0.
 opts.vel_conv.btm.z_mask = z_limits;%[-0.36,0.36];%[-0.65,0.65];%[-0.55,0.55];%[-0.68,0.68]; %[-0.68,0.68]; %in units of radius
 opts.vel_conv.btm.ang_lim = ang_lim; %angular limits of the azimuthal angle
 opts.vel_conv.btm.y_mask = [-1.9,1.9];%[-0.8,0.8]; %in units of radius
+% opts_vel_conv.theta_mask
+
 opts.vel_conv.btm.center = [t0,x0,y0];%bec_masked_halo.centre_top;%ones(size(bec_masked_halo.centre_top,1),1).*[t0,x0,y0];%,bec_masked_halo.centre_top; %use the mid BEC as the zero momentum point
+
 
 opts.vel_conv.btm.centering_correction = [0 0 0].*0.5e-3;%[2.3195      1.2916     -1.5342].*0.5e-3;%[2.1338      2.3395     -1.3643].*0.5e-3;%[-0.1733,1.075,-0.9288].*0.5e-3; %[0,0,0].*0.5e-3;%[-0.1733,1.075,-0.9288].*0.5e-3; %[0.1169,1.606,-1.438].*0.5e-3;%[[0.205,1.7893,-1.4207].*0.5e-3;%[0,0,0]; %[-0.452,1.76,-1.561].*0.5e-3;%[-0.1762,1.6035,-1.029].*0.5e-3;%[0,1.73,-1.45].*0.5e-3; %[-2,-2,1.5].*-0.5e-3; %correctoin shift to the centering in m/s
 %[1.02 0.681 -1.1]
@@ -353,7 +357,7 @@ global_corrs_opts.plots = true;
 global_corrs_opts.fit = false;%true;
 global_corrs_opts.calc_err = false;
 
-global_corrs_opts.delta_kd = [3e-3,3e-3,3e-3];%[5e-3,5e-3,5e-3];%[5e-3,3e-3,3e-3];% volume widths in dimensions z x y used to calculate correlations
+global_corrs_opts.delta_kd = [3e-3*10000,3e-3,3e-3*1000];%[5e-3,5e-3,5e-3];%[5e-3,3e-3,3e-3];% volume widths in dimensions z x y used to calculate correlations
 
 corrs = global_corrs(top_halo,bottom_halo,global_corrs_opts);
 
