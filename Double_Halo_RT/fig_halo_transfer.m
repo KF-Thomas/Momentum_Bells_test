@@ -19,7 +19,7 @@ opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
 % data_folder = 'single_halo_data\20210316_k=-1,-2_various_tests\20210316_k=-1,-2_mirror';
 % data_folder_norm = 'single_halo_data\20210316_k=-1,-2_various_tests\20210316_k=-1,-2_test_1';
 
-data_folder='20221102_new_plates_halo_test';%'20211206_scaning_across_freq\bs_high_100_kHz_evap_0_844_MHz';%'20211206_scaning_across_freq\double_mirror_120_kHz_and_80_kHz';%
+data_folder= ''%'20221102_new_plates_halo_test';%'20211206_scaning_across_freq\bs_high_100_kHz_evap_0_844_MHz';%'20211206_scaning_across_freq\double_mirror_120_kHz_and_80_kHz';%
 % data_folder='20211206_scaning_across_freq\mr_98_kHZ';
 % data_folder='20211206_scaning_across_freq\changing_width_and_amp_2';
 data_folder_norm='20221102_new_plates_halo_test';%'20211206_scaning_across_freq\norm_0_844_MHz';
@@ -115,10 +115,11 @@ opts.cent.btm.min_threshold = [10,3,3].*1e3;%[16,3,3].*1e3;%[0,0,0].*1e3;%[16,13
 opts.cent.btm.sigma = [6.7e-5,16e-5,16e-5];%[8e-5,25e-5,25e-5];
 opts.cent.btm.method = {'margin','average','average'};
 
+opts.cent.t_bounds = {[2.123,2.134],[2.135,2.145],[2.148,2.158],[2.12,2.16]};
 % opts.cent.t_bounds = {[1.735,1.75],[1.75,1.763],[1.763,1.776],[1.73,1.779]};
 % opts.cent.t_bounds = {[1.741,1.75],[1.75,1.763],[1.763,1.776],[1.73,1.779]};
 % opts.cent.t_bounds = {[2.134,2.148],[2.148,2.161],[2.161,2.18],[2.13,2.2]};
- opts.cent.t_bounds = {[3.844,3.8598],[3.8598,3.871],[3.871,3.8844],[3.75,4]};%time bounds for the different momentum states
+% opts.cent.t_bounds = {[3.844,3.8598],[3.8598,3.871],[3.871,3.8844],[3.75,4]};%time bounds for the different momentum states
 % opts.cent.t_bounds = {[5.350,5.356],[5.361,5.367],[5.372,5.380],[5.34,5.39]};%time bounds for the different momentum states (for full evap settings)
 %%
 out = halo_func(data_folder,opts);

@@ -11,7 +11,8 @@ data_masked = struct_mask(data,is_shot_good);
 % time bounds we care about
 if strcmp(transfer_state,'mag')
 %     t_bounds = {[1.752,1.763],[1.763,1.776],[1.776,1.787],[1.75,1.79]};%time bounds for current tight trap settings
-     t_bounds = {[2.15,2.18],[2.182,2.221],[2.12,2.145],[2.1,2.25]};
+ %    t_bounds = {[2.15,2.18],[2.182,2.221],[2.12,2.145],[2.1,2.25]};
+     t_bounds = {[2.165,2.172],[2.1425,2.148],[2.128,2.135],[2.113,2.121],[2.11,2.18]};
  %   t_bounds = {[3.86,3.8725],[3.8725,3.881],[3.881,3.895],[3.75,4]}; %time bounds for the different magnetic states mj=+,1,0,-1 respectively
 elseif strcmp(transfer_state,'momentum')
  %   t_bounds = {[3.8598,3.871],[3.871,3.8844],[3.8844,3.8972],[3.75,4]};
@@ -24,9 +25,9 @@ elseif strcmp(transfer_state,'momentum')
 % t_bounds = {[3.295,3.305],[3.265,3.275],[3.33,3.24],[3.24,3.34]}; % Raman 2023 Sep 20? DLD trigger super weird
 %t_bounds = {[2.185,2.225],[2.15,2.18],[2.3,2.32],[2.13,2.33]};
     %t_bounds = {[2.135,2.150],[2.125,2.133],[2.110,2.120],[2.105,2.155]};%
-     t_bounds = {[2.785,2.798],[2.735,2.748],[2.715,2.725],[2.71,2.8]};
+     t_bounds = {[2.162,2.167],[2.148,2.158],[2.136,2.142],[2.123,2.130],[2.109,2.114],[2.108,2.17]};
 %     t_bounds = {[1.735,1.75],[1.753,1.759],[1.7665,1.772],[1.73,1.779]};%
-%     t_bounds = {[3.848,3.8598],[3.8598,3.871],[3.871,3.8844],[3.815,4]};%time bounds for the different momentum states k=+,1,0,-1 respectively
+ %    t_bounds = {[3.884,3.894],[3.871,3.881],[3.859,3.867],[3.855,3.9]};%time bounds for the different momentum states k=+,1,0,-1 respectively
 end
 % 
 % t_bounds = {[3.8274,3.8611],[3.8611,3.9],[3.9,3.9467]}; %time bounds for the different magnetic states mj=+,1,0,-1 respectively
@@ -41,9 +42,9 @@ for shot_idx = 1:num_shots
         Ns(shot_idx,t_idx) = size(trim_txy,1);
     end
 end
-Ntotals = sum(Ns(:,1:3),2);
+Ntotals = sum(Ns(:,1:4),2);
 out.fracs = Ns./Ntotals;
-out.fracs(:,4) = Ns(:,4)./sum(Ns(:,1:2),2);
+out.fracs(:,5) = Ns(:,5)./sum(Ns(:,1:3),2);
 out.shot_num = data_masked.shot_num;
 out.Ntotal = Ntotals;
 out.Ns = Ns;

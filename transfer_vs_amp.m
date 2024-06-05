@@ -12,11 +12,11 @@ set(groot, 'DefaultTextInterpreter', 'latex')
 %% Import directories
 % opts.data_root = 'Z:\EXPERIMENT-DATA\2020_Momentum_Bells\pulse_characterisation\';
 opts.data_root = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
-data_folder = '20230406,k=0,+1, p=0.3,T=var,f=18_delay=210_AB';%'20230406,k=0,+1, p=0.3,T=40,f=18_delay=210_AB';
+data_folder = '';%'20230406,k=0,+1, p=0.3,T=var,f=18_delay=210_AB';%'20230406,k=0,+1, p=0.3,T=40,f=18_delay=210_AB';
 log_folder = 'log_Phi.txt';
 log_lab_folder = 'log_LabviewMatlab.txt';
 data_folders = {
-% ''
+ ''
     %original scan
 %     '20200901_k=0,-1_transfer_vs_amp\Pamp_0_t2'
 %     '20200901_k=0,-1_transfer_vs_amp\Pamp_0_25_t2'

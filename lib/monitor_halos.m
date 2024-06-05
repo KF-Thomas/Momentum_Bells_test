@@ -3,13 +3,13 @@ addpath(genpath(this_folder));
 core_folder = fullfile(fileparts(this_folder), 'Core_BEC_Analysis\');
 addpath(genpath(core_folder));
 % BEGIN USER VAR-------------------------------------------------
-anal_opts.tdc_import.dir='Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20230405_check_splitter_50_50\';
+anal_opts.tdc_import.dir='Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
 % anal_opts.tdc_import.dir='Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20200803_early_k=0,-1,-2_halo_data\';
 anal_opts.tdc_import.file_name='d';
 anal_opts.tdc_import.force_load_save=false;   %takes precidence over force_reimport
 anal_opts.tdc_import.force_reimport=true;
 anal_opts.tdc_import.force_forc=false;
-anal_opts.tdc_import.dld_xy_rot=0.61;
+anal_opts.tdc_import.dld_xy_rot=0.93;
 
 tmp_xlim=[-35e-3, 35e-3];     %tight XY lims to eliminate hot spot from destroying pulse widths
 tmp_ylim=[-35e-3, 35e-3];
@@ -30,8 +30,8 @@ anal_opts.tdc_import.txylim=[tlim;tmp_xlim;tmp_ylim];
 anal_opts.global.fall_time=0.417;
 anal_opts.global.qe=0.09;
 
-anal_opts.trig_dld=20.3;
-anal_opts.dld_aquire=4;
+anal_opts.trig_dld=20.5;
+anal_opts.dld_aquire=2;
 anal_opts.trig_ai_in=20;
 
 
@@ -44,13 +44,13 @@ anal_opts.trig_ai_in=20;
 anal_opts.history.shots=30;
 
 hebec_constants
-const.fall_distance = 8.52925545e-01;
+const.fall_distance = 0.848;%8.52925545e-01;
 %% find centers
 opts.cent.visual = 2;
 opts.cent.threshold = [100,30,30].*1e3; %set in inverse units (Hz for time 1/m for space)
 opts.cent.sigma = [8e-5,25e-5,25e-5];
 % opts.cent.t_bounds = {[3.8598,3.871],[3.871,3.8844],[3.8844,3.8972],[3.8,3.95]}; %time bounds for the different momentum states k=+1,0,-1 respectively
-opts.cent.t_bounds  = {[3.8598,3.871],[3.871,3.8844],[3.884,3.896],[3.75,4]};%{[3.848,3.8598],[3.8598,3.871],[3.871,3.8844],[3.75,4]};
+opts.cent.t_bounds  = {[2.123,2.134],[2.135,2.145],[2.148,2.158],[2.12,2.16]};%{[3.8598,3.871],[3.871,3.8844],[3.884,3.896],[3.75,4]};%{[3.848,3.8598],[3.8598,3.871],[3.871,3.8844],[3.75,4]};
 
 opts.vel_conv.plot_percentage = 0.2;
 opts.vel_conv.visual = 0;
@@ -144,9 +144,9 @@ while true
         try
             batch_data.mcp_tdc=import_mcp_tdc_data(anal_opts.tdc_import);
             %just to give me a logical vector
-            batch_data.mcp_tdc.all_ok=batch_data.mcp_tdc.num_counts>1e3;
+            batch_data.mcp_tdc.all_ok=batch_data.mcp_tdc.num_counts>0e3;
             batch_data.mcp_tdc.all_ok(batch_data.mcp_tdc.all_ok)=...
-                cellfun(@(x) x(end,1),batch_data.mcp_tdc.counts_txy(batch_data.mcp_tdc.all_ok))>anal_opts.dld_aquire*0.8;
+                cellfun(@(x) x(end,1),batch_data.mcp_tdc.counts_txy(batch_data.mcp_tdc.all_ok))>anal_opts.dld_aquire*1;
             if sum(batch_data.mcp_tdc.all_ok)==0
                 fprintf('waiting for file to be writen\n')
                 pause(1.0)

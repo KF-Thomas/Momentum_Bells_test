@@ -42,7 +42,7 @@ anal_opts.trig_ai_in=20;
 % anal_opts.osc_fit.tlim=[0.86,1.08];
 % anal_opts.osc_fit.dimesion=2; %Sel ect coordinate to bin. 1=X, 2=Y.
 
-anal_opts.history.shots=200;
+anal_opts.history.shots=20;
 
 hebec_constants
 const.fall_distance = 8.52925545e-01;
@@ -50,7 +50,8 @@ const.fall_distance = 8.52925545e-01;
 opts.cent.visual = 2;
 opts.cent.threshold = [100,30,30].*1e3; %set in inverse units (Hz for time 1/m for space)
 opts.cent.sigma = [8e-5,25e-5,25e-5];
-opts.cent.t_bounds = {[3.8598,3.871],[3.871,3.8844],[3.8844,3.8972],[3.8,3.95]}; %time bounds for the different momentum states k=+1,0,-1 respectively
+opts.cent.t_bounds = {[2.123,2.134],[2.135,2.145],[2.148,2.158],[2.12,2.16]};
+%{[3.8598,3.871],[3.871,3.8844],[3.8844,3.8972],[3.8,3.95]}; %time bounds for the different momentum states k=+1,0,-1 respectively
 % opts.cent.t_bounds = {[1.741,1.75],[1.75,1.763],[1.763,1.776],[1.73,1.779]};;
 
 opts.vel_conv.plot_percentage = 0.2;
@@ -164,8 +165,8 @@ while true
 %                     top_halo_num_counts(ii) = size(masktxy_square(this_shot, [3.866, 3.874; -0.03, 0.03; -0.03, 0.03]),1);
 %                     btm_halo_num_counts(ii) = size(masktxy_square(this_shot, [3.854, 3.861; -0.03, 0.03; -0.03, 0.03]),1);
                     
-                    top_halo_num_counts(ii) = size(masktxy_square(this_shot, [1.76, 1.7665; -0.03, 0.03; -0.03, 0.03]),1);
-                    btm_halo_num_counts(ii) = size(masktxy_square(this_shot, [1.747, 1.754; -0.03, 0.03; -0.03, 0.03]),1);
+                    top_halo_num_counts(ii) = size(masktxy_square(this_shot, [2.143, 2.149; -0.03, 0.03; -0.03, 0.03]),1);
+                    btm_halo_num_counts(ii) = size(masktxy_square(this_shot, [2.1285, 2.1358; -0.03, 0.03; -0.03, 0.03]),1);
                 end
                 
                 halo_history.shot_num=[halo_history.shot_num,anal_opts.tdc_import.shot_num];
