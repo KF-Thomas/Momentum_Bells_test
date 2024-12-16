@@ -7,7 +7,8 @@ addpath(genpath(core_folder));
 % BEGIN USER VAR-------------------------------------------------
 % anal_opts.tdc_import.dir='Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20210727_bragg_amp_scan_new_trap_2';
 % 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20210724_bragg_amp_scan_new_trap';
-anal_opts.tdc_import.dir='Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output'%'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
+anal_opts.tdc_import.dir='Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output'
+%'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output'%'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
 % 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20210726_bragg_width_scan_new_trap_3';
 % 
 
@@ -49,7 +50,7 @@ anal_opts.trig_ai_in=20;
 % anal_opts.osc_fit.tlim=[0.86,1.08];
 % anal_opts.osc_fit.dimesion=2; %Sel ect coordinate to bin. 1=X, 2=Y.
 
-anal_opts.history.shots=80;
+anal_opts.history.shots=150;
 
 hebec_constants
 const.fall_distance = 8.52925545e-01;
@@ -78,10 +79,10 @@ anal_out.dir=[fullfile(anal_opts.tdc_import.dir,'out','monitor'),filesep];
 if (exist(anal_out.dir, 'dir') == 0), mkdir(anal_out.dir); end
 anal_opts.global.out_dir=anal_out.dir;
 
-frac_opts.num_lim = 150;
-frac_opts.transfer_state = 'momentum';
+frac_opts.num_lim = 100;
+frac_opts.transfer_state = 'momentum';%'momentum';
 frac_opts.bounds = [-0.03, 0.03; -0.03, 0.03];%spacecial bounds
-frac_opts.average_mask = [770:1:900]%shots;
+frac_opts.average_mask = [1532:5:1812]%shots;
 
 %%
 mag_history.trans_frac=[];
@@ -155,7 +156,7 @@ while true
                 
                 stfig('Momentum Transfer Fraction History');
                 plot(mag_history.shot_num,...
-                    mag_history.trans_frac(:,1:5)',...
+                    mag_history.trans_frac(:,1:4)',...
                     'LineWidth',1.5)
                 grid on
                 h=gca;
@@ -172,7 +173,7 @@ while true
                 h.MinorGridColor=[0,0,0]; % here's the color for the minor grid lines
                 xlabel('Shot Number')
                 ylabel('Tranfer Fraction')
-                legend('$k=+2$','$k=+1$','$k=0$','$k=-1$','$k=-2$','Location','Northwest')
+                legend('$k=+1$','$k=0$','$k=-1$','$k=-2$','Location','Northwest')
 %                 legend('$k=-2$','$k=-1$','$k=0$')
                 
                 pause(0.1)
@@ -203,34 +204,34 @@ while true
 %                 ylabel('Tranfer Cost Function')
 %                 legend('cost')
                 
-                stfig('External Fraction');
-                num_mask = ~isnan(mag_history.shot_num)';
+%                 stfig('External Fraction');
+%                 num_mask = ~isnan(mag_history.shot_num)';
+% % %                 plot(mag_history.shot_num(num_mask),1-1./mag_history.trans_frac(num_mask,4),'LineWidth',1.5)
+% % %                 hold on
+% % %                 scatter(mag_history.shot_num(num_mask),1-1./mag_history.trans_frac(num_mask,4),'LineWidth',1.5)
 % %                 plot(mag_history.shot_num(num_mask),1-1./mag_history.trans_frac(num_mask,4),'LineWidth',1.5)
 % %                 hold on
 % %                 scatter(mag_history.shot_num(num_mask),1-1./mag_history.trans_frac(num_mask,4),'LineWidth',1.5)
-%                 plot(mag_history.shot_num(num_mask),1-1./mag_history.trans_frac(num_mask,4),'LineWidth',1.5)
+%                 %external to k=0,-1 states
+%                 plot(mag_history.shot_num(num_mask),(mag_history.Ns(num_mask,6)-mag_history.Ns(num_mask,5)-mag_history.Ns(num_mask,3)-mag_history.Ns(num_mask,4))./mag_history.Ns(num_mask,6),'LineWidth',1.5)
 %                 hold on
-%                 scatter(mag_history.shot_num(num_mask),1-1./mag_history.trans_frac(num_mask,4),'LineWidth',1.5)
-                %external to k=0,-1 states
-                plot(mag_history.shot_num(num_mask),(mag_history.Ns(num_mask,6)-mag_history.Ns(num_mask,5)-mag_history.Ns(num_mask,3)-mag_history.Ns(num_mask,4))./mag_history.Ns(num_mask,6),'LineWidth',1.5)
-                hold on
-                scatter(mag_history.shot_num(num_mask),(mag_history.Ns(num_mask,6)-mag_history.Ns(num_mask,5)-mag_history.Ns(num_mask,3)-mag_history.Ns(num_mask,4))./mag_history.Ns(num_mask,6),'LineWidth',1.5)
-                hold off
-                grid on
-                h=gca;
-                grid on    % turn on major grid lines
-                grid minor % turn on minor grid lines
-                % Set limits and grid spacing separately for the two directions:
-                % Must set major grid line properties for both directions simultaneously:
-                h.GridLineStyle='-'; % the default is some dotted pattern, I prefer solid
-                h.GridAlpha=1;  % the default is partially transparent
-                h.GridColor=[0,0,0]; % here's the color for the major grid lines
-                % Idem for minor grid line properties:
-                h.MinorGridLineStyle='-';
-                h.MinorGridAlpha=0.1;
-                h.MinorGridColor=[0,0,0]; % here's the color for the minor grid lines
-                xlabel('Shot Number')
-                ylabel('External Fraction')
+%                 scatter(mag_history.shot_num(num_mask),(mag_history.Ns(num_mask,6)-mag_history.Ns(num_mask,5)-mag_history.Ns(num_mask,3)-mag_history.Ns(num_mask,4))./mag_history.Ns(num_mask,6),'LineWidth',1.5)
+%                 hold off
+%                 grid on
+%                 h=gca;
+%                 grid on    % turn on major grid lines
+%                 grid minor % turn on minor grid lines
+%                 % Set limits and grid spacing separately for the two directions:
+%                 % Must set major grid line properties for both directions simultaneously:
+%                 h.GridLineStyle='-'; % the default is some dotted pattern, I prefer solid
+%                 h.GridAlpha=1;  % the default is partially transparent
+%                 h.GridColor=[0,0,0]; % here's the color for the major grid lines
+%                 % Idem for minor grid line properties:
+%                 h.MinorGridLineStyle='-';
+%                 h.MinorGridAlpha=0.1;
+%                 h.MinorGridColor=[0,0,0]; % here's the color for the minor grid lines
+%                 xlabel('Shot Number')
+%                 ylabel('External Fraction')
                 
                 pause(0.1)
             end
@@ -248,18 +249,18 @@ mag_history.trans_frac_std = [];
 
 for ii = 1:(numel(frac_opts.average_mask)-1)
     shot_average_mask = mag_history.shot_num(:) >= frac_opts.average_mask(ii) & mag_history.shot_num(:) < frac_opts.average_mask(ii+1);
-    mag_history.trans_frac_avg = [mag_history.trans_frac_avg ; mean(mag_history.trans_frac(shot_average_mask,1:4))]
-    mag_history.trans_frac_std = [mag_history.trans_frac_std ; std(mag_history.trans_frac(shot_average_mask,1:4))]
+    mag_history.trans_frac_avg = [mag_history.trans_frac_avg ; mean(mag_history.trans_frac(shot_average_mask,1:3))]
+    mag_history.trans_frac_std = [mag_history.trans_frac_std ; std(mag_history.trans_frac(shot_average_mask,1:3))]
 end
 
-pulse_step = [0:0.2:10];
+pulse_step = [5:5:280];
 len_avg_shots = numel(frac_opts.average_mask(1:end-1)); 
 stfig('Momentum Transfer Fraction History (Averaged)');
 grid on
 hold on
-errorbar(pulse_step(1:len_avg_shots),mag_history.trans_frac_avg(:,1)',mag_history.trans_frac_std(:,2)','LineWidth',1.5)
-errorbar(pulse_step(1:len_avg_shots),mag_history.trans_frac_avg(:,2)',mag_history.trans_frac_std(:,3)','LineWidth',1.5)
-errorbar(pulse_step(1:len_avg_shots),mag_history.trans_frac_avg(:,3)',mag_history.trans_frac_std(:,4)','LineWidth',1.5)
+errorbar(pulse_step(1:len_avg_shots),mag_history.trans_frac_avg(:,1)',mag_history.trans_frac_std(:,1)','LineWidth',1.5)
+errorbar(pulse_step(1:len_avg_shots),mag_history.trans_frac_avg(:,2)',mag_history.trans_frac_std(:,2)','LineWidth',1.5)
+errorbar(pulse_step(1:len_avg_shots),mag_history.trans_frac_avg(:,3)',mag_history.trans_frac_std(:,3)','LineWidth',1.5)
 %errorbar(pulse_step(1:len_avg_shots),mag_history.trans_frac_avg(:,3)',mag_history.trans_frac_std(:,3)','LineWidth',1.5)
 
 %scatter(pulse_step(1:len_avg_shots),...
@@ -279,7 +280,7 @@ h.MinorGridAlpha=0.1;
 h.MinorGridColor=[0,0,0]; % here's the color for the minor grid lines
 xlabel('Pulse duration (1e-6)')
 ylabel('Tranfer Fraction')
-legend('$k=+1$','$k=0$','$k=-1$')
+legend('$mj=+1$','$mj=0$','$mj=-1$')
 % scatter(pulse_step(1:len_avg_shots),...
 % mag_history.trans_frac_avg(:,1:3)',...
 % 'LineWidth',1.5)

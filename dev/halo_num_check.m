@@ -21,7 +21,7 @@ anal_opts.tdc_import.txylim=[tlim;tmp_xlim;tmp_ylim];
 anal_opts.global.fall_time=0.417;
 anal_opts.global.qe=0.09;
 
-anal_opts.trig_dld=19.5;
+anal_opts.trig_dld=20.5;
 anal_opts.dld_aquire=2;
 
 
@@ -33,9 +33,10 @@ anal_opts.history.shots=num_shots;%50;
 opts.cent.visual = 0;
 opts.cent.threshold = [100,30,30].*1e3; %set in inverse units (Hz for time 1/m for space)
 opts.cent.sigma = [8e-5,25e-5,25e-5];
-opts.cent.t_bounds = {[3.8598,3.871],[3.871,3.8844],[3.884,3.896],[3.75,4]};%
+% opts.cent.t_bounds = {[3.8598,3.871],[3.871,3.8844],[3.884,3.896],[3.75,4]};%
 % opts.cent.t_bounds = {[3.8598,3.871],[3.871,3.8844],[3.8844,3.8972],[3.8,3.95]}; %time bounds for the different momentum states k=+1,0,-1 respectively
 % opts.cent.t_bounds = {[1.741,1.75],[1.75,1.763],[1.763,1.776],[1.73,1.779]};;
+opts.cent.t_bounds = {[2.122,2.128],[2.135,2.142],[2.149,2.153],[2.121,2.155]}
 
 opts.vel_conv.plot_percentage = 0.2;
 opts.vel_conv.visual = 0;
@@ -122,8 +123,11 @@ while not_done
 %             top_halo_num_counts(ii) = size(masktxy_square(this_shot, [1.76, 1.7665; -0.03, 0.03; -0.03, 0.03]),1);
 %             btm_halo_num_counts(ii) = size(masktxy_square(this_shot, [1.747, 1.754; -0.03, 0.03; -0.03, 0.03]),1);
 
-            top_halo_num_counts(ii) = size(masktxy_square(this_shot, [3.881, 3.886; -0.03, 0.03; -0.03, 0.03]),1);
-            btm_halo_num_counts(ii) = size(masktxy_square(this_shot, [3.867, 3.872; -0.03, 0.03; -0.03, 0.03]),1);
+%             top_halo_num_counts(ii) = size(masktxy_square(this_shot, [3.881, 3.886; -0.03, 0.03; -0.03, 0.03]),1);
+%             btm_halo_num_counts(ii) = size(masktxy_square(this_shot, [3.867, 3.872; -0.03, 0.03; -0.03, 0.03]),1);
+            top_halo_num_counts(ii) = size(masktxy_square(this_shot, [2.143, 2.1485; -0.03, 0.03; -0.03, 0.03]),1);
+            btm_halo_num_counts(ii) = size(masktxy_square(this_shot, [2.128, 2.1345; -0.03, 0.03; -0.03, 0.03]),1);
+        
         end
         not_done = 0;
     catch

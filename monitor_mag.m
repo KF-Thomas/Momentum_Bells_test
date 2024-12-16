@@ -32,8 +32,8 @@ anal_opts.tdc_import.txylim=[tlim;tmp_xlim;tmp_ylim];
 anal_opts.global.fall_time=0.417;
 anal_opts.global.qe=0.09;
 
-anal_opts.trig_dld=20.3;
-anal_opts.dld_aquire=4;
+anal_opts.trig_dld=20.5;
+anal_opts.dld_aquire=3;
 anal_opts.trig_ai_in=20;
 
 
@@ -72,7 +72,7 @@ anal_out.dir=[fullfile(anal_opts.tdc_import.dir,'out','monitor'),filesep];
 if (exist(anal_out.dir, 'dir') == 0), mkdir(anal_out.dir); end
 anal_opts.global.out_dir=anal_out.dir;
 
-frac_opts.num_lim = 1.0e3;
+frac_opts.num_lim =150;
 frac_opts.transfer_state = 'mag';
 frac_opts.bounds = [-0.03, 0.03; -0.03, 0.03];%spacecial bounds
 
@@ -116,7 +116,7 @@ while true
             [masked_data]=hotspot_mask(batch_data);
             batch_data.mcp_tdc.counts_txy = masked_data.mcp_tdc.masked.counts_txy;
             %just to give me a logical vector
-            batch_data.mcp_tdc.all_ok=batch_data.mcp_tdc.num_counts>1e3;
+            batch_data.mcp_tdc.all_ok=batch_data.mcp_tdc.num_counts>50;
 %             batch_data.mcp_tdc.all_ok(batch_data.mcp_tdc.all_ok)=...
 %                 cellfun(@(x) x(end,1),batch_data.mcp_tdc.counts_txy(batch_data.mcp_tdc.all_ok))>anal_opts.dld_aquire*0.8;
             if sum(batch_data.mcp_tdc.all_ok)==0
