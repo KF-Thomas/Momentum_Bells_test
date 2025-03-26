@@ -29,9 +29,9 @@ spp = shots_per_point/2
 %     sequence = {'k=0,-1','mirror'};
 % end
 
-sequence = {'mag_transfer','const'}
+sequence = {'mag_transfer','const','k=0,-1'}
 
-new_path ='c:\remote\settings202409Sep105958.xml';%c:\remote\settings202001Sep155855.xml 'c:\remote\settings202429Feb143702.xml'
+new_path ='c:\remote\settings202507Jan112205.xml';%c:\remote\settings202001Sep155855.xml 'c:\remote\settings202429Feb143702.xml'
 
 %% Keysight settings
 % General settings
@@ -48,15 +48,15 @@ param_vec = [0.4:0.01:2]*1e-3;
 T_delay = 0.02e-3
 %%% MAGNETIC TRANSFER pulse
 %--------------------------------------------------------------------------
-B_trap_bottom=1.0583782e6;
-del = 0%-41.03543351e3; %detuning for second beam 3e3
+B_trap_bottom=495e3;
+del = 84.96e3%-41.03543351e3; %detuning for second beam 3e3
 T_pulse_del = +0.0e-6;%delay between pulses
 df_raman_vec = [100:5:1000]*1e3
 
-dF_Raman= df_raman_vec(marker);
+dF_Raman= (B_trap_bottom) - del;
 %-(B_trap_bottom);     %[Hz]    Raman detuning
-T_Raman_mix=60e-6%19.20368817e-6;
-Gs_mod_R_mix=0.3%2.69400894;
+T_Raman_mix=100e-6%19.20368817e-6;
+Gs_mod_R_mix=4.6e-6%2.69400894;
 phi1_mix=pi;
 K_R_mix=0.34;
 
@@ -276,12 +276,14 @@ for ii = 1:length(sequence) %run through each segment
 
         case 'mag_transfer'
             %%% Magentic transfer
-            ch1_raw=[ch1_raw(:)',...
-                {{'double_sine',f1_Raman_mix,f2_Raman_mix,phi1_mix,phi2,K_R_mix,...
-                K_R_mix,Gs_mod_R_mix,Gs_mod_R_mix,srate_all,T_Raman_mix,T_pulse_del}}
+             ch1_raw=[ch1_raw(:)',...
+                {{'const',0, srate_all,T_delay_mix_1}},...
+                {{'arb',  wf_Bragg_src_t_pulse_1,  srate_all,  T_Raman_mix,  f1_Raman_mix,  K_R_mix,  Gs_mod_R_mix, phi1_mix,0}}
                 ];
+            
             ch2_raw=[ch2_raw(:)',...
-                {{'const',0, srate_all,T_Raman_mix+abs(T_pulse_del)}}
+                {{'const',0, srate_all,T_delay_mix_1}},...
+                {{'arb',  wf_Bragg_src_t_pulse_2,  srate_all,  T_Raman_mix,  f2_Raman_mix,  K_R_mix,  Gs_mod_R_mix, phi2,0}}
                 ];
         case 'k=0,-1,-2'
             %%% Full Halo

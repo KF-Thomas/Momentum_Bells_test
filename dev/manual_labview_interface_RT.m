@@ -17,34 +17,34 @@
 
 update_keysight = 1;
 
-num_points = 2;
-shots_per_point = 500;
+num_points = 5;
+shots_per_point = 50;
 num_sets  = 2;
 shots_per_set = 700;
 shot_offset = 5;
-shot_numb = i + 28390;%shot iteration number to write in log text file.
+shot_numb = i + 600;%shot iteration number to write in log text file.
 evap_update_interval = 5;
 trap_type = 'quad_0_7_shunt_0_75';
 top_target = 18;
 % marker = 1;
 % marker2 = 1;
 
-if (i-1)<shot_offset
-    marker = 1;
-    %marker2 = 1;
-    sequence = {'mag_k=-1'};
-    new_path = 'c:\remote\settings202414Nov203507.xml'%'c:\remote\settings202414Aug101730.xml'%'c:\remote\settings202414Aug101805.xml'%'c:\remote\settings202414Aug102612.xml'%'c:\remote\settings202414Aug102651.xml'
-    %'c:\remote\settings202413Aug133933.xml'%c:\remote\settings202413Aug135046.xml%'c:\remote\settings202414Aug120121.xml'%'c:\remote\settings202412Aug201915.xml';
-    evap_setting = 9; %0.857Mhz
-    top_target = 18;
-else
-    marker = mod(floor((i-1-shot_offset)/shots_per_point), num_points)+1; %Counts from 1 to num shots before setpt update
-    %marker2 = mod(floor((i-1-shot_offset)/shots_per_set), num_sets)+1;
-    sequence = {'mag_k=-1','const','k=+1,0,-1','mirror','splitter'}%,'mag_transfer'};
-    new_path = 'c:\remote\settings202414Nov203507.xml'%'c:\remote\settings202402Nov213520.xml'%'c:\remote\settings202428Oct183106.xml'%'c:\remote\settings202428Oct103234.xml'%'c:\remote\settings202427Oct172710.xml'%'c:\remote\settings202410Oct115329.xml';
-   %[new_path,evap_setting,num_path]=evap_setting_update(evap_setting,i-shot_offset,evap_update_interval,trap_type,top_target);
-
-end
+% if (i-1)<shot_offset
+%     marker = 1;
+%     %marker2 = 1;
+%     sequence = {'mag_k=-1'};
+%     new_path = 'c:\remote\settings202414Nov203507.xml'%'c:\remote\settings202414Aug101730.xml'%'c:\remote\settings202414Aug101805.xml'%'c:\remote\settings202414Aug102612.xml'%'c:\remote\settings202414Aug102651.xml'
+%     %'c:\remote\settings202413Aug133933.xml'%c:\remote\settings202413Aug135046.xml%'c:\remote\settings202414Aug120121.xml'%'c:\remote\settings202412Aug201915.xml';
+%     evap_setting = 9; %0.857Mhz
+%     top_target = 18;
+% else
+%     marker = mod(floor((i-1-shot_offset)/shots_per_point), num_points)+1; %Counts from 1 to num shots before setpt update
+%     %marker2 = mod(floor((i-1-shot_offset)/shots_per_set), num_sets)+1;
+%     sequence = {'mag_k=-1','const','k=+1,0,-1','mirror','splitter'}%,'mag_transfer'};
+%     new_path = 'c:\remote\settings202414Nov203507.xml'%'c:\remote\settings202402Nov213520.xml'%'c:\remote\settings202428Oct183106.xml'%'c:\remote\settings202428Oct103234.xml'%'c:\remote\settings202427Oct172710.xml'%'c:\remote\settings202410Oct115329.xml';
+%    %[new_path,evap_setting,num_path]=evap_setting_update(evap_setting,i-shot_offset,evap_update_interval,trap_type,top_target);
+% 
+% end
 %spp = shots_per_point/2s
 
 % if mod((i-1),shots_per_point) < spp
@@ -52,10 +52,10 @@ end
 % else
 %     sequence = {'k=0,-1','mirror'};
 % end
+sequence = {'mag_k=-1','const','k=0,-1','mirror'}
+marker = mod(floor((i-1)/shots_per_point), num_points)+1; 
 
-% marker = mod(floor((i-1)/shots_per_point), num_points)+1; 
-
-%new_path ='c:\remote\settings202411Sep174624.xml'%'c:\remote\settings202427Aug173019.xml';%c:\remote\settings202001Sep155855.xml 'c:\remote\settings202429Feb143702.xml'
+new_path ='c:\remote\settings202507Jan121233.xml'%'c:\remote\settings202427Aug173019.xml';%c:\remote\settings202001Sep155855.xml 'c:\remote\settings202429Feb143702.xml'
 
 %% Keysight settings
 % General settings
@@ -73,13 +73,13 @@ ampfun = @(b,x) b(1).*x(:,1).^b(2);
 %--------------------------------------------------------------------------
 
 
-B_trap_bottom= 534e3; %392e3;%
+B_trap_bottom= 495e3; %392e3;%
 del = 84.96e3;% %detuning for second beam 3e3
 del2 = 0;
 T_pulse_del = 0.0e-6;%delay between pulses
 dF_Raman= (B_trap_bottom) - del;     %[Hz]    Raman detuning
 T_Raman_mix=100e-6;%;
-Gs_mod_R_mix= 5.e-6;%
+Gs_mod_R_mix= 4.6e-6;%
 phi1_mix = pi;
 phi2=0;
 K_R_mix=0.6;%0.095;%%0.095;%0.4;%0.338;%0.338;%0.34063277;%0.31
@@ -116,41 +116,41 @@ globalphase_vec = [13*pi/20,33*pi/20];%[3*pi/7, pi, 7*pi/4,2*pi];%[0, 3*pi/7, 3*
 % phi1_splitter=pi;%5*pi/14;
 % phi2_splitter=0;%2*pi/14;
 
-if marker == 2
-    phi1_splitter=33*pi/40;%5*pi/14;
-    phi2_splitter=0;%2*pi/14;
-elseif marker == 3
-    phi1_splitter=-pi/10;%5*pi/14;
-    phi2_splitter=0;%2*pi/14;
-elseif marker == 1
-    phi1_splitter=13*pi/40;
-    phi2_splitter=0;
-elseif marker == 4    
-    phi1_splitter=4*pi/5;
-    phi2_splitter=0;
-elseif marker == 5
-    phi1_splitter=pi;
-    phi2_splitter=pi/3;
-elseif marker == 6
-    phi1_splitter=pi;
-    phi2_splitter=0;
-end
+% if marker == 2
+%     phi1_splitter=33*pi/40;%5*pi/14;
+%     phi2_splitter=0;%2*pi/14;
+% elseif marker == 3
+%     phi1_splitter=-pi/10;%5*pi/14;
+%     phi2_splitter=0;%2*pi/14;
+% elseif marker == 1
+%     phi1_splitter=13*pi/40;
+%     phi2_splitter=0;
+% elseif marker == 4    
+%     phi1_splitter=4*pi/5;
+%     phi2_splitter=0;
+% elseif marker == 5
+%     phi1_splitter=pi;
+%     phi2_splitter=pi/3;
+% elseif marker == 6
+%     phi1_splitter=pi;
+%     phi2_splitter=0;
+% end
 
 
 %%% MIRROR pulse
 %--------------------------------------------------------------------------
-dF_Bragg_1=229e3/2;%0.0849e6;%
-dF_Bragg_2=229e3/2;%0.12e6;%0.0849e6;%
+dF_Bragg_1=230e3/2;%0.0849e6;%
+dF_Bragg_2=230e3/2;%0.12e6;%0.0849e6;%
 f1_Bragg_mirror=f0_AOM-dF_Bragg_1;
 f2_Bragg_mirror=f0_AOM+dF_Bragg_2;
 
 T_Bragg_mirror=200e-6;%32E-6;
 %P_Bragg_src = 7.0; %power in mW 7 to 9 works well ~5.9
-K_Bragg_mirror_1=0.33;%ampfun([60.117, 0.5638],P_Bragg_src)/2e3;
-K_Bragg_mirror_2=0.33;%ampfun([132.62, 0.5283],P_Bragg_src)/2e3;
-%Gs_vec = [7.6,8.2];
-Gs_mod_Bragg_mirror_1=8e-6;%7.68e-6;%1.95*T_Bragg_mirror/16.7e-6*sqrt(2)*sqrt(5.63806937736142e-01);%~1.83
-Gs_mod_Bragg_mirror_2=8e-6;%7.68e-6;%1.95*T_Bragg_mirror/16.7e-6*sqrt(2)*sqrt(5.28341254744861e-01);%~1.83
+K_Bragg_mirror_1=0.5%33;%ampfun([60.117, 0.5638],P_Bragg_src)/2e3;
+K_Bragg_mirror_2=0.5%33;%ampfun([132.62, 0.5283],P_Bragg_src)/2e3;
+Gs_vec = [10.4:0.2:11.2];
+Gs_mod_Bragg_mirror_1=Gs_vec(marker)*1e-6;%7.68e-6;%1.95*T_Bragg_mirror/16.7e-6*sqrt(2)*sqrt(5.63806937736142e-01);%~1.83
+Gs_mod_Bragg_mirror_2=Gs_vec(marker)*1e-6;%7.68e-6;%1.95*T_Bragg_mirror/16.7e-6*sqrt(2)*sqrt(5.28341254744861e-01);%~1.83
 
 t0_Bragg_mirror=nan;%3.9895e-6;
 
@@ -238,8 +238,7 @@ wf_bragg_sym_pulse_2 = @(b,t) wf_mirror_pulse(b,t).*sin(2*pi.*(b(2)-b(6).*t).*t+
 %%% Bragg splitting: |k=0> |--> |k=0> + |k=-1K>
 %dF_Bragg_1=0.06e6;
 %dF_Bragg_2=0.06e6;
-
-dopp_shft = 24e3;
+dopp_shft = 235e3%220e3;
 dF_Bragg_1= (84.96e3+dopp_shft)/2; %84.96e3-
 dF_Bragg_2= (84.96e3+dopp_shft)/2; %84.96e3-
 
@@ -248,10 +247,10 @@ f2_Bragg_src_t=f0_AOM+dF_Bragg_2;
 
 T_Bragg_src_t=200e-6;
 P_Bragg_src = 3.6; %power in mW 7 to 9 works well
-K_Bragg_src_1=0.64%ampfun([60.117, 0.5638],P_Bragg_src)/2e3;
-K_Bragg_src_2=0.64%ampfun([132.62, 0.5283],P_Bragg_src)/2e3;
-Gs_mod_Bragg_src_1=5e-6 %1.82*T_Bragg_src_t/16.7e-6*sqrt(2)*sqrt(5.63806937736142e-01);
-Gs_mod_Bragg_src_2=5e-6%1.81*T_Bragg_src_t/16.7e-6*sqrt(2)*sqrt(5.28341254744861e-01);
+K_Bragg_src_1=0.3%ampfun([60.117, 0.5638],P_Bragg_src)/2e3;
+K_Bragg_src_2=0.3%ampfun([132.62, 0.5283],P_Bragg_src)/2e3;
+Gs_mod_Bragg_src_1=5.4e-6;%1.82*T_Bragg_src_t/16.7e-6*sqrt(2)*sqrt(5.63806937736142e-01);
+Gs_mod_Bragg_src_2=5.4e-6;%1.81*T_Bragg_src_t/16.7e-6*sqrt(2)*sqrt(5.28341254744861e-01);
 
 t0_Bragg_src_t=nan;
 
@@ -504,12 +503,12 @@ if update_keysight && (mod((i-1-shot_offset),shots_per_point) == 0 || (i-1) == 0
 end
 %write to log
 %write to log
-f1_log=fopen(path_log,'a');  % append to log-file
+% f1_log=fopen(path_log,'a');  % append to log-file
 nowdt=datetime('now');
-fprintf(f1_log,'shot num:%d, posixtime:%.3f, date:%s, matlab:ML_interface_RT, sequence:%s, global_phase:%.4f ,labview settings:%s\n',...
-    shot_numb,posixtime(nowdt),datestr(nowdt,'yyyy-mm-ddTHH:MM:SS.FFF'),sequence{end},globalphase_vec(marker), new_path);
-fclose(f1_log);
-pause(0.1)
+% fprintf(f1_log,'shot num:%d, posixtime:%.3f, date:%s, matlab:ML_interface_RT, sequence:%s, global_phase:%.4f ,labview settings:%s\n',...
+%     shot_numb,posixtime(nowdt),datestr(nowdt,'yyyy-mm-ddTHH:MM:SS.FFF'),sequence{end},globalphase_vec(marker), new_path);
+% fclose(f1_log);
+% pause(0.1)
 
 f_log=fopen(path_param_log,'a');  % append to param-log-file
 fprintf(f_log,'shot num:%d, posixtime:%.3f, ch1 waveform: %s, ch2 waveform: %s\n',...
